@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+DemoMeisterschaft:
+  user_id: userOne
+  name: Demoturnier Meisterschaft
+  shortname: Demo Meisterschaft
+  description: ''
+  contesttype: Group
+  nbr_sets: 1
+  public: false
+  token_read: token1
+  token_write: token2
+
+RegressionMeisterschaft:
+  user_id: userTwo
+  name: Regressiontest Gruppe
+  shortname: Regression Gruppe
+  description: ''
+  contesttype: Group
+  nbr_sets: 1
+  public: false
+  token_read: token3
+  token_write: token4
