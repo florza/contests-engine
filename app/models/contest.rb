@@ -1,4 +1,5 @@
 class Contest < ApplicationRecord
+  belongs_to :user
   after_initialize :init
 
   validates :name,      presence: true, length: { maximum: 50 },
@@ -17,8 +18,8 @@ class Contest < ApplicationRecord
   validates :description, presence: true
 
   def init
-    self.token_read ||= SecureRandom.urlsafe_base64
-    self.token_write ||= SecureRandom.urlsafe_base64
+    self.token_read ||= get_token
+    self.token_write ||= get_token
   end
 
 end

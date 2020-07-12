@@ -1,4 +1,5 @@
 class Participant < ApplicationRecord
+  belongs_to :user
   belongs_to :contest
 
   validates :name,      presence: true, length: { maximum: 50 },

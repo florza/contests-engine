@@ -45,10 +45,10 @@ ActiveRecord::Schema.define(version: 2020_07_11_081151) do
     t.integer "ko_pos", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["contest_id"], name: "index_participants_on_contest_id"
-    t.index ["user_id"], name: "index_participants_on_user_id"
     t.index ["contest_id", "name"], name: "index_participants_on_contest_and_name", unique: true
     t.index ["contest_id", "shortname"], name: "index_participants_on_contest_and_shortname", unique: true
+    t.index ["contest_id"], name: "index_participants_on_contest_id"
+    t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

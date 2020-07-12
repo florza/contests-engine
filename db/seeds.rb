@@ -8,12 +8,15 @@
 
 # First seed the defined fixtures into the db:
 require 'active_record/fixtures'
+ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "users")
 ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "contests")
 ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "participants")
 #ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "matches")
 
+f = User.all.first
 Contest.create!([
-  { name: 'Meine Meisterschaft',
+  { user_id: f.id,
+    name: 'Meine Meisterschaft',
     shortname: 'Meisterschaft',
     description: 'Mit seed() definiertes Turnier',
     contesttype: 'Group'
