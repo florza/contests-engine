@@ -11,23 +11,22 @@ The first version will only provide minimal functionality for
 - contests with 1 group only, each participant playing 1 match against each other
 - tokens generated for read or write access to the entire contest, not only a players own matches
 
-The code contains a folder *iturnier-front* with a preliminary version of a Vue-frontend. This code was written with a simplified version of the backend and is **not adapted** to the actual version of the backend.
-
-More or less working parts of the application:
+To see which parts of the application already work, look at the collection "Test iTurnier2Tier" in our Postman workspace. There you see examples of working requests, e.g.:
 - POST /signup (registration of a new user)
 - POST /signin (login)
-- GET /api/v1/contests
-- POST /api/v1/contests
-
-Untested parts:
 - DELETE /signin (logout)
 - POST /refresh
+- GET /api/v1/contests
+- POST /api/v1/contests
 - PUT /api/v1/contests/<id>
+- DELETE /api/v1/contests/<id>
+
+Untested parts:
 - GET /api/v1/contests/<id>/participants
 - POST /api/v1/contests/<id>/participants
 - PUT /api/v1/contests/<id>/participants/<id>
 
 Still completely missing:
-- POST /api/v1/contests/<id>/auslosung
+- POST /api/v1/contests/<id>/draw
 - everything with matches
-- several groups, KO, pyramids, ...
+- Additional contesttypes: several groups, KO, pyramids, ...
