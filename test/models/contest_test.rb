@@ -8,13 +8,14 @@ class ContestTest < ActiveSupport::TestCase
       name: 'name',
       shortname: 'short name',
       description: 'description',
-      contesttype: 'group',
+      contesttype: 'Groups',
       nbr_sets: 1,
       public: true
     )
   end
 
   test "sample user is valid" do
+    debugger
     assert @contest.valid?
   end
 
@@ -57,5 +58,24 @@ class ContestTest < ActiveSupport::TestCase
     duplicate_contest.name = 'another name'
     @contest.save
     assert duplicate_contest.valid?
+  end
+
+  test "contesttypes in validation list are valid" do
+    %w(Groups KO GroupsKO GroupsGroup).each do |value|
+      @contest.contesttype = value
+      assert @contest.valid?
+    end
+  end
+
+  test "contesttype must be valid" do
+    %w(groups ko anything else).each do |value|
+      @contest.contesttype = value
+      assert_not @contest.valid?
+    end
+  end
+
+  test "contesttype must not be an empty string" do
+    @contest.contesttype = ''
+    assert_not @contest.valid?
   end
 end

@@ -5,7 +5,7 @@ DemoMeisterschaft:
   name: Demoturnier Meisterschaft
   shortname: Demo Meisterschaft
   description: ''
-  contesttype: Group
+  contesttype: groups
   nbr_sets: 1
   public: false
   token_read: token1
@@ -16,7 +16,7 @@ RegressionMeisterschaft:
   name: Regressiontest Gruppe
   shortname: Regression Gruppe
   description: ''
-  contesttype: Group
+  contesttype: groups
   nbr_sets: 1
   public: false
   token_read: token3

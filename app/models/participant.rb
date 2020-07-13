@@ -14,5 +14,6 @@ class Participant < ApplicationRecord
 
   validates :user_id,	presence: true
   validates :contest_id,	presence: true
+  validates :remarks,	presence: true
 
 end

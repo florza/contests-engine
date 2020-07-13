@@ -7,17 +7,15 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
-  def default_contest
-    {
-      user: users(:userOne),
-      name: 'name',
-      shortname: 'short name',
-      description: 'description',
-      contesttype: 'group',
-      nbr_sets: 1,
-      public: true,
-      created_at: DateTime.now(),  # seems not to be filled in Rails 5
-      updated_at: DateTime.now()
-    }
+
+  # Log in as a particular user (in controller tests).
+  def log_in_as(user)
+    session[:user_id] = user.id
   end
+
+  # Returns true if a test user is logged in.
+  def is_logged_in?
+    !session[:user_id].nil?
+  end
+
 end

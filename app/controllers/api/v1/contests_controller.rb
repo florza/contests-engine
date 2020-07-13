@@ -1,13 +1,13 @@
  module Api
   module V1
     class ContestsController < ApplicationController
-      before_action :authorize_access_request!, except: [:show, :index]
+      before_action :authorize_access_request! #, except: [:index]
+      before_action :set_user #, only: [:show, :create, :update, :destroy]
       before_action :set_contest, only: [:show, :update, :destroy]
-      before_action :set_user, only: [:show, :create, :update, :destroy]
 
       # GET /contests
       def index
-        @contests = Contest.all
+        @contests = @user.nil? ? Contest.all : @user.contests
         render json: @contests
       end
 
@@ -42,13 +42,15 @@
       end
 
       private
-        # Use callbacks to share common setup or constraints between actions.
-        def set_contest
-          @contest = Contest.find(params[:id])
-        end
-
         def set_user
           @user = current_user
+        end
+
+        def set_contest
+          @contest = Contest.find(params[:id])
+          if @contest && @contest.user_id != @user.id
+            render json: { error: 'Not owner' }, status: :unauthorized
+          end
         end
 
         # Only allow a trusted parameter "white list" through.

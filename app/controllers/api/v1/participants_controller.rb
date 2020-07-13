@@ -8,7 +8,6 @@ module Api
       # GET /contests/<contest_id>/participants
       def index
         @participants = Participant.all
-
         render json: @participants
       end
 
