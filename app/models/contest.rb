@@ -13,9 +13,10 @@ class Contest < ApplicationRecord
   										                message: 'Shortname is not unique within this user.' }
 
   validates :user_id,	presence: true
+  validates :description, presence: true
   validates :contesttype,	presence: true
   validates :nbr_sets, presence: true
-  validates :description, presence: true
+  validates :public, presence: true
 
   def init
     self.token_read ||= get_token

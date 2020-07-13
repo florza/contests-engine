@@ -8,10 +8,14 @@
 
 # First seed the defined fixtures into the db:
 require 'active_record/fixtures'
-ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "users")
-ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "contests")
-ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "participants")
-#ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/test/fixtures", "matches")
+ActiveRecord::FixtureSet.create_fixtures(
+                        "#{Rails.root}/test/fixtures", "users")
+ActiveRecord::FixtureSet.create_fixtures(
+                        "#{Rails.root}/test/fixtures", "contests")
+ActiveRecord::FixtureSet.create_fixtures(
+                        "#{Rails.root}/test/fixtures", "participants")
+#ActiveRecord::FixtureSet.create_fixtures(
+#                        "#{Rails.root}/test/fixtures", "matches")
 
 f = User.all.first
 Contest.create!([
@@ -19,6 +23,8 @@ Contest.create!([
     name: 'Meine Meisterschaft',
     shortname: 'Meisterschaft',
     description: 'Mit seed() definiertes Turnier',
-    contesttype: 'Group'
+    contesttype: 'Group',
+    nbr_sets: 1,
+    public: true
   }
 ])
