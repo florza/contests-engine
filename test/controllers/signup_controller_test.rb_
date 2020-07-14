@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class RefreshControllerTest < ActionDispatch::IntegrationTest
+class SignupControllerTest < ActionDispatch::IntegrationTest
   test "should get create" do
-    get refresh_create_url
+    post '/signup'
     assert_response :success
   end
 

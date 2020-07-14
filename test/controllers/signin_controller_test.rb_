@@ -2,8 +2,12 @@ require 'test_helper'
 
 class SigninControllerTest < ActionDispatch::IntegrationTest
   test "should get create" do
-    get signin_create_url
+    get '/signin'
     assert_response :success
   end
 
+test "should get destroy" do
+    delete '/signin'
+    assert_response :success
+  end
 end

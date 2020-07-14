@@ -2,8 +2,8 @@
 
 userOne:
   email: userOne@example.com
-  password_digest: MyString
+  password_digest: <%= BCrypt::Password.create('password', cost: 4) %>
 
 userTwo:
   email: userTwo@example.com
-  password_digest: MyString
+  password_digest: <%= BCrypt::Password.create('password', cost: 4) %>

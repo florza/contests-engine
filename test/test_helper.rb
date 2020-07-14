@@ -23,4 +23,22 @@ end
 class ActionDispatch::IntegrationTest
   # Setup fixtures also for integration tests.
   fixtures :all
+
+
+  # register a special testuser
+  # because password AND password_digest of fixtures are NOT known
+  def register_testuser
+    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    body =
+    post signup_path, headers: @headers,
+          params: '{ "email": "testuser@test.org", "password": "test" }'
+    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+  end
+
+  def login_userOne
+    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    post signin_path, headers: @headers,
+          params: '{ "email": "userOne@example.com", "password": "password" }'
+    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+  end
 end
