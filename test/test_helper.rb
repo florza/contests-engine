@@ -19,3 +19,8 @@ class ActiveSupport::TestCase
   end
 
 end
+
+class ActionDispatch::IntegrationTest
+  # Setup fixtures also for integration tests.
+  fixtures :all
+end

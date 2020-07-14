@@ -15,13 +15,12 @@ class ContestTest < ActiveSupport::TestCase
   end
 
   test "sample user is valid" do
-    debugger
     assert @contest.valid?
   end
 
   test "required attributes must be set" do
     [:user_id, :name, :shortname, :description,
-            :contesttype, :nbr_sets, :public].each do |attr|
+            :contesttype, :nbr_sets].each do |attr|
       contest2 = @contest.dup
       contest2[attr] = nil
       assert_not contest2.valid?, "Empty #{attr.to_s} must be invalid"

@@ -2,6 +2,8 @@
   module V1
     class ContestsController < ApplicationController
       before_action :authorize_access_request! #, except: [:index]
+      #before_action :authorize_user_or_readtoken!, only: [:index, :show]
+      #before_action :authorize_user_or_writetoken!, except: [:index, :show]
       before_action :set_user #, only: [:show, :create, :update, :destroy]
       before_action :set_contest, only: [:show, :update, :destroy]
 
