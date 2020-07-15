@@ -1,15 +1,25 @@
  module Api
   module V1
     class ContestsController < ApplicationController
-      before_action :authorize_access_request! #, except: [:index]
-      #before_action :authorize_user_or_readtoken!, only: [:index, :show]
-      #before_action :authorize_user_or_writetoken!, except: [:index, :show]
-      before_action :set_user #, only: [:show, :create, :update, :destroy]
-      before_action :set_contest, only: [:show, :update, :destroy]
+
+      # Authorization and setting of the context variables
+      # are handled in their own functions in ApplicationController
+      # @user: only set if authorized with login,
+      #        only such a user may create/edit/delete contests
+      # @contest: the active contest, which may be
+      #           - the last used contest of this @user
+      #           - the contest defined by the contest read or write token
+      #           - the contest of the participants defined by a write token
+      # @participant: active participant if authorized by a
+      #               particpants (not contests!) write token
+
+      before_action :authorize_user!, except: [:index, :show]
+      before_action :authorize_user_or_readtoken!, only: [:index, :show]
+      #before_action :authorize_user_or_writetoken!, only: []
 
       # GET /contests
       def index
-        @contests = @user.nil? ? Contest.all : @user.contests
+        @contests = @user ? @user.contests : [ @contest ]
         render json: @contests
       end
 
@@ -20,8 +30,7 @@
 
       # POST /contests
       def create
-        @contest = Contest.new(contest_params)
-        @contest.user_id = @user.id
+        @contest = @user.contests.new(contest_params)
         if @contest.save
           render json: @contest, status: :created
         else
@@ -44,16 +53,6 @@
       end
 
       private
-        def set_user
-          @user = current_user
-        end
-
-        def set_contest
-          @contest = Contest.find(params[:id])
-          if @contest && @contest.user_id != @user.id
-            render json: { error: 'Not owner' }, status: :unauthorized
-          end
-        end
 
         # Only allow a trusted parameter "white list" through.
         def contest_params

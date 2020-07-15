@@ -6,18 +6,21 @@ class ContestsControllerTest < ActionDispatch::IntegrationTest
     login_userOne
   end
 
-  test "should get index" do
-    get api_v1_contests_url, as: :json
+  test "should get index of users contests" do
+    get api_v1_contests_url, headers: @headers, as: :json
     assert_response :success
+    result = JSON.parse(@response.body)
+    assert_equal 2, result.count
   end
 
   test "should create contest" do
     assert_difference('Contest.count') do
       post api_v1_contests_url,
-          params: { contest: {name: @contest.name + ' 2',
-                              shortname: @contest.shortname + ' 2',
-                              description: '',
-                              contesttype: 'Group',
+          headers: @headers,
+          params: { contest: {name: 'New test context',
+                              shortname: 'New test',
+                              description: 'Description',
+                              contesttype: 'Groups',
                               nbr_sets: 1,
                               public: false} },
           as: :json
@@ -26,12 +29,15 @@ class ContestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show contest" do
-    get api_v1_contest_url(@contest), as: :json
+    get api_v1_contest_url(@contest.id), headers: @headers, as: :json
     assert_response :success
+    result = JSON.parse(@response.body)
+    assert_not_nil result.count
   end
 
   test "should update contest" do
     put api_v1_contest_url(@contest),
+        headers: @headers,
         params: { contest: {name: @contest.name,
                             shortname: @contest.shortname,
                             description: @contest.description,
@@ -44,7 +50,7 @@ class ContestsControllerTest < ActionDispatch::IntegrationTest
 
   test "should destroy contest" do
     assert_difference('Contest.count', -1) do
-      delete api_v1_contest_url(@contest), as: :json
+      delete api_v1_contest_url(@contest), headers: @headers, as: :json
     end
 
     assert_response 204

@@ -1,9 +1,0 @@
-require 'test_helper'
-
-class SignupControllerTest < ActionDispatch::IntegrationTest
-  test "should get create" do
-    post '/signup'
-    assert_response :success
-  end
-
-end
