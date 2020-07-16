@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :contests do
         resources :participants
         resources :matches
+        resource  :draw, only: [:create]
       end
     end
   end
