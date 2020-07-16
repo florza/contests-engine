@@ -1,19 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 rogerDemo:
-  user_id: userOne
+  user: userOne
   contest: DemoMeisterschaft
   name: Roger Federer
   shortname: Roger
   remarks: GOAT
-  group: 1
-  grp_start: 1
 
 stanDemo:
-  user_id: userOne
+  user: userOne
   contest: DemoMeisterschaft
   name: Stan Wawrinka
   shortname: Stan
   remarks: ''
-  group: 1
-  grp_start: 2

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_11_081151) do
+ActiveRecord::Schema.define(version: 2020_07_15_175837) do
 
   create_table "contests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -45,6 +45,9 @@ ActiveRecord::Schema.define(version: 2020_07_11_081151) do
     t.integer "ko_pos", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "token_write", limit: 32, default: "", null: false
+    t.json "group_params", default: {}, null: false
+    t.json "ko_params", default: {}, null: false
     t.index ["contest_id", "name"], name: "index_participants_on_contest_and_name", unique: true
     t.index ["contest_id", "shortname"], name: "index_participants_on_contest_and_shortname", unique: true
     t.index ["contest_id"], name: "index_participants_on_contest_id"

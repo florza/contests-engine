@@ -2,7 +2,7 @@ class Contest < ApplicationRecord
   belongs_to :user
   has_many :participants
 
-  after_initialize :init
+  before_create :init_attributes
 
   validates :name, presence: true,
                    length: { maximum: 50 },
@@ -22,7 +22,15 @@ class Contest < ApplicationRecord
                           inclusion: { in: %w(Groups KO GroupsKO GroupsGroup) }
   validates :nbr_sets, presence: true
 
-  def init
+  # usually hide :token_read, :token_write
+  scope :public_columns,
+            -> { select(:id, :user_id, :name, :shortname, :description,
+                        :status, :contesttype, :nbr_sets, :public,
+                        :last_action_at, :draw_at, :created_at, :updated_at) }
+
+
+  def init_attributes
+    self.last_action_at ||= DateTime.now
     self.token_read ||= get_token
     self.token_write ||= get_token
   end

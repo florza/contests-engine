@@ -31,7 +31,7 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
   # The reason is unknown, the same link sent from Postman
   # in development works!
   test "should show token contest" do
-    get api_v1_contest_url(@contest.id),
+    get api_v1_contest_url(@contest),
         params: { t: @contest.token_read },
         as: :json
     assert_response :success

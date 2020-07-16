@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ContestsControllerTest < ActionDispatch::IntegrationTest
+class ContestsControllerUserTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
     login_userOne
@@ -17,7 +17,7 @@ class ContestsControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Contest.count') do
       post api_v1_contests_url,
           headers: @headers,
-          params: { contest: {name: 'New test context',
+          params: { contest: {name: 'New test contest',
                               shortname: 'New test',
                               description: 'Description',
                               contesttype: 'Groups',
@@ -32,7 +32,7 @@ class ContestsControllerTest < ActionDispatch::IntegrationTest
     get api_v1_contest_url(@contest.id), headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result.count
+    assert_not_nil result
   end
 
   test "should update contest" do

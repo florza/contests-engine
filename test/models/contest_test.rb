@@ -14,7 +14,7 @@ class ContestTest < ActiveSupport::TestCase
     )
   end
 
-  test "sample user is valid" do
+  test "sample contest is valid" do
     assert @contest.valid?
   end
 

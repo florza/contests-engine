@@ -2,6 +2,8 @@ class Participant < ApplicationRecord
   belongs_to :user
   belongs_to :contest
 
+  after_initialize :init
+
   validates :name,      presence: true, length: { maximum: 50 },
   										  uniqueness: { case_sensitive: false,
   										                scope: :contest_id,
@@ -15,5 +17,15 @@ class Participant < ApplicationRecord
   validates :user_id,	presence: true
   validates :contest_id,	presence: true
   validates :remarks,	presence: true
+
+  # usually hide :token_write
+  scope :public_columns,
+            -> { select(:id, :user_id, :contest_id, :name, :shortname,
+                        :remarks, :status, :group_params, :ko_params,
+                        :created_at, :updated_at) }
+
+  def init
+    self.token_write ||= get_token
+  end
 
 end

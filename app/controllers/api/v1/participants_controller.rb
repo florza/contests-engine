@@ -1,13 +1,14 @@
 module Api
   module V1
     class ParticipantsController < ApplicationController
-      before_action :authorize_access_request!, except: [:show, :index]
+      before_action :authorize_user!, except: [:index, :show]
+      before_action :authorize_user_or_readtoken!, only: [:index, :show]
       before_action :set_participant, only: [:show, :update, :destroy]
-      before_action :current_contest
+      #before_action :authorize_user_or_writetoken!, only: []
 
       # GET /contests/<contest_id>/participants
       def index
-        @participants = Participant.all
+        @participants = @contest.participants
         render json: @participants
       end
 
@@ -18,10 +19,10 @@ module Api
 
       # POST /contests/<contest_id>/participants
       def create
-        @participant = Participant.new(participant_params)
-
+        @participant = @contest.participants.new(participant_params)
+        @participant.user_id = @contest.user_id
         if @participant.save
-          render json: @participant, status: :created, location: @participant
+          render json: @participant, status: :created
         else
           render json: @participant.errors, status: :unprocessable_entity
         end
@@ -42,22 +43,18 @@ module Api
       end
 
       private
-        # Use callbacks to share common setup or constraints between actions.
-        def set_participant
-          @participant = Participant.find(params[:id])
-          render json: @participant.errors, status: :unprocessable_entity
+      # Use callbacks to share common setup or constraints between actions.
+      def set_participant
+        @participant ||= Participant.find(params[:id])
+        if @participant && @contest.id != @participant.contest_id
+          not_authorized
         end
+      end
 
-        # Only allow a trusted parameter "white list" through.
-        def participant_params
-          params.require(:participant).permit(:name, :shortname, :remarks,
-                                              :group, :grp_start,
-                                              :ko_tableau, :ko_start)
-        end
-
-        def current_contest
-          @contest = Contest.find_by(id: params[:contest_id])
-        end
-end
+      # Only allow a trusted parameter "white list" through.
+      def participant_params
+        params.require(:participant).permit(:name, :shortname, :remarks)
+      end
+    end
   end
 end

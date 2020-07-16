@@ -19,7 +19,7 @@
 
       # GET /contests
       def index
-        @contests = @user ? @user.contests : [ @contest ]
+        @contests = @user ? @user.contests.public_columns : [@contest]
         render json: @contests
       end
 
@@ -54,11 +54,11 @@
 
       private
 
-        # Only allow a trusted parameter "white list" through.
-        def contest_params
-          params.require(:contest).permit(:name, :shortname, :description,
-                                          :contesttype, :nbr_sets, :public)
-        end
+      # Only allow a trusted parameter "white list" through.
+      def contest_params
+        params.require(:contest).permit(:name, :shortname, :description,
+                                        :contesttype, :nbr_sets, :public)
+      end
     end
   end
 end
