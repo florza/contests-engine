@@ -2,7 +2,9 @@ class Participant < ApplicationRecord
   belongs_to :user
   belongs_to :contest
 
-  after_initialize :init
+  before_create :init_attributes
+
+  after_find
 
   validates :name,      presence: true, length: { maximum: 50 },
   										  uniqueness: { case_sensitive: false,
@@ -24,7 +26,7 @@ class Participant < ApplicationRecord
                         :remarks, :status, :group_params, :ko_params,
                         :created_at, :updated_at) }
 
-  def init
+  def init_attributes
     self.token_write ||= get_token
   end
 

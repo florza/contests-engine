@@ -30,17 +30,24 @@ class ApplicationController < ActionController::API
   private
 
   def authorize_readtoken(token)
-    @contest = Contest.find_by_token_read(token)
-    authorize_writetoken(token) if @contest.nil?
+    contest_id = Contest.find_by_token_read(token).select(:id).first
+    if contest_id
+      @contest = Contest.public_columns.find(contest_id)
+    else
+      authorize_writetoken(token)
+    end
   end
 
   def authorize_writetoken(token)
-    if !(@contest = Contest.find_by_token_write(token))
-      if !(@participant = Participant.find_by(token_write: token))
+    if !(contest_id = Contest.find_by_token_write(token))
+      if !(participant_id = Participant.find_by(token_write: token))
         not_authorized
       else
-        @contest = participant.contest
+        @participant = Participant.public_columns.find(participant_id)
+        @contest = Contest.public_columns.find(contest_id)
       end
+    else
+      @contest = Contest.public_columns.find(contest_id)
     end
   end
 
@@ -53,7 +60,7 @@ class ApplicationController < ActionController::API
         not_authorized
       end
     else
-      @contest = @user.contests.order(last_action: :desc).limit(1)
+      @contest = @user.contests.public_columns.order(last_action: :desc).limit(1)
     end
 
   end
