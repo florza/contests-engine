@@ -4,8 +4,6 @@ class Participant < ApplicationRecord
 
   before_create :init_attributes
 
-  after_find
-
   validates :name,      presence: true, length: { maximum: 50 },
   										  uniqueness: { case_sensitive: false,
   										                scope: :contest_id,
