@@ -1,8 +1,13 @@
 class DrawManager
+  extend ActiveModel::Naming
+  include ActiveRecord::Validations
 
-  attr_reader :errors
+  # required manual definitions for validations in not ActiveRecord classes
+  def persisted?
+    false
+  end
 
-  def errors?
-    !@errors.empty?
+  def new_record?
+    true
   end
 end

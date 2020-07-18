@@ -7,10 +7,10 @@ module Api
         dmclass = "DrawManager#{@contest.contesttype}"
         draw_mgr = dmclass.constantize.new(@contest, params[:draw])
         draw_mgr.draw
-        if draw_mgr.errors?
-          render json: draw_mgr.errors, status: :unprocessable_entity
-        else
+        if draw_mgr.valid?
           render json: params[:draw], status: :created
+        else
+          render json: draw_mgr.errors, status: :unprocessable_entity
         end
       end
     end
