@@ -1,6 +1,7 @@
 class Contest < ApplicationRecord
   belongs_to :user
   has_many :participants
+  has_many :matches
 
   before_create :init_attributes
 

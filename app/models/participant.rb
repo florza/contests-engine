@@ -1,6 +1,8 @@
 class Participant < ApplicationRecord
   belongs_to :user
   belongs_to :contest
+  has_many :participants_1, class_name: "Match", foreign_key: "participant_1_id"
+  has_many :participants_2, class_name: "Match", foreign_key: "participant_2_id"
 
   before_create :init_attributes
 

@@ -12,7 +12,7 @@ class DrawManagerGroups < DrawManager
   def draw
     return if !valid?
     update_participants
-    #create_matches if valid?
+    create_matches if valid?
   end
 
   def update_participants
@@ -23,10 +23,28 @@ class DrawManagerGroups < DrawManager
           participant = @participants.find { |p| p.id == participant_id }
           grp_params = { grp_nr: group0 + 1, grp_pos: pos0 + 1 }
           if !participant.update({ group_params: grp_params })
-            @errors.push 'participants update failed' and return
+            errors.add(:groups, 'participants update failed') and return
           end
           i += 1
         end
+      end
+    end
+  end
+
+  def create_matches
+    @groups.each do |group|
+      matches = Schedule.get_group_schedule(group, false)
+      matches.each do |match|
+        m = @contest.matches.new
+        m.participant_1_id = match[:home]
+        m.participant_2_id = match[:away]
+        m.group_params = { round: match[:round] }
+        m.updated_by_token = nil
+        m.updated_by_user_id = @contest.user_id
+        if !m.save
+          errors.add(:groups, 'match creation failed') and return
+        end
+        p m
       end
     end
   end

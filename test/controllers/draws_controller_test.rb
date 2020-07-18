@@ -13,5 +13,6 @@ class DrawsControllerTest < ActionDispatch::IntegrationTest
                                         participants(:rogerDemo).id ] ] } },
           as: :json
     assert_response 201
+    assert_equal 1, @contest.matches.count
   end
 end

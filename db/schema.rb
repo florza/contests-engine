@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_15_175837) do
+ActiveRecord::Schema.define(version: 2020_07_18_171217) do
 
   create_table "contests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -28,6 +28,23 @@ ActiveRecord::Schema.define(version: 2020_07_15_175837) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_contests_on_user_id"
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.integer "contest_id", null: false
+    t.integer "participant_1_id"
+    t.integer "participant_2_id"
+    t.string "status", limit: 10, default: "active", null: false
+    t.json "group_params", default: {}, null: false
+    t.json "ko_params", default: {}, null: false
+    t.integer "updated_by_user_id"
+    t.string "updated_by_token", limit: 32
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id"], name: "index_matches_on_contest_id"
+    t.index ["participant_1_id"], name: "index_matches_on_participant_1_id"
+    t.index ["participant_2_id"], name: "index_matches_on_participant_2_id"
+    t.index ["updated_by_user_id"], name: "index_matches_on_updated_by_user_id"
   end
 
   create_table "participants", force: :cascade do |t|
