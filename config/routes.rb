@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :contests do
         resources :participants
-        resources :matches
+        resources :matches, except: [:create, :destroy]
         resource  :draw, only: [:create]
       end
     end

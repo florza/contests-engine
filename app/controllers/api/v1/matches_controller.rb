@@ -1,13 +1,13 @@
 module Api
   module V1
     class MatchesController < ApplicationController
-      before_action :authorize_access_request!, except: [:show, :index]
-      before_action :set_match, only: [:show, :update, :destroy]
+      before_action :authorize_user_or_readtoken!, only: [:show, :index]
+      before_action :authorize_user_or_writetoken!, except: [:index, :show]
+      before_action :set_match, only: [:show, :update]
 
       # GET /matches
       def index
-        @matches = Match.all
-
+        @matches = @contest.matches
         render json: @matches
       end
 
@@ -17,15 +17,15 @@ module Api
       end
 
       # POST /matches
-      def create
-        @match = Match.new(match_params)
+      # def create
+      #   @match = Match.new(match_params)
 
-        if @match.save
-          render json: @match, status: :created, location: @match
-        else
-          render json: @match.errors, status: :unprocessable_entity
-        end
-      end
+      #   if @match.save
+      #     render json: @match, status: :created, location: @match
+      #   else
+      #     render json: @match.errors, status: :unprocessable_entity
+      #   end
+      # end
 
       # PATCH/PUT /matches/1
       def update
@@ -37,19 +37,23 @@ module Api
       end
 
       # DELETE /matches/1
-      def destroy
-        @match.destroy
-      end
+      # def destroy
+      #   @match.destroy
+      # end
 
       private
         # Use callbacks to share common setup or constraints between actions.
         def set_match
-          @match = Match.find(params[:id])
+          @match = Match.public_columns.find(params[:id])
+          if @match && @contest.id != @match.contest_id
+            not_authorized
+          end
         end
 
         # Only allow a trusted parameter "white list" through.
         def match_params
-          params.fetch(:match, {})
+          params.require(:match).permit(:remarks, :userdata, :params,
+                                        :planned_at, :result)
         end
     end
   end

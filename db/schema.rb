@@ -35,16 +35,28 @@ ActiveRecord::Schema.define(version: 2020_07_18_171217) do
     t.integer "participant_1_id"
     t.integer "participant_2_id"
     t.string "status", limit: 10, default: "active", null: false
-    t.json "group_params", default: {}, null: false
-    t.json "ko_params", default: {}, null: false
+    t.string "remarks", default: "", null: false
+    t.json "userdata"
+    t.json "params", default: {}, null: false
+    t.datetime "planned_at"
+    t.datetime "result_at"
+    t.json "result"
+    t.integer "winner_id"
+    t.integer "looser_id"
+    t.integer "winner_next_match_id"
+    t.boolean "winner_next_place_1"
+    t.integer "looser_next_match_id"
+    t.boolean "looser_next_place_1"
     t.integer "updated_by_user_id"
     t.string "updated_by_token", limit: 32
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["contest_id"], name: "index_matches_on_contest_id"
+    t.index ["looser_next_match_id"], name: "index_matches_on_looser_next_match_id"
     t.index ["participant_1_id"], name: "index_matches_on_participant_1_id"
     t.index ["participant_2_id"], name: "index_matches_on_participant_2_id"
     t.index ["updated_by_user_id"], name: "index_matches_on_updated_by_user_id"
+    t.index ["winner_next_match_id"], name: "index_matches_on_winner_next_match_id"
   end
 
   create_table "participants", force: :cascade do |t|

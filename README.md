@@ -30,7 +30,14 @@ To see which parts of the application already exist, look at the controller_test
 - POST /api/v1/contests/<id>/participants
 - PUT /api/v1/contests/<id>/participants/<id>
 - DELETE /api/v1/contests/<id>/participants/<id>
+- GET /api/v1/contests/<id>/matches/
+- GET /api/v1/contests/<id>/matches/<id>
+- PUT /api/v1/contests/<id>/matches/<id>
+
+Next steps:
+- try deployment to Heroku
+- adapt draft of Vue frontend to the actual models, activate bootstrap
+- manage update of Groups result by computing the ranking
 
 Still completely missing:
-- everything with matches
 - Additional contesttypes: several groups, KO, pyramids, ...
