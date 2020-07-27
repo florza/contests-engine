@@ -8,7 +8,7 @@ module Api
 
       # GET /contests/<contest_id>/participants
       def index
-        @participants = @contest.participants
+        @participants = @contest.participants.public_columns
         render json: @participants
       end
 

@@ -10,8 +10,15 @@ class DrawManagerGroups < DrawManager
   end
 
   def draw
+    update_contest if valid?
     update_participants if valid?
     create_matches if valid?
+  end
+
+  def update_contest
+    if !@contest.update({contesttype_params: @groups})
+      errors.add(:groups, 'contest update failed')
+    end
   end
 
   def update_participants
@@ -20,8 +27,8 @@ class DrawManagerGroups < DrawManager
       @groups.each_with_index do |members, group0|
         members.each_with_index do |participant_id, pos0|
           participant = @participants.find { |p| p.id == participant_id }
-          grp_params = { grp_nr: group0 + 1, grp_pos: pos0 + 1 }
-          if !participant.update({ group_params: grp_params })
+          contesttype_params = { grp_nr: group0 + 1, grp_pos: pos0 + 1 }
+          if !participant.update({ contesttype_params: contesttype_params })
             errors.add(:groups, 'participants update failed') and return
           end
           i += 1
@@ -37,7 +44,7 @@ class DrawManagerGroups < DrawManager
         m = @contest.matches.new(
           participant_1_id: match[:home],
           participant_2_id: match[:away],
-          params: { round: match[:round] },
+          contesttype_params: { round: match[:round] },
           updated_by_token: nil,
           updated_by_user_id: @contest.user_id
         )

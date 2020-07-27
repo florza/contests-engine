@@ -26,8 +26,10 @@ class Contest < ApplicationRecord
   # usually hide :token_read, :token_write
   scope :public_columns,
             -> { select(:id, :user_id, :name, :shortname, :description,
-                        :status, :contesttype, :nbr_sets, :public,
-                        :last_action_at, :draw_at, :created_at, :updated_at) }
+                        :status, :contesttype, :contesttype_params,
+                        :nbr_sets, :public, :last_action_at, :draw_at,
+                        :created_at, :updated_at)
+                  .order(last_action_at: :desc)}
 
 
   def init_attributes

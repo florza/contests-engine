@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_18_171217) do
+ActiveRecord::Schema.define(version: 2020_07_27_115546) do
 
   create_table "contests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2020_07_18_171217) do
     t.datetime "draw_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "contesttype_params"
     t.index ["user_id"], name: "index_contests_on_user_id"
   end
 
@@ -37,7 +38,6 @@ ActiveRecord::Schema.define(version: 2020_07_18_171217) do
     t.string "status", limit: 10, default: "active", null: false
     t.string "remarks", default: "", null: false
     t.json "userdata"
-    t.json "params", default: {}, null: false
     t.datetime "planned_at"
     t.datetime "result_at"
     t.json "result"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2020_07_18_171217) do
     t.string "updated_by_token", limit: 32
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "contesttype_params"
     t.index ["contest_id"], name: "index_matches_on_contest_id"
     t.index ["looser_next_match_id"], name: "index_matches_on_looser_next_match_id"
     t.index ["participant_1_id"], name: "index_matches_on_participant_1_id"
@@ -66,17 +67,10 @@ ActiveRecord::Schema.define(version: 2020_07_18_171217) do
     t.string "shortname", limit: 20, null: false
     t.text "remarks", limit: 500, default: "", null: false
     t.string "status", limit: 10, default: "active", null: false
-    t.integer "group", default: 0, null: false
-    t.integer "grp_start", default: 0, null: false
-    t.integer "grp_pos", default: 0, null: false
-    t.integer "ko_tableau", default: 0, null: false
-    t.integer "ko_start", default: 0, null: false
-    t.integer "ko_pos", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "token_write", limit: 32, default: "", null: false
-    t.json "group_params", default: {}, null: false
-    t.json "ko_params", default: {}, null: false
+    t.json "contesttype_params"
     t.index ["contest_id", "name"], name: "index_participants_on_contest_and_name", unique: true
     t.index ["contest_id", "shortname"], name: "index_participants_on_contest_and_shortname", unique: true
     t.index ["contest_id"], name: "index_participants_on_contest_id"
