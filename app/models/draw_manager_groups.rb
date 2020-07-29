@@ -16,7 +16,12 @@ class DrawManagerGroups < DrawManager
   end
 
   def update_contest
-    if !@contest.update({contesttype_params: @groups})
+    updates =
+    if !@contest.update(
+      { contesttype_params: @groups,
+        draw_at: DateTime.now,
+        last_action_at: DateTime.now }
+    )
       errors.add(:groups, 'contest update failed')
     end
   end
@@ -38,6 +43,7 @@ class DrawManagerGroups < DrawManager
   end
 
   def create_matches
+    @contest.matches.destroy_all
     @groups.each do |group|
       matches = Schedule.get_group_schedule(group, false)
       matches.each do |match|
