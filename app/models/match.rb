@@ -8,10 +8,33 @@ class Match < ApplicationRecord
 
   validates :contest_id, presence: true
 
+  before_save do |m|
+    m.result_1_vs_2 = m.result.nil? ? nil : result_to_s(m.result)
+    m.result_2_vs_1 = m.result.nil? ? nil : result_rev_to_s(m.result)
+  end
+
   scope :public_columns,
             -> { select(:id, :user_id, :contest_id, :participant_1_id,
                         :participant_2_id, :remarks, :userdata, :contesttype_params, :planned_at, :result_at,
-                        :result, :winner_id,
+                        :result, :result_1_vs_2, :result_2_vs_1, :winner_id,
                         :looser_id, :created_at, :updated_at) }
 
+  def result_to_s(result)
+    s = ''
+    debugger
+    result.each_with_index do |set, i|
+      s += ' / ' if i > 0
+      s += set[0].to_s + ':' + set[1].to_s
+    end
+    s
+  end
+
+  def result_rev_to_s(result)
+    s = ''
+    result.each_with_index do |set, i|
+      s += ' / ' if i > 0
+      s += set[1].to_s + ':' + set[0].to_s
+    end
+    s
+  end
 end

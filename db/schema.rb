@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_115546) do
+ActiveRecord::Schema.define(version: 2020_07_30_144009) do
 
   create_table "contests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 2020_07_27_115546) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "contesttype_params"
+    t.string "result_1_vs_2"
+    t.string "result_2_vs_1"
     t.index ["contest_id"], name: "index_matches_on_contest_id"
     t.index ["looser_next_match_id"], name: "index_matches_on_looser_next_match_id"
     t.index ["participant_1_id"], name: "index_matches_on_participant_1_id"

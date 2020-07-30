@@ -29,6 +29,7 @@ module Api
 
       # PATCH/PUT /matches/1
       def update
+        # debugger
         if @match.update(match_params)
           render json: @match
         else
@@ -53,7 +54,7 @@ module Api
         # Only allow a trusted parameter "white list" through.
         def match_params
           params.require(:match).permit(:remarks, :userdata, :params,
-                                        :planned_at, :result)
+                                        :planned_at, :result, :winner_id)
         end
     end
   end
