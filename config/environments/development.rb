@@ -47,6 +47,10 @@ Rails.application.configure do
 
   # Manual definitions set by the developer
 
+  # Use the lowest log level to ensure availability of diagnostic information
+  # when problems arise.
+  config.log_level = :debug
+
   # Report exceptions as HTML (:default) or as API-Response (:api)
-  config.debug_exception_response_format = :default
+  config.debug_exception_response_format = :api
 end

@@ -29,7 +29,6 @@ module Api
 
       # PATCH/PUT /matches/1
       def update
-        # debugger
         if @match.update(match_params)
           render json: @match
         else

@@ -34,9 +34,23 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
-                            result: [ [6,2] [7,5] ]} },
+                            result: [[6,2],[7,5]]} },
           as: :json
     assert_response 200
+    m = Match.find(@match.id)
+    assert_equal([[6,2],[7,5]].to_s, m.result.to_s,
+                  'Matchresult sent as array is not saved!')
+  end
+
+  test "should update match with result as string" do
+    patch api_v1_contest_match_url(@contest, @match),
+          headers: @headers,
+          params: { match: {remarks: 'My remarks',
+                            result: "[[6,2],[7,5]]"} },
+          as: :json
+    assert_response 200
+    m = Match.find(@match.id)
+    assert_equal([[6,2],[7,5]].to_s, m.result.to_s)
   end
 
   # test "should destroy match" do

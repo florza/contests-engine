@@ -9,8 +9,13 @@ class Match < ApplicationRecord
   validates :contest_id, presence: true
 
   before_save do |m|
-    m.result_1_vs_2 = m.result.nil? ? nil : result_to_s(m.result)
-    m.result_2_vs_1 = m.result.nil? ? nil : result_rev_to_s(m.result)
+    if m.result.nil?
+      result_1_vs_2 = result_2_vs_1 = nil
+    else
+      m.result = JSON.parse(m.result) if m.result.instance_of? String
+      m.result_1_vs_2 = result_to_s(m.result)
+      m.result_2_vs_1 = result_rev_to_s(m.result)
+    end
   end
 
   scope :public_columns,
@@ -21,7 +26,6 @@ class Match < ApplicationRecord
 
   def result_to_s(result)
     s = ''
-    debugger
     result.each_with_index do |set, i|
       s += ' / ' if i > 0
       s += set[0].to_s + ':' + set[1].to_s
