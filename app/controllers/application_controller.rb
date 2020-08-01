@@ -3,6 +3,7 @@ class ApplicationController < ActionController::API
   rescue_from JWTSessions::Errors::Unauthorized, with: :not_authorized
 
   def authorize_user!
+    # puts 'AUTHORIZE_USER on ' + action_name
     authorize_access_request!
     set_user_contest
   end
@@ -30,17 +31,15 @@ class ApplicationController < ActionController::API
   private
 
   def authorize_readtoken(token)
-    contest_id = Contest.find_by_token_read(token).select(:id).first
-    if contest_id
-      @contest = Contest.public_columns.find(contest_id)
-    else
+    @contest = Contest.find_by_token_read(token)
+    if !@contest
       authorize_writetoken(token)
     end
   end
 
   def authorize_writetoken(token)
     if !(contest_id = Contest.find_by_token_write(token))
-      if !(participant_id = Participant.find_by(token_write: token))
+      if !(participant_id = Participant.find_by_token_write(token))
         not_authorized
       else
         @participant = Participant.public_columns.find(participant_id)

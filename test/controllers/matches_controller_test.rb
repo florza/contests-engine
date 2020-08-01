@@ -30,6 +30,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     assert_not_nil result.count
   end
 
+  # FIXME Find out if sending of array is possible, make it work or delete test
   test "should update match" do
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,

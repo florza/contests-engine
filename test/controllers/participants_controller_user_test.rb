@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ParticipantsControllerTest < ActionDispatch::IntegrationTest
+class ParticipantsControllerUserTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
     @participant = participants(:rogerDemo)
