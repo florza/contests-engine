@@ -34,7 +34,8 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
-                            result: [[6,2],[7,5]]} },
+                            result: [[6,2],[7,5]],
+                            winner_id: @match.participant_1_id} },
           as: :json
     assert_response 200
     m = Match.find(@match.id)
@@ -46,11 +47,12 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
-                            result: "[[6,2],[7,5]]"} },
+                            result: "[[6,2],[7,5]]",
+                            winner_id: @match.participant_1_id} },
           as: :json
     assert_response 200
     m = Match.find(@match.id)
-    assert_equal([[6,2],[7,5]].to_s, m.result.to_s)
+    assert_equal("[[6,2],[7,5]]", m.result.to_s)
   end
 
   # test "should destroy match" do
