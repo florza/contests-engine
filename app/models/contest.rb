@@ -1,9 +1,11 @@
 class Contest < ApplicationRecord
+
+  DEFAULT_PARAMS_GROUPS =
+    { 'groups' => nil, 'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }
+
   belongs_to :user
   has_many :participants
   has_many :matches
-
-  before_create :init_attributes
 
   validates :name, presence: true,
                    length: { maximum: 50 },
@@ -23,6 +25,8 @@ class Contest < ApplicationRecord
                           inclusion: { in: %w(Groups KO GroupsKO GroupsGroup) }
   validates :nbr_sets, presence: true
 
+  before_create :init_attributes
+
   # usually hide :token_read, :token_write
   scope :public_columns,
             -> { select(:id, :user_id, :name, :shortname, :description,
@@ -36,6 +40,9 @@ class Contest < ApplicationRecord
     self.last_action_at ||= DateTime.now
     self.token_read ||= get_token
     self.token_write ||= get_token
+    if self.contesttype == 'Groups'
+      self.contesttype_params = DEFAULT_PARAMS_GROUPS
+    end
   end
 
 end

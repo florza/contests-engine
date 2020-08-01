@@ -1,15 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-rogerDemo:
+<% 1.upto(4) do |i| %>
+DM<%= i %>:
   user: userOne
   contest: DemoMeisterschaft
-  name: Roger Federer
-  shortname: Roger
-  remarks: GOAT
-
-stanDemo:
-  user: userOne
-  contest: DemoMeisterschaft
-  name: Stan Wawrinka
-  shortname: Stan
-  remarks: The Man
+  name: Participant DM<%= i %>
+  shortname: DM<%= i %>
+  remarks: ''
+<% end %>

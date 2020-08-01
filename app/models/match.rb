@@ -13,6 +13,11 @@ class Match < ApplicationRecord
     m.result_1_vs_2 = Result.to_s(m.result)
     m.result_2_vs_1 = Result.to_s_reversed(m.result)
   end
+  after_update do |m|
+    #if m.result_1_vs_2 != result_1_vs_2_was
+      process_result
+    #end
+  end
 
   scope :public_columns,
             -> { select(:id, :user_id, :contest_id, :participant_1_id,
@@ -25,5 +30,11 @@ class Match < ApplicationRecord
     if (message = Result.validate(result, self, self.contest))
       errors.add(:result, message)
     end
+  end
+
+  def process_result
+    pmclass = "ProcessManager#{self.contest.contesttype}"
+    process_mgr = pmclass.constantize.new(self, self.contest)
+    process_mgr.process_result
   end
 end

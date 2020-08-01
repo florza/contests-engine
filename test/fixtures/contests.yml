@@ -3,18 +3,19 @@
 DemoMeisterschaft:
   user: userOne
   name: Demoturnier Meisterschaft
-  shortname: Demo Meisterschaft
+  shortname: DM
   description: Demoturnier Meisterschaft Beschreibung
   contesttype: Groups
   nbr_sets: 2
   public: false
   token_read: readToken1
   token_write: writeToken1
+  contesttype_params: "{ 'groups' => nil, 'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }"
 
 DemoKO:
   user: userOne
   name: Demoturnier KO
-  shortname: Demo KO
+  shortname: DKO
   description: Demoturnier KO Beschreibung
   contesttype: KO
   nbr_sets: 1
@@ -33,3 +34,4 @@ RegressionMeisterschaft:
   public: false
   token_read: readToken3
   token_write: writeToken3
+  contesttype_params: "{ 'groups' => nil, 'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }"
