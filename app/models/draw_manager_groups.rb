@@ -29,15 +29,17 @@ class DrawManagerGroups < DrawManager
 
   def update_participants
     Participant.transaction do
-      i = 0
+      debugger
       @groups.each_with_index do |members, group0|
         members.each_with_index do |participant_id, pos0|
           participant = @participants.find { |p| p.id == participant_id }
-          contesttype_params = { 'grp_nr' => group0 + 1, 'grp_pos' => pos0 + 1 }
-          if !participant.update({ contesttype_params: contesttype_params })
-            errors.add(:groups, 'participants update failed') and return
+          #contesttype_params = { 'grp_nr' => group0 + 1, 'grp_pos' => pos0 + 1 }
+          participant.contesttype_params =
+            { 'grp_nr' => group0 + 1, 'grp_pos' => pos0 + 1 }
+          if !participant.save
+            errors.add(:groups, 'participants update failed')
+            return
           end
-          i += 1
         end
       end
     end

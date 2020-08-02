@@ -18,7 +18,6 @@ class Participant < ApplicationRecord
 
   validates :user_id,	presence: true
   validates :contest_id,	presence: true
-  validates :remarks,	presence: true
 
   # usually hide :token_write
   scope :public_columns,
@@ -28,6 +27,7 @@ class Participant < ApplicationRecord
 
   def init_attributes
     self.token_write ||= get_token
+    self.remarks ||= ''
   end
 
 end

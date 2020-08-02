@@ -9,10 +9,25 @@ class Match < ApplicationRecord
   validates :contest_id, presence: true
   validate :validate_result
 
+  after_initialize do |m|
+    @contest = self.contest
+  end
+
+  before_validation do |m|
+    begin
+      m.result = JSON.parse(m.result) if m.result.instance_of?(String)
+    rescue JSON::ParserError
+      errors.add(:result, "is not a valid JSON field")
+    end
+  end
+
   before_save do |m|
+    m.result = JSON.parse(m.result) if m.result.instance_of?(String)
     m.result_1_vs_2 = Result.to_s(m.result)
     m.result_2_vs_1 = Result.to_s_reversed(m.result)
+    m.contesttype_params['counts'] = Result.get_counts(m, @contest)
   end
+
   after_update do |m|
     #if m.result_1_vs_2 != result_1_vs_2_was
       process_result
@@ -27,14 +42,13 @@ class Match < ApplicationRecord
 
   def validate_result
     return if result.nil?
-    if (message = Result.validate(result, self, self.contest))
+    if (message = Result.validate(result, self, @contest))
       errors.add(:result, message)
     end
   end
 
   def process_result
-    pmclass = "ProcessManager#{self.contest.contesttype}"
-    process_mgr = pmclass.constantize.new(self, self.contest)
-    process_mgr.process_result
+    pmclass = "ProcessManager#{@contest.contesttype}"
+    pmclass.constantize.process_result(self, @contest)
   end
 end

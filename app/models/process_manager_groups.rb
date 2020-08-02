@@ -1,55 +1,46 @@
 class ProcessManagerGroups < ProcessManager
 
-  LOSS = 0
-  TIE = 1
-  WIN = 2
-
-  def initialize(match, contest)
-    @match = match
-    @contest = contest
-    pts = contest.contesttype_params['points']
-    if pts.nil?
-      @points_earned = [0, 1, 3]
-    else
-      @points_earned = [pts['loss'], pts['tie'], pts['win']]
-    end
-    @participants = {}
-    @matches = contest.matches
+  def self.process_result(match, contest)
+    update_participants_points(match, contest)
   end
 
-  def process_result
-    @matches.each do |m|
-      sum_points(m)
+  private
+
+  def self.update_participants_points(match, contest)
+    participants = {}
+    contest.matches.each do |m|
+      if m.result
+        sum_points_participant(1, match, participants)
+        sum_points_participant(2, match, participants)
+      end
     end
-    debugger
-    @contest.participants.each do |p|
-      ctp = p.contesttype_params || {}
-      ctp['grp_points'] = @participants[p.id] || [0]
-      p.update(contesttype_params: ctp)
+    contest.participants.each do |p|
+      p.contesttype_params['grp_counts'] =
+                  participants[p.id] || Result::empty_participant_counts
+      p.save!
     end
   end
 
-  def sum_points(m)
-    if m.winner_id == m.participant_1_id
-      add_points(m.participant_1_id, m, WIN)
-      add_points(m.participant_2_id, m, LOSS)
-    elsif m.winner_id == m.participant_2_id
-      add_points(m.participant_1_id, m, LOSS)
-      add_points(m.participant_2_id, m, WIN)
+  def self.sum_points_participant(part_1_2, match, participants)
+    counts_m = match.contesttype_params['counts']
+    if part_1_2 == 1
+      p_id = match.participant_1_id
     else
-      add_points(m.participant_1_id, m, TIE)
-      add_points(m.participant_2_id, m, TIE)
+      p_id = match.participant_2_id
+      ['points', 'matches', 'sets', 'games'].each do |category|
+        counts_m[category].reverse!  # that's how they are seen by p_2, not p_1
+      end
     end
-  end
-
-  def add_points(participant_id, m, outcome)
-    if @participants[participant_id].nil?
-      sums = [0] # basic idea: additional sums for sets won, sets lost, ...
-    else
-      sums = @participants[participant_id]
+    counts_p = participants[p_id]
+    if counts_p.nil?
+      counts_p = Result.empty_participant_counts
     end
-    sums[0] += @points_earned[outcome]
-    @participants[participant_id] = sums
+    counts_p['points'] += counts_m['points'][0]
+    ['matches', 'sets', 'games'].each do |category|
+      counts_p[category] =
+          counts_p[category].zip(counts_m[category]).map {|a| a.sum}
+    end
+    participants[p_id] = counts_p
   end
 
 end
