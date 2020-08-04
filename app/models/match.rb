@@ -25,10 +25,10 @@ class Match < ApplicationRecord
     m.result = JSON.parse(m.result) if m.result.instance_of?(String)
     m.result_1_vs_2 = Result.to_s(m.result)
     m.result_2_vs_1 = Result.to_s_reversed(m.result)
-    m.contesttype_params['counts'] = Result.get_counts(m, @contest)
+    m.stats = Result.get_stats(m, @contest)
   end
 
-  after_update do |m|
+  after_save do |m|
     #if m.result_1_vs_2 != result_1_vs_2_was
       process_result
     #end
@@ -48,7 +48,7 @@ class Match < ApplicationRecord
   end
 
   def process_result
-    pmclass = "ProcessManager#{@contest.contesttype}"
-    pmclass.constantize.process_result(self, @contest)
+    pmclass = "ProcessManager#{@contest.contesttype}".constantize
+    pmclass.process_result(self, @contest)
   end
 end

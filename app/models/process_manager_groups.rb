@@ -1,46 +1,54 @@
 class ProcessManagerGroups < ProcessManager
 
   def self.process_result(match, contest)
-    update_participants_points(match, contest)
+    update_participants_stats(contest)
   end
 
   private
 
-  def self.update_participants_points(match, contest)
+  def self.update_participants_stats(contest)
     participants = {}
-    contest.matches.each do |m|
-      if m.result
-        sum_points_participant(1, match, participants)
-        sum_points_participant(2, match, participants)
+    contest.reload
+    contest.matches.each do |match|
+      if match.result
+        sum_stats_participant(1, match, participants)
+        sum_stats_participant(2, match, participants)
+        #pp "- match #{match.id}", participants
       end
     end
     contest.participants.each do |p|
-      p.contesttype_params['grp_counts'] =
-                  participants[p.id] || Result::empty_participant_counts
+      p.stats = participants[p.id] || Result::empty_participant_stats
       p.save!
     end
   end
 
-  def self.sum_points_participant(part_1_2, match, participants)
-    counts_m = match.contesttype_params['counts']
+  def self.sum_stats_participant(part_1_2, match, participants)
+    if match.stats.nil?
+      debugger
+    end
+    stats_m = match.stats.clone
     if part_1_2 == 1
       p_id = match.participant_1_id
     else
       p_id = match.participant_2_id
       ['points', 'matches', 'sets', 'games'].each do |category|
-        counts_m[category].reverse!  # that's how they are seen by p_2, not p_1
+        # reverse: as seen by participant_2, without changing match
+        stats_m[category] = match.stats[category].reverse
       end
     end
-    counts_p = participants[p_id]
-    if counts_p.nil?
-      counts_p = Result.empty_participant_counts
+    stats_p = participants[p_id]
+    if stats_p.nil?
+      stats_p = Result.empty_participant_stats
     end
-    counts_p['points'] += counts_m['points'][0]
-    ['matches', 'sets', 'games'].each do |category|
-      counts_p[category] =
-          counts_p[category].zip(counts_m[category]).map {|a| a.sum}
+    stats_p['points'] += stats_m['points'][0]
+        ['matches', 'sets', 'games'].each do |category|
+      stats_p[category] =
+          stats_p[category].zip(stats_m[category]).map {|a| a.sum}
     end
-    participants[p_id] = counts_p
+    if p_id.nil?
+      debugger
+    end
+    participants[p_id] = stats_p
   end
 
 end

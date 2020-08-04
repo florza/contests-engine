@@ -22,27 +22,28 @@ class Result
   end
 
   # sums of points/matches/sets/games won/tied/lost
-  # stored as a hash in Match.contesttype_params
-  def self.get_counts(match, contest)
+  # stored as a hash in Match.stats
+  def self.get_stats(match, contest)
     return nil if match.result.nil?
-    counts = {}
-    counts['points'] = get_count_points(match, contest)
-    counts['matches'] = get_count_matches(match)
-    counts['sets'] = get_count_sets(match)
-    counts['games'] = get_count_games(match)
-    return counts
+    stats = {}
+    stats['points'] = get_stats_points(match, contest)
+    stats['matches'] = get_stats_matches(match)
+    stats['sets'] = get_stats_sets(match)
+    stats['games'] = get_stats_games(match)
+    return stats
   end
 
   # two hash constants defined as functions to avoid changes without deep copy
-  # points: [p1, p2], others: [won, tied, lost] as seen by p1 (reverse for p2)
+  # points: [p1, p2]
+  # won, tied, lost: as seen by p1 (reverse for p2)
   # no tie in games, rarely in sets (probably only walk over results)
-  def self.empty_match_counts
+  def self.empty_match_stats
       { 'points' => [0, 0], 'matches' => [0, 0, 0],
         'sets' => [0, 0, 0], 'games' => [0, 0] }
   end
 
   # same as above, but only this participants points
-  def self.empty_participant_counts
+  def self.empty_participant_stats
     { 'points' => 0, 'matches' => [0, 0, 0],
       'sets' => [0, 0, 0], 'games' => [0, 0] }
   end
@@ -89,7 +90,7 @@ class Result
     return false
   end
 
-  def self.get_count_points(match, contest)
+  def self.get_stats_points(match, contest)
     points = contest.contesttype_params['points']
     if match.winner_id == match.participant_1_id
       return [points['win'], points['loss']]
@@ -100,7 +101,7 @@ class Result
     end
   end
 
-  def self.get_count_matches(m)
+  def self.get_stats_matches(m)
     if m.winner_id == m.participant_1_id
       return [1, 0, 0]
     elsif m.winner_id == m.participant_2_id
@@ -110,7 +111,7 @@ class Result
     end
   end
 
-  def self.get_count_sets(m)
+  def self.get_stats_sets(m)
     sw = st = sl = 0
     m.result.each do |set|
       if set[0] > set[1]
@@ -124,7 +125,7 @@ class Result
     return [sw, st, sl]
   end
 
-  def self.get_count_games(m)
+  def self.get_stats_games(m)
     gw = gl = 0
     m.result.each do |set|
       gw += set[0]

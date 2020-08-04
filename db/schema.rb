@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_30_144009) do
+ActiveRecord::Schema.define(version: 2020_08_04_085000) do
 
   create_table "contests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2020_07_30_144009) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "contesttype_params"
+    t.json "stats"
     t.index ["user_id"], name: "index_contests_on_user_id"
   end
 
@@ -54,6 +55,7 @@ ActiveRecord::Schema.define(version: 2020_07_30_144009) do
     t.json "contesttype_params"
     t.string "result_1_vs_2"
     t.string "result_2_vs_1"
+    t.json "stats"
     t.index ["contest_id"], name: "index_matches_on_contest_id"
     t.index ["looser_next_match_id"], name: "index_matches_on_looser_next_match_id"
     t.index ["participant_1_id"], name: "index_matches_on_participant_1_id"
@@ -73,6 +75,7 @@ ActiveRecord::Schema.define(version: 2020_07_30_144009) do
     t.datetime "updated_at", null: false
     t.string "token_write", limit: 32, default: "", null: false
     t.json "contesttype_params"
+    t.json "stats"
     t.index ["contest_id", "name"], name: "index_participants_on_contest_and_name", unique: true
     t.index ["contest_id", "shortname"], name: "index_participants_on_contest_and_shortname", unique: true
     t.index ["contest_id"], name: "index_participants_on_contest_id"
