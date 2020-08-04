@@ -10,7 +10,7 @@ DemoMeisterschaft:
   public: false
   token_read: readToken1
   token_write: writeToken1
-  contesttype_params: "{ 'groups' => nil, 'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }"
+  contesttype_params: { grp_groups: nil, points: {win: 3, loss: 0, tie: 1} }
 
 DemoKO:
   user: userOne
@@ -34,4 +34,4 @@ RegressionMeisterschaft:
   public: false
   token_read: readToken3
   token_write: writeToken3
-  contesttype_params: "{ 'groups' => nil, 'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }"
+  contesttype_params: { grp_groups: nil, points: {win: 3, loss: 0, tie: 1} }

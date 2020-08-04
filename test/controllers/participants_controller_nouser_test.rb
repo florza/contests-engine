@@ -3,7 +3,7 @@ require 'test_helper'
 class ParticipantsControllerNoUserTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
-    @participant = participants(:rogerDemo)
+    @participant = participants(:DM2)
   end
 
   test "should not get index of contests participants without user" do

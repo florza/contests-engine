@@ -29,7 +29,6 @@ class DrawManagerGroups < DrawManager
 
   def update_participants
     Participant.transaction do
-      debugger
       @groups.each_with_index do |members, group0|
         members.each_with_index do |participant_id, pos0|
           participant = @participants.find { |p| p.id == participant_id }

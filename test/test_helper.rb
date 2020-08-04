@@ -38,15 +38,17 @@ class ActionDispatch::IntegrationTest
   def login_userOne
     @headers = { 'CONTENT_TYPE' => 'application/json' }
     post signin_path, headers: @headers,
-          params: '{ "email": "userOne@example.com", "password": "password" }'
+          params: '{ "email": "userOne", "password": "pw" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 
   def draw_demomeisterschaft()
     post api_v1_contest_draw_url(@contest),
       headers: @headers,
-      params: { draw: { groups: [ [ participants(:stanDemo).id,
-                                    participants(:rogerDemo).id ] ] } },
+      params: { draw: { groups: [ [ participants(:DM1).id,
+                                    participants(:DM2).id,
+                                    participants(:DM3).id,
+                                    participants(:DM4).id] ] } },
       as: :json
   end
 end

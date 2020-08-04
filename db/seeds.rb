@@ -14,8 +14,8 @@ ActiveRecord::FixtureSet.create_fixtures(
                         "#{Rails.root}/test/fixtures", "contests")
 ActiveRecord::FixtureSet.create_fixtures(
                         "#{Rails.root}/test/fixtures", "participants")
-#ActiveRecord::FixtureSet.create_fixtures(
-#                        "#{Rails.root}/test/fixtures", "matches")
+ActiveRecord::FixtureSet.create_fixtures(
+                        "#{Rails.root}/test/fixtures", "matches")
 
 f = User.all.first
 Contest.create!([

@@ -12,7 +12,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     get api_v1_contest_matches_url, headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 1, result.count
+    assert_equal 6, result.count
   end
 
   # test "should create match" do
@@ -40,7 +40,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
           as: :json
     assert_response 200
     m = Match.find(@match.id)
-    assert_equal([[6,2],[7,5]].to_s, m.result.to_s,
+    assert_equal("6:2 / 7:5", Result.to_s(m.result),
                   'Matchresult sent as array is not saved!')
   end
 
@@ -53,7 +53,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
           as: :json
     assert_response 200
     m = Match.find(@match.id)
-    assert_equal("[[6,2],[7,5]]", m.result.to_s)
+    assert_equal("6:2 / 7:5", Result.to_s(m.result))
   end
 
   # test "should destroy match" do

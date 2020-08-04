@@ -3,7 +3,7 @@ require 'test_helper'
 class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
-    @participant = participants(:rogerDemo)
+    @participant = participants(:DM2)
     @token_read = "?t=#{@contest.token_read}"
     @token_write = "?t=#{@contest.token_write}"
   end
@@ -12,7 +12,7 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
     get api_v1_contest_participants_url(@contest) + @token_read, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 2, result.count
+    assert_equal 4, result.count
   end
 
   test "should show participant with token" do

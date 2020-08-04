@@ -3,7 +3,7 @@ require 'test_helper'
 class ParticipantsControllerUserTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
-    @participant = participants(:rogerDemo)
+    @participant = participants(:DM2)
     login_userOne
   end
 
@@ -12,7 +12,7 @@ class ParticipantsControllerUserTest < ActionDispatch::IntegrationTest
           headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 2, result.count
+    assert_equal 4, result.count
   end
 
   test "should create participant" do

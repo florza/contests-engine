@@ -24,6 +24,7 @@ class Result
   # sums of points/matches/sets/games won/tied/lost
   # stored as a hash in Match.contesttype_params
   def self.get_counts(match, contest)
+    return nil if match.result.nil?
     counts = {}
     counts['points'] = get_count_points(match, contest)
     counts['matches'] = get_count_matches(match)

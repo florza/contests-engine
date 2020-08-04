@@ -18,7 +18,7 @@ class SigninControllerTest < ActionDispatch::IntegrationTest
   test "can login with existing user from fixtures" do
     post signin_path,
           headers: @headers,
-          params: { email: users(:userOne).email, 'password': 'password' },
+          params: { email: users(:userOne).email, 'password': 'pw' },
           as: :json
     assert_response :success
     assert_not_nil JSON.parse(@response.body)['csrf']

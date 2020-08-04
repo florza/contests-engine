@@ -5,8 +5,8 @@ class ResultTest < ActiveSupport::TestCase
   def setup
     @match = Match.new(
       contest: contests(:DemoMeisterschaft),
-      participant_1: participants(:stanDemo),
-      participant_2: participants(:rogerDemo),
+      participant_1: participants(:DM1),
+      participant_2: participants(:DM2),
       remarks: ''
     )
   end

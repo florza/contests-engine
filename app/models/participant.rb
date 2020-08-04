@@ -18,6 +18,7 @@ class Participant < ApplicationRecord
 
   validates :user_id,	presence: true
   validates :contest_id,	presence: true
+  validates :remarks, exclusion: { in: [nil] }  # allow blank, but not null
 
   # usually hide :token_write
   scope :public_columns,
