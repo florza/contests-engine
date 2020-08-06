@@ -57,7 +57,8 @@
       # Only allow a trusted parameter "white list" through.
       def contest_params
         params.require(:contest).permit(:name, :shortname, :description,
-                                        :contesttype, :nbr_sets, :public)
+                                        :contesttype, :nbr_sets, :public,
+                                        :last_action_at)
       end
     end
   end

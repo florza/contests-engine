@@ -23,7 +23,7 @@ class Participant < ApplicationRecord
   # usually hide :token_write
   scope :public_columns,
             -> { select(:id, :user_id, :contest_id, :name, :shortname,
-                        :remarks, :status, :contesttype_params,
+                        :remarks, :status, :contesttype_params, :stats,
                         :created_at, :updated_at) }
 
   def init_attributes

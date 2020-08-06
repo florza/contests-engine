@@ -36,7 +36,7 @@ class Match < ApplicationRecord
 
   scope :public_columns,
             -> { select(:id, :user_id, :contest_id, :participant_1_id,
-                        :participant_2_id, :remarks, :userdata, :contesttype_params, :planned_at, :result_at,
+                        :participant_2_id, :remarks, :userdata, :contesttype_params, :stats, :planned_at, :result_at,
                         :result, :result_1_vs_2, :result_2_vs_1, :winner_id,
                         :looser_id, :created_at, :updated_at) }
 
