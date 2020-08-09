@@ -46,13 +46,13 @@ class DrawManagerGroups < DrawManager
 
   def create_matches
     @contest.matches.destroy_all
-    @groups.each do |group|
-      matches = Schedule.get_group_schedule(group, false)
+    @groups.each_with_index do |members, group0|
+      matches = Schedule.get_group_schedule(members, false)
       matches.each do |match|
         m = @contest.matches.new(
           participant_1_id: match[:home],
           participant_2_id: match[:away],
-          contesttype_params: { round: match[:round] },
+          contesttype_params: { grp_nr: group0 + 1, grp_round: match[:round] },
           updated_by_token: nil,
           updated_by_user_id: @contest.user_id
         )
