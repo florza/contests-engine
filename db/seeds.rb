@@ -23,8 +23,8 @@ Contest.create!([
     name: 'Meine Meisterschaft',
     shortname: 'Meisterschaft',
     description: 'Mit seed() definiertes Turnier',
-    contesttype: 'Groups',
-    nbr_sets: 1,
-    public: true
+    ctype: 'Groups',
+    public: true,
+    result_params: { winning_sets: 1, points: {win: 3, loss: 0, tie: 1} }
   }
 ])

@@ -20,9 +20,9 @@ class RefactorParamFields < ActiveRecord::Migration[5.2]
 
 
   def change
-    add_column :contests, :contesttype_params, :json
+    add_column :contests, :ctype_params, :json
 
-    add_column :participants, :contesttype_params, :json
+    add_column :participants, :ctype_params, :json
     remove_column :participants, :group_params, :json
     remove_column :participants, :ko_params, :json
     remove_column :participants, :group, :integer
@@ -32,7 +32,7 @@ class RefactorParamFields < ActiveRecord::Migration[5.2]
     remove_column :participants, :ko_start, :integer
     remove_column :participants, :ko_pos, :integer
 
-    add_column :matches, :contesttype_params, :json
+    add_column :matches, :ctype_params, :json
     remove_column :matches, :params, :json
   end
 

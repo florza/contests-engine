@@ -18,8 +18,7 @@ class ContestsControllerNoUserTest < ActionDispatch::IntegrationTest
         params: { contest: {name: 'New test context',
                             shortname: 'New test',
                             description: 'Description',
-                            contesttype: 'Groups',
-                            nbr_sets: 1,
+                            ctype: 'Groups',
                             public: false} },
         as: :json
     assert_response 401
@@ -35,8 +34,7 @@ class ContestsControllerNoUserTest < ActionDispatch::IntegrationTest
         params: { contest: {name: @contest.name,
                             shortname: @contest.shortname,
                             description: @contest.description,
-                            contesttype: @contest.contesttype,
-                            nbr_sets: @contest.nbr_sets,
+                            ctype: @contest.ctype,
                             public: @contest.public} },
         as: :json
     assert_response 401

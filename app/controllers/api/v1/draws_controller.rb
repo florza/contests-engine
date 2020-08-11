@@ -4,7 +4,7 @@ module Api
       before_action :authorize_user!
 
       def create
-        dmclass = "DrawManager#{@contest.contesttype}"
+        dmclass = "DrawManager#{@contest.ctype}"
         draw_mgr = dmclass.constantize.new(@contest, params[:draw])
         draw_mgr.draw
         if draw_mgr.valid?

@@ -31,7 +31,7 @@ class ResultTest < ActiveSupport::TestCase
     assert_not @match.valid?
   end
 
-  test "result can contain more elements than nbr_sets" do
+  test "result can contain more elements than winning_sets" do
     @match.result = [[1,2],[3,4],[5,6]]
     @match.winner_id = @match.participant_2_id
     assert @match.valid?

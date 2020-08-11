@@ -11,10 +11,11 @@ The first version will only provide minimal functionality for
 - creating and editing contests and participants
 - doing the draw and generate all matches
 - edit the match results and actualize the contests state
-- contests with 1 group only, each participant playing 1 match against each other
+- contests with 1 ore more groups, each participant playing 1 match against each other of the same group, without sudden death or final groups for the group winners
 - tokens generated for read or write access to the entire contest, not only a players own matches
 
-To see which parts of the application already exist, look at the controller_tests. There you see the controllers and actions that are implemented. The following list should show the same information, but may be less accurately updated:
+## Status
+The basic set of API-calls is implemented
 - POST /signup (registration of a new user)
 - POST /signin (login)
 - DELETE /signin (logout)
@@ -34,10 +35,20 @@ To see which parts of the application already exist, look at the controller_test
 - GET /api/v1/contests/<id>/matches/<id>
 - PUT /api/v1/contests/<id>/matches/<id>
 
-Next steps:
-- try deployment to Heroku
-- adapt draft of Vue frontend to the actual models, activate bootstrap
-- manage update of Groups result by computing the ranking
+## Recent Steps
+- Field contesttype_params renamed to ctype_params
+- Separated result params in a new field, moved 'points' object from ctype_params to result_params
+- Field userdata in all tables
 
-Still completely missing:
-- Additional contesttypes: several groups, KO, pyramids, ...
+## Next Steps
+- Error processing and messages, see also:
+    - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
+    - jsonapi.org !!
+    - https://medium.com/@swilgosz/handling-exceptions-in-rails-api-applications-b276efa7e796
+- Settings for "tie allowed" (contest) and walk_over (match) with adapted validation of results
+- Computed and saved rank (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
+- User: rename email to username
+- User: allow update
+
+## Still completely missing
+- Additional ctypes: KO, groups or KO after groups, pyramids, double-KO...

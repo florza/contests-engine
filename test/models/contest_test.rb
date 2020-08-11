@@ -8,8 +8,7 @@ class ContestTest < ActiveSupport::TestCase
       name: 'name',
       shortname: 'short name',
       description: 'description',
-      contesttype: 'Groups',
-      nbr_sets: 1,
+      ctype: 'Groups',
       public: true
     )
   end
@@ -19,8 +18,7 @@ class ContestTest < ActiveSupport::TestCase
   end
 
   test "required attributes must be set" do
-    [:user_id, :name, :shortname, :description,
-            :contesttype, :nbr_sets].each do |attr|
+    [:user_id, :name, :shortname, :description, :ctype].each do |attr|
       contest2 = @contest.dup
       contest2[attr] = nil
       assert_not contest2.valid?, "Empty #{attr.to_s} must be invalid"
@@ -59,22 +57,22 @@ class ContestTest < ActiveSupport::TestCase
     assert duplicate_contest.valid?
   end
 
-  test "contesttypes in validation list are valid" do
+  test "ctypes in validation list are valid" do
     %w(Groups KO GroupsKO GroupsGroup).each do |value|
-      @contest.contesttype = value
+      @contest.ctype = value
       assert @contest.valid?
     end
   end
 
-  test "contesttype must be valid" do
+  test "ctype must be valid" do
     %w(groups ko anything else).each do |value|
-      @contest.contesttype = value
+      @contest.ctype = value
       assert_not @contest.valid?
     end
   end
 
-  test "contesttype must not be an empty string" do
-    @contest.contesttype = ''
+  test "ctype must not be an empty string" do
+    @contest.ctype = ''
     assert_not @contest.valid?
   end
 end

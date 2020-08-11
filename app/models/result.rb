@@ -52,9 +52,10 @@ class Result
   private
 
   def self.validate_result(result, contest)
+    max_sets = contest.result_params['winning_sets'] * 2 - 1 || 1
     if (!result.instance_of?(Array)) || result.empty? ||
-        result.length > (contest.nbr_sets * 2 - 1)
-      return "is not an array with 1 to #{contest.nbr_sets * 2 - 1} subarrays"
+        result.length > max_sets
+      return "is not an array with 1 to #{max_sets} subarrays"
     end
     return false
   end
@@ -91,7 +92,7 @@ class Result
   end
 
   def self.get_stats_points(match, contest)
-    points = contest.contesttype_params['points']
+    points = contest.result_params['points']
     if match.winner_id == match.participant_1_id
       return [points['win'], points['loss']]
     elsif match.winner_id == match.participant_2_id

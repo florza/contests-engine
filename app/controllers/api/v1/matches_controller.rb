@@ -53,7 +53,8 @@ module Api
         # Only allow a trusted parameter "white list" through.
         def match_params
           params.require(:match).permit(:remarks, :userdata, :params,
-                                        :planned_at, :result, :winner_id)
+                                        :planned_at, :result, :winner_id,
+                                        :userdata)
         end
     end
   end

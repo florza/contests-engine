@@ -5,33 +5,32 @@ DemoMeisterschaft:
   name: Demoturnier Meisterschaft
   shortname: DM
   description: Demoturnier Meisterschaft Beschreibung
-  contesttype: Groups
-  nbr_sets: 2
+  ctype: Groups
   public: false
   token_read: readToken1
   token_write: writeToken1
-  contesttype_params: { grp_groups: nil, points: {win: 3, loss: 0, tie: 1} }
+  ctype_params: { grp_groups: nil }
+  result_params: { winning_sets: 2, points: {win: 3, loss: 0, tie: 1} }
 
 DemoKO:
   user: userOne
   name: Demoturnier KO
   shortname: DKO
   description: Demoturnier KO Beschreibung
-  contesttype: KO
-  nbr_sets: 1
+  ctype: KO
   public: false
   token_read: readToken2
   token_write: readToken2
-
+  result_params: { winning_sets: 1 }
 
 RegressionMeisterschaft:
   user: userTwo
   name: Regressiontest Gruppe
   shortname: Regression Gruppe
   description: Regressiontest Gruppe Beschreibung
-  contesttype: Groups
-  nbr_sets: 1
+  ctype: Groups
   public: false
   token_read: readToken3
   token_write: writeToken3
-  contesttype_params: { grp_groups: nil, points: {win: 3, loss: 0, tie: 1} }
+  ctype_params: { grp_groups: nil }
+  result_params: { winning_sets: 1, points: {win: 3, loss: 0, tie: 1} }
