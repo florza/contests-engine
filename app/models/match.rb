@@ -22,10 +22,9 @@ class Match < ApplicationRecord
   end
 
   before_save do |m|
-    m.result = JSON.parse(m.result) if m.result.instance_of?(String)
     m.result_1_vs_2 = Result.to_s(m.result)
     m.result_2_vs_1 = Result.to_s_reversed(m.result)
-    m.stats = Result.get_stats(m, @contest)
+    m.stats = Result.get_stats(m, @contest.result_params)
   end
 
   after_save do |m|
@@ -41,8 +40,7 @@ class Match < ApplicationRecord
                         :looser_id, :userdata, :created_at, :updated_at) }
 
   def validate_result
-    return if result.nil?
-    if (message = Result.validate(result, self, @contest))
+    if (message = Result.validate(result, self, @contest.result_params))
       errors.add(:result, message)
     end
   end

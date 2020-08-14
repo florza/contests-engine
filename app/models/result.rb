@@ -1,32 +1,41 @@
 class Result
 
   # returns an error message or nil
-  def self.validate(result, match, contest)
-    return if result.nil?
-    return validate_result(result, contest) || validate_sets(result) ||
-            validate_winner(result, match)
+  def self.validate(result, match, result_params)
+    if (result.nil? || result.empty? ||
+        result['score'].nil? || result['score'].empty?)
+      return 'empty result cannot have a winner or tie' if !match.winner_id.nil?
+      return false
+    end
+    return validate_format(result, result_params) ||
+            validate_sets(result) ||
+            validate_winner(result, match, result_params)
   end
 
   # result as seen from Participant_1, this is used in most cases
   def self.to_s(result)
     return nil if result.nil?
-    result = JSON.parse(result) if result.instance_of?(String)
-    result.map { |set| set[0].to_s + ':' + set[1].to_s}.join(' / ')
+    # result = JSON.parse(result) if result.instance_of?(String)
+    score = result['score'].map { |set|
+              set[0].to_s + ':' + set[1].to_s }.join(' / ')
+    result['walk_over'] ? score + ' (w.o.)' : score
   end
 
   # Result as seen from Participant_2
   def self.to_s_reversed(result)
     return nil if result.nil?
-    result = JSON.parse(result) if result.instance_of?(String)
-    result.map { |set| set[1].to_s + ':' + set[0].to_s}.join(' / ')
+    # result = JSON.parse(result) if result.instance_of?(String)
+    score = result['score'].map { |set|
+              set[1].to_s + ':' + set[0].to_s }.join(' / ')
+    result['walk_over'] ? score + ' (w.o.)' : score
   end
 
   # sums of points/matches/sets/games won/tied/lost
   # stored as a hash in Match.stats
-  def self.get_stats(match, contest)
+  def self.get_stats(match, result_params)
     return nil if match.result.nil?
     stats = {}
-    stats['points'] = get_stats_points(match, contest)
+    stats['points'] = get_stats_points(match, result_params)
     stats['matches'] = get_stats_matches(match)
     stats['sets'] = get_stats_sets(match)
     stats['games'] = get_stats_games(match)
@@ -51,17 +60,19 @@ class Result
 
   private
 
-  def self.validate_result(result, contest)
-    max_sets = contest.result_params['winning_sets'] * 2 - 1 || 1
-    if (!result.instance_of?(Array)) || result.empty? ||
-        result.length > max_sets
+  def self.validate_format(result, result_params)
+    score = result['score']
+    return 'Result must contain a score' if score.nil?
+    max_sets = result_params['winning_sets'] * 2 - 1 || 1
+    if (!score.instance_of?(Array)) || score.empty? ||
+        score.length > max_sets
       return "is not an array with 1 to #{max_sets} subarrays"
     end
     return false
   end
 
   def self.validate_sets(result)
-    result.each_with_index do |set, i|
+    result['score'].each_with_index do |set, i|
       if !set.instance_of?(Array) || set.size != 2 ||
           !set[0].instance_of?(Integer) || set[0] < 0 ||
           !set[1].instance_of?(Integer) || set[1] < 0
@@ -71,9 +82,9 @@ class Result
     return false
   end
 
-  def self.validate_winner(result, match)
+  def self.validate_winner(result, match, result_params)
     sets_participant_1 = sets_participant_2 = 0
-    result.each_with_index do |set, i|
+    result['score'].each_with_index do |set, i|
       sets_participant_1 += 1 if set[0] > set[1]
       sets_participant_2 += 1 if set[0] < set[1]
     end
@@ -81,18 +92,22 @@ class Result
       winner_id = match.participant_1_id
     elsif sets_participant_1 < sets_participant_2
       winner_id = match.participant_2_id
+    elsif !(result['walk_over'] || result_params['tie_allowed'])
+      return 'no ties allowed as score' unless result_params['tie_allowed']
     else
       winner_id = nil
-      # depends on yet undefined params: return "must have a winner"
     end
-    if winner_id != match.winner_id
-      return "given winner and set results do not fit"
+    if !result['walk_over'] && winner_id != match.winner_id
+      return 'given winner and set scores do not fit'
+    end
+    if result['walk_over'] && match.winner_id.nil?
+      return 'winner must be defined for a walk-over'
     end
     return false
   end
 
-  def self.get_stats_points(match, contest)
-    points = contest.result_params['points']
+  def self.get_stats_points(match, result_params)
+    points = result_params['points']
     if match.winner_id == match.participant_1_id
       return [points['win'], points['loss']]
     elsif match.winner_id == match.participant_2_id
@@ -114,7 +129,7 @@ class Result
 
   def self.get_stats_sets(m)
     sw = st = sl = 0
-    m.result.each do |set|
+    m.result['score'].each do |set|
       if set[0] > set[1]
         sw += 1
       elsif set[0] < set[1]
@@ -128,7 +143,7 @@ class Result
 
   def self.get_stats_games(m)
     gw = gl = 0
-    m.result.each do |set|
+    m.result['score'].each do |set|
       gw += set[0]
       gl += set[1]
     end

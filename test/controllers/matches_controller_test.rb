@@ -30,25 +30,28 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     assert_not_nil result.count
   end
 
-  # FIXME Find out if sending of array is possible, make it work or delete test
-  test "should update match" do
+  # Works at the moment, because ALL input is permitted in the controller
+  # No way was found to permit the score as 'array of arrays', so the score
+  # was only accepted as a string
+  test "should update match with result as object" do
+    result = { 'score' => [[6,2],[7,5]] }
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
-                            result: [[6,2],[7,5]],
+                            result: result,
                             winner_id: @match.participant_1_id} },
           as: :json
     assert_response 200
     m = Match.find(@match.id)
     assert_equal("6:2 / 7:5", Result.to_s(m.result),
-                  'Matchresult sent as array is not saved!')
+                  'Matchresult sent as object is not saved!')
   end
 
-  test "should update match with result as string" do
+  test "should update match with result as JSON(!)-string" do
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
-                            result: "[[6,2],[7,5]]",
+                            result: '{ "score": [[6,2],[7,5]] }',
                             winner_id: @match.participant_1_id} },
           as: :json
     assert_response 200

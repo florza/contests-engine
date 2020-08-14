@@ -36,6 +36,8 @@ The basic set of API-calls is implemented
 - PUT /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Settings for "tie allowed" (contest) and walk_over (match) with adapted validation of results and additional tests
+- Settings for lucky_loser in match (will only be used later in KO)
 - Field contesttype_params renamed to ctype_params
 - Separated result params in a new field, moved 'points' object from ctype_params to result_params
 - Field userdata in all tables
@@ -45,7 +47,6 @@ The basic set of API-calls is implemented
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!
     - https://medium.com/@swilgosz/handling-exceptions-in-rails-api-applications-b276efa7e796
-- Settings for "tie allowed" (contest) and walk_over (match) with adapted validation of results
 - Computed and saved rank (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
 - User: rename email to username
 - User: allow update

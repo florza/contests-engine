@@ -52,9 +52,14 @@ module Api
 
         # Only allow a trusted parameter "white list" through.
         def match_params
-          params.require(:match).permit(:remarks, :userdata, :params,
-                                        :planned_at, :result, :winner_id,
-                                        :userdata)
+
+          # TODO find a proper way to permit :score value to be array of arrays!
+          # or eventually implement an own control of permitted params
+          # The actual solution allows unsecured updates of all attributes!!!
+          params.require(:match).permit!
+          # params.require(:match).permit(:remarks, :winner_id,
+          #                               :planned_at, :userdata,
+          #                               result: [ :walk_over, score: [[]] ])
         end
     end
   end

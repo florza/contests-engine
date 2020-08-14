@@ -1,7 +1,8 @@
 class Contest < ApplicationRecord
 
   DEFAULT_RESULT_PARAMS =
-    { 'winning_sets' => 1, 'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }
+    { 'winning_sets' => 1, 'tie_allowed': false,
+      'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }
 
   belongs_to :user
   has_many :participants
@@ -24,7 +25,7 @@ class Contest < ApplicationRecord
   validates :ctype,	presence: true,
                     inclusion: { in: %w(Groups KO GroupsKO GroupsGroup) }
 
-  before_create :init_attributes
+  before_create:init_attributes
 
   # usually hide :token_read, :token_write
   scope :public_columns,

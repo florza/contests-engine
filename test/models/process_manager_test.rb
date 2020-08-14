@@ -6,12 +6,13 @@ class ProcessManagerTest < ActiveSupport::TestCase
     @match = Match.new(
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM1),
-      participant_2: participants(:DM2)
+      participant_2: participants(:DM2),
+      result: {}
     )
   end
 
   test "match stats are computed on save" do
-    @match.result = "[[2,6],[7,5],[6,3]]"
+    @match.result['score'] = [[2,6],[7,5],[6,3]]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal "2:6 / 7:5 / 6:3", Result.to_s(@match.result)
@@ -23,7 +24,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "match stats are deleted on update with no result" do
-    @match.result = "[[2,6],[7,5],[6,3]]"
+    @match.result['score'] = [[2,6],[7,5],[6,3]]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal 4, @match.stats.size
@@ -34,7 +35,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "participant stats are computed on match save" do
-    @match.result = "[[2,6],[7,5],[6,3]]"
+    @match.result['score'] = [[2,6],[7,5],[6,3]]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal 4, @match.stats.size
@@ -53,7 +54,11 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "participant stats are added over several matches" do
-    @match.result = [[2,6],[7,5],[6,3]]
+    contest = @match.contest
+    contest.result_params['tie_allowed'] = true
+    contest.save!
+
+    @match.result['score'] = [[2,6],[7,5],[6,3]]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal 4, @match.stats.size
@@ -61,9 +66,10 @@ class ProcessManagerTest < ActiveSupport::TestCase
     @match2 = Match.new(
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM1),
-      participant_2: participants(:DM3)
+      participant_2: participants(:DM3),
+      result: {}
     )
-    @match2.result = [[6,0],[7,5]]
+    @match2.result['score'] = [[6,0],[7,5]]
     @match2.winner_id = @match2.participant_1_id
     @match2.save!
     assert_not_nil @match2.id
@@ -74,9 +80,10 @@ class ProcessManagerTest < ActiveSupport::TestCase
     @match3 = Match.new(
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM3),
-      participant_2: participants(:DM2)
+      participant_2: participants(:DM2),
+      result: {}
     )
-    @match3.result = [[6,3],[1,6],[5,5]]
+    @match3.result['score'] = [[6,3],[1,6],[5,5]]
     @match3.winner_id = nil
     @match3.save!
     assert_not_nil @match3.id
