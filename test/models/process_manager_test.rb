@@ -84,7 +84,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
       result: {}
     )
     @match3.result['score'] = [[6,3],[1,6],[5,5]]
-    @match3.winner_id = nil
+    @match3.winner_id = 0
     @match3.save!
     assert_not_nil @match3.id
     assert_equal 4, @match3.stats.size

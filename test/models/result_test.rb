@@ -23,9 +23,9 @@ class ResultTest < ActiveSupport::TestCase
     assert_not @match.valid?
   end
 
-  test "result array must not be empty" do
+  test "result array may be empty" do
     @match.result['score'] = []
-    assert_not @match.valid?
+    assert @match.valid?
   end
 
   test "result array must not contain too many elements" do
@@ -117,13 +117,21 @@ class ResultTest < ActiveSupport::TestCase
 
   test "tie result invalid if not allowed" do
     @match.result['score'] = [ [1, 2], [4,3] ]
+    @match.winner_id = 0
     assert_not @match.valid?
   end
 
   test "tie result valid if allowed" do
     setTieAllowed
     @match.result['score'] = [ [1, 2], [4,3] ]
+    @match.winner_id = 0
     assert @match.valid?
+  end
+
+  test "winner_id in tie must not be null but 0" do
+    setTieAllowed
+    @match.result['score'] = [ [1, 2], [4,3] ]
+    assert_not @match.valid?
   end
 
   test "tie result must not have a winner" do

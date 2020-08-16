@@ -93,9 +93,9 @@ class Result
     elsif sets_participant_1 < sets_participant_2
       winner_id = match.participant_2_id
     elsif !(result['walk_over'] || result_params['tie_allowed'])
-      return 'no ties allowed as score' unless result_params['tie_allowed']
+      return 'no ties allowed as score'
     else
-      winner_id = nil
+      winner_id = 0
     end
     if !result['walk_over'] && winner_id != match.winner_id
       return 'given winner and set scores do not fit'
