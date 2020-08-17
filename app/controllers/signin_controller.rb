@@ -2,11 +2,31 @@ class SigninController < ApplicationController
   before_action :authorize_access_request!, only: [:destroy]
 
   def create
-    user = User.find_by!(email: params[:email])
-    return not_found if user.nil?
-    return not_authorized if !user.authenticate(params[:password])
+    if params[:username] && params[:username] > ''
+      user = User.public_columns.find_by(username: params[:username])
+      return not_found_user if user.nil?
+      payload = { user_id: user.id }
+    elsif params[:contestkey] && params[:contestkey] > ''
+      contestkey = params[:contestkey]
+      if contest = Contest.find_by_token_read(contestkey)
+        payload = { tokentype: 'Contest',
+                    tokenrole: 'read',
+                    tokenid: contest.id }
+      elsif contest = Contest.find_by_token_write(contestkey)
+        payload = { tokentype: 'Contest',
+                    tokenrole: 'write',
+                    tokenid: contest.id }
+      elsif participant = Participant.find_by_token_write(contestkey)
+        payload = { tokentype: 'Participant',
+                    tokenrole: 'write',
+                    tokenid: participant.id }
+      else
+        return not_found_token
+      end
+    else
+      return not_authorized
+    end
 
-    payload = { user_id: user.id }
     session = JWTSessions::Session.new(payload: payload,
                                         refresh_by_access_allowed: true)
     tokens = session.login
@@ -14,7 +34,9 @@ class SigninController < ApplicationController
                       value: tokens[:access],
                       httponly: true,
                       secure: Rails.env.production?)
-    render json: { csrf: tokens[:csrf] }
+    render json: {csrf: tokens[:csrf],
+                  signin_type: payload[:user_id] ? 'user' : 'token',
+                  signin_data: payload[:user_id] ? user : payload}
   end
 
   def destroy
@@ -25,8 +47,13 @@ class SigninController < ApplicationController
 
   private
 
-  def not_found
-    render json: { error: "Cannot find email/password combination" },
+  def not_found_user
+    render json: { error: "Cannot find username/password combination" },
+            status: :not_found
+  end
+
+  def not_found_token
+    render json: { error: "Cannot find contest key" },
             status: :not_found
   end
 end

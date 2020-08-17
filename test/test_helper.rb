@@ -31,14 +31,14 @@ class ActionDispatch::IntegrationTest
     @headers = { 'CONTENT_TYPE' => 'application/json' }
     body =
     post signup_path, headers: @headers,
-          params: '{ "email": "testuser@test.org", "password": "test" }'
+          params: '{ "username": "testuser@test.org", "password": "test" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 
   def login_userOne
     @headers = { 'CONTENT_TYPE' => 'application/json' }
     post signin_path, headers: @headers,
-          params: '{ "email": "userOne", "password": "pw" }'
+          params: '{ "username": "userOne", "password": "pw" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 

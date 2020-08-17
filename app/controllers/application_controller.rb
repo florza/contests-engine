@@ -3,24 +3,27 @@ class ApplicationController < ActionController::API
   rescue_from JWTSessions::Errors::Unauthorized, with: :not_authorized
 
   def authorize_user!
-    # puts 'AUTHORIZE_USER on ' + action_name
-    authorize_access_request!
+    get_current_authorization!
+    not_authorized unless payload['user_id']
     set_user_contest
   end
 
   def authorize_user_or_readtoken!
-    if params['t'].nil?
-      authorize_user!
+    get_current_authorization!
+    if payload['user_id']
+      set_user_contest
     else
-      authorize_readtoken(params['t'])
+      set_token_contest
     end
   end
 
   def authorize_user_or_writetoken!
-    if params['t'].nil?
-      authorize_user!
+    get_current_authorization!
+    if payload['user_id']
+      set_user_contest
     else
-      authorize_writetoken(params['t'])
+      not_authorized unless payload['tokenrole'] == 'write'
+      set_token_contest
     end
   end
 
@@ -30,24 +33,8 @@ class ApplicationController < ActionController::API
 
   private
 
-  def authorize_readtoken(token)
-    @contest = Contest.find_by_token_read(token)
-    if !@contest
-      authorize_writetoken(token)
-    end
-  end
-
-  def authorize_writetoken(token)
-    if !(contest_id = Contest.find_by_token_write(token))
-      if !(participant_id = Participant.find_by_token_write(token))
-        not_authorized
-      else
-        @participant = Participant.public_columns.find(participant_id)
-        @contest = Contest.public_columns.find(contest_id)
-      end
-    else
-      @contest = Contest.public_columns.find(contest_id)
-    end
+  def get_current_authorization!
+    authorize_access_request!
   end
 
   def set_user_contest
@@ -61,6 +48,18 @@ class ApplicationController < ActionController::API
     else
       @contest = @user.contests.public_columns.order(last_action: :desc).limit(1)
     end
-
   end
+
+  def set_token_contest
+    if payload['tokentype'] == 'participant'
+      @participant  = Participant.public_columns.find(payload['tokenid'])
+      not_authorized if @participant.nil?
+      contest_id = @participant.contest_id
+    else
+      contest_id = payload['tokenid']
+    end
+    @contest = Contest.public_columns.find(contest_id)
+    not_authorized if @contest.nil?
+  end
+
 end

@@ -36,6 +36,9 @@ The basic set of API-calls is implemented
 - PUT /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Login with token not with a param field in the link but in a second signin form. The request is handled similar to a user login, i.e. it gives back a csrf-token as session id.
+Also returned is now some additional data, i.e. the type of signin (user/token) and the user record of the logged in user or some info to the used token (read/write, contest/participant, id).
+- User: rename email to username
 - Settings for "tie allowed" (contest) and walk_over (match) with adapted validation of results and additional tests
 - Settings for lucky_loser in match (will only be used later in KO)
 - Field contesttype_params renamed to ctype_params
@@ -47,8 +50,7 @@ The basic set of API-calls is implemented
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!
     - https://medium.com/@swilgosz/handling-exceptions-in-rails-api-applications-b276efa7e796
-- Computed and saved rank (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
-- User: rename email to username
+- Computed and saved rank within the group (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
 - User: allow update
 
 ## Still completely missing
