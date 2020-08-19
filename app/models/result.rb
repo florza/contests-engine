@@ -107,13 +107,15 @@ class Result
   end
 
   def self.get_stats_points(match, result_params)
-    points = result_params['points']
     if match.winner_id == match.participant_1_id
-      return [points['win'], points['loss']]
+      return [result_params['points_win'],
+              result_params['points_loss']]
     elsif match.winner_id == match.participant_2_id
-      return [points['loss'], points['win']]
+      return [result_params['points_loss'],
+              result_params['points_win']]
     else
-      return [points['tie'], points['tie']]
+      return [result_params['points_tie'],
+              result_params['points_tie']]
     end
   end
 

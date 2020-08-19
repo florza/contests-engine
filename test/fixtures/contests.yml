@@ -9,8 +9,9 @@ DemoMeisterschaft:
   public: false
   token_read: readToken1
   token_write: writeToken1
-  ctype_params: { grp_groups: nil }
-  result_params: { winning_sets: 2, points: {win: 3, loss: 0, tie: 1} }
+  ctype_params: { grp_groups: [] }
+  result_params: { winning_sets: 2, tie_allowed: false,
+                    points_win: 3, points_loss: 0, points_tie: 1 }
 
 DemoKO:
   user: userOne
@@ -32,5 +33,6 @@ RegressionMeisterschaft:
   public: false
   token_read: readToken3
   token_write: writeToken3
-  ctype_params: { grp_groups: nil }
-  result_params: { winning_sets: 1, points: {win: 3, loss: 0, tie: 1} }
+  ctype_params: { grp_groups: [] }
+  result_params: { winning_sets: 1, tie_allowed: true,
+                    points_win: 3, points_loss: 0, points_tie: 1 }

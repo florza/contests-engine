@@ -25,6 +25,7 @@ Contest.create!([
     description: 'Mit seed() definiertes Turnier',
     ctype: 'Groups',
     public: true,
-    result_params: { winning_sets: 1, points: {win: 3, loss: 0, tie: 1} }
+    result_params: { winning_sets: 1, tie_allowed: true,
+                      points_win: 3, points_loss: 0, points_tie: 1 }
   }
 ])

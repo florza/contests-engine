@@ -4,19 +4,19 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
     @participant = participants(:DM2)
-    @token_read = "?t=#{@contest.token_read}"
-    @token_write = "?t=#{@contest.token_write}"
   end
 
   test "should get index of contests participants with token" do
-    get api_v1_contest_participants_url(@contest) + @token_read, as: :json
+    login_readToken
+    get api_v1_contest_participants_url(@contest), as: :json
     assert_response :success
     result = JSON.parse(@response.body)
     assert_equal 4, result.count
   end
 
   test "should show participant with token" do
-    get api_v1_contest_participant_url(@contest, @participant) + @token_read,
+    login_readToken
+    get api_v1_contest_participant_url(@contest, @participant),
           as: :json
     assert_response :success
     result = JSON.parse(@response.body)
@@ -24,7 +24,8 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create participant with token" do
-    post api_v1_contest_participants_url(@contest) + @token_write,
+    login_writeToken
+    post api_v1_contest_participants_url(@contest),
         params:   { participant: {name: 'New test participant',
                                   shortname: 'New test',
                                   remarks: 'Remarks'} },
@@ -33,7 +34,8 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
   end
 
   test "should not update participant with token" do
-    patch api_v1_contest_participant_url(@contest, @participant) + @token_write,
+    login_writeToken
+    patch api_v1_contest_participant_url(@contest, @participant),
           params: { participant: {name: @participant.name,
                                   shortname: @participant.shortname,
                                   remarks: @participant.remarks} },
@@ -42,7 +44,8 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
   end
 
   test "should not destroy participant with token" do
-    delete api_v1_contest_participant_url(@contest, @participant) + @token_write,
+    login_writeToken
+    delete api_v1_contest_participant_url(@contest, @participant),
           as: :json
     assert_response 401
   end

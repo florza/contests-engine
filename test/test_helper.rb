@@ -42,6 +42,20 @@ class ActionDispatch::IntegrationTest
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 
+  def login_readToken
+    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    post signin_path, headers: @headers,
+          params: '{ "contestkey": "readToken1" }'
+    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+  end
+
+  def login_writeToken
+    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    post signin_path, headers: @headers,
+          params: '{ "contestkey": "writeToken1" }'
+    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+  end
+
   def draw_demomeisterschaft()
     post api_v1_contest_draw_url(@contest),
       headers: @headers,

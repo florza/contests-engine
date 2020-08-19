@@ -36,6 +36,7 @@ The basic set of API-calls is implemented
 - PUT /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Restructured contest.result_params
 - Login with token not with a param field in the link but in a second signin form. The request is handled similar to a user login, i.e. it gives back a csrf-token as session id.
 Also returned is now some additional data, i.e. the type of signin (user/token) and the user record of the logged in user or some info to the used token (read/write, contest/participant, id).
 - User: rename email to username
@@ -50,7 +51,8 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!
     - https://medium.com/@swilgosz/handling-exceptions-in-rails-api-applications-b276efa7e796
-- Computed and saved rank within the group (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
+- Restructure of JSON fields: only one level, fields or arrays of scalar values
+- Compute and save rank within the group (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
 - User: allow update
 
 ## Still completely missing

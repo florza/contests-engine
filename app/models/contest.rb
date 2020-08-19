@@ -2,7 +2,7 @@ class Contest < ApplicationRecord
 
   DEFAULT_RESULT_PARAMS =
     { 'winning_sets' => 1, 'tie_allowed': false,
-      'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }
+      'points_win' => 3, 'points_loss' => 0, 'points_tie' => 1}
   DEFAULT_CTYPE_PARAMS_GROUPS = { 'grp_groups' => [] }
 
   belongs_to :user
