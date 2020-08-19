@@ -45,10 +45,10 @@ class ActionDispatch::IntegrationTest
   def draw_demomeisterschaft()
     post api_v1_contest_draw_url(@contest),
       headers: @headers,
-      params: { draw: { groups: [ [ participants(:DM1).id,
-                                    participants(:DM2).id,
-                                    participants(:DM3).id,
-                                    participants(:DM4).id] ] } },
+      params: { draw: { grp_groups: [ [ participants(:DM1).id,
+                                        participants(:DM2).id,
+                                        participants(:DM3).id,
+                                        participants(:DM4).id] ] } },
       as: :json
   end
 end

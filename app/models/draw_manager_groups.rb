@@ -5,8 +5,8 @@ class DrawManagerGroups < DrawManager
   def initialize(contest, params)
     @contest = contest
     @participants = @contest.participants.to_a
-    @groups = params[:groups]
-    @groups = JSON.parse(@groups) if @groups.class == String
+    @grp_groups = params[:grp_groups]
+    @grp_groups = JSON.parse(@grp_groups) if @grp_groups.class == String
   end
 
   def draw
@@ -17,19 +17,19 @@ class DrawManagerGroups < DrawManager
 
   def update_contest
     newParams = @contest.ctype_params || {}
-    newParams['groups'] = @groups
+    newParams['grp_groups'] = @grp_groups
     if !@contest.update(
       { ctype_params: newParams,
         draw_at: DateTime.now,
         last_action_at: DateTime.now }
     )
-      errors.add(:groups, 'contest update failed')
+      errors.add(:grp_groups, 'contest update failed')
     end
   end
 
   def update_participants
     Participant.transaction do
-      @groups.each_with_index do |members, group0|
+      @grp_groups.each_with_index do |members, group0|
         members.each_with_index do |participant_id, pos0|
           participant = @participants.find { |p| p.id == participant_id }
           #ctype_params = { 'grp_nr' => group0 + 1, 'grp_pos' => pos0 + 1 }
@@ -46,7 +46,7 @@ class DrawManagerGroups < DrawManager
 
   def create_matches
     @contest.matches.destroy_all
-    @groups.each_with_index do |members, group0|
+    @grp_groups.each_with_index do |members, group0|
       matches = Schedule.get_group_schedule(members, false)
       matches.each do |match|
         m = @contest.matches.new(
@@ -64,7 +64,7 @@ class DrawManagerGroups < DrawManager
   end
 
   def validate_groups
-    participant_ids = @groups.flatten
+    participant_ids = @grp_groups.flatten
     if participant_ids.count != @participants.count
       errors.add(:groups, 'wrong number of participants in all groups')
     end
@@ -76,7 +76,7 @@ class DrawManagerGroups < DrawManager
         errors.add(:groups, "invalid id #{participant_id} in sequence")
       end
     end
-    @groups.each do |group|
+    @grp_groups.each do |group|
       if group.count < 2
         erros.add(:groups, 'groups should not be smaller than 2') and break
       end

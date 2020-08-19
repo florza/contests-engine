@@ -20,7 +20,7 @@ class Schedule
       away = round
       # swap home and away-team in every second round
       home, away = away, home if round.odd?
-#debugger
+
       if grp_size.even?
         # first match of round is left out with odd group sizes
         matches.push( { round: round,

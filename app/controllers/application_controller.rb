@@ -4,8 +4,7 @@ class ApplicationController < ActionController::API
 
   def authorize_user!
     get_current_authorization!
-    not_authorized unless payload['user_id']
-    set_user_contest
+    payload['user_id'].nil? ? not_authorized : set_user_contest
   end
 
   def authorize_user_or_readtoken!
@@ -22,8 +21,11 @@ class ApplicationController < ActionController::API
     if payload['user_id']
       set_user_contest
     else
-      not_authorized unless payload['tokenrole'] == 'write'
-      set_token_contest
+       if payload['tokenrole'] === 'write'
+        set_token_contest
+       else
+        not_authorized
+       end
     end
   end
 

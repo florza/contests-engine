@@ -3,7 +3,8 @@ class SigninController < ApplicationController
 
   def create
     if params[:username] && params[:username] > ''
-      user = User.public_columns.find_by(username: params[:username])
+      user = User.public_columns.where("lower(username) = ?",
+              params[:username].downcase).first
       return not_found_user if user.nil?
       payload = { user_id: user.id }
     elsif params[:contestkey] && params[:contestkey] > ''

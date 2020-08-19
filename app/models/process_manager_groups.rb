@@ -24,7 +24,7 @@ class ProcessManagerGroups < ProcessManager
 
   def self.sum_stats_participant(part_1_2, match, participants)
     if match.stats.nil?
-      debugger
+      console.log('Match found without stats:', match)
     end
     stats_m = match.stats.clone
     if part_1_2 == 1
@@ -44,9 +44,6 @@ class ProcessManagerGroups < ProcessManager
         ['matches', 'sets', 'games'].each do |category|
       stats_p[category] =
           stats_p[category].zip(stats_m[category]).map {|a| a.sum}
-    end
-    if p_id.nil?
-      debugger
     end
     participants[p_id] = stats_p
   end

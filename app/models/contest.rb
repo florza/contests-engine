@@ -3,6 +3,7 @@ class Contest < ApplicationRecord
   DEFAULT_RESULT_PARAMS =
     { 'winning_sets' => 1, 'tie_allowed': false,
       'points' => {'win' => 3, 'loss' => 0, 'tie' => 1} }
+  DEFAULT_CTYPE_PARAMS_GROUPS = { 'grp_groups' => [] }
 
   belongs_to :user
   has_many :participants
@@ -22,8 +23,7 @@ class Contest < ApplicationRecord
 
   validates :user_id,	presence: true
   validates :description, presence: true
-  validates :ctype,	presence: true,
-                    inclusion: { in: %w(Groups KO GroupsKO GroupsGroup) }
+  validates :ctype,	inclusion: { in: %w(Groups KO GroupsKO GroupsGroup) }
 
   before_create:init_attributes
 
@@ -40,6 +40,7 @@ class Contest < ApplicationRecord
     self.last_action_at ||= DateTime.now
     self.token_read ||= get_token
     self.token_write ||= get_token
+    self.ctype_params ||= DEFAULT_CTYPE_PARAMS_GROUPS
     self.result_params ||= DEFAULT_RESULT_PARAMS
   end
 

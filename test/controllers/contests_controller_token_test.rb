@@ -13,7 +13,7 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
     assert_equal 1, result.count
   end
 
-  test "should show token contest" do
+  test "should show token contest with token" do
     get api_v1_contest_url(@contest) + @token_read, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
