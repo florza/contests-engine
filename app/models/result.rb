@@ -3,7 +3,8 @@ class Result
   # returns an error message or nil
   def self.validate(result, match, result_params)
     if (result.nil? || result.empty? ||
-        result['score'].nil? || result['score'].empty?)
+        result['score_p1'].nil? || result['score_p1'] === [] ||
+        result['score_p2'].nil? || result['score_p2'] === [])
       return 'empty result cannot have a winner or tie' if !match.winner_id.nil?
       return false
     end
@@ -16,7 +17,7 @@ class Result
   def self.to_s(result)
     return nil if result.nil?
     # result = JSON.parse(result) if result.instance_of?(String)
-    score = result['score'].map { |set|
+    score = result['score_p1'].zip(result['score_p2']).map { |set|
               set[0].to_s + ':' + set[1].to_s }.join(' / ')
     result['walk_over'] ? score + ' (w.o.)' : score
   end
@@ -25,7 +26,7 @@ class Result
   def self.to_s_reversed(result)
     return nil if result.nil?
     # result = JSON.parse(result) if result.instance_of?(String)
-    score = result['score'].map { |set|
+    score = result['score_p1'].zip(result['score_p2']).map { |set|
               set[1].to_s + ':' + set[0].to_s }.join(' / ')
     result['walk_over'] ? score + ' (w.o.)' : score
   end
@@ -34,11 +35,12 @@ class Result
   # stored as a hash in Match.stats
   def self.get_stats(match, result_params)
     return nil if match.result.nil?
+    score = match.result['score_p1'].zip(match.result['score_p2'])
     stats = {}
     stats['points'] = get_stats_points(match, result_params)
     stats['matches'] = get_stats_matches(match)
-    stats['sets'] = get_stats_sets(match)
-    stats['games'] = get_stats_games(match)
+    stats['sets'] = get_stats_sets(score)
+    stats['games'] = get_stats_games(score)
     return stats
   end
 
@@ -61,22 +63,24 @@ class Result
   private
 
   def self.validate_format(result, result_params)
-    score = result['score']
-    return 'Result must contain a score' if score.nil?
     max_sets = result_params['winning_sets'] * 2 - 1 || 1
-    if (!score.instance_of?(Array)) || score.empty? ||
-        score.length > max_sets
-      return "is not an array with 1 to #{max_sets} subarrays"
+    if !(result['score_p1'].instance_of?(Array) &&
+        result['score_p2'].instance_of?(Array) &&
+        result['score_p1'].size === result['score_p2'].size &&
+        result['score_p1'].size >= 1 &&
+        result['score_p1'].size <= max_sets)
+      return "score_p1 and score_p2 are not arrays with 1 to #{max_sets} elements"
     end
     return false
   end
 
   def self.validate_sets(result)
-    result['score'].each_with_index do |set, i|
+    score = result['score_p1'].zip(result['score_p2'])
+    score.each_with_index do |set, i|
       if !set.instance_of?(Array) || set.size != 2 ||
           !set[0].instance_of?(Integer) || set[0] < 0 ||
           !set[1].instance_of?(Integer) || set[1] < 0
-        return "of set #{i+1} is not an array of two positive numbers"
+        return "of set #{i+1} is not an array of two non negative numbers"
       end
     end
     return false
@@ -84,7 +88,8 @@ class Result
 
   def self.validate_winner(result, match, result_params)
     sets_participant_1 = sets_participant_2 = 0
-    result['score'].each_with_index do |set, i|
+    score = result['score_p1'].zip(result['score_p2'])
+    score.each_with_index do |set, i|
       sets_participant_1 += 1 if set[0] > set[1]
       sets_participant_2 += 1 if set[0] < set[1]
     end
@@ -129,9 +134,9 @@ class Result
     end
   end
 
-  def self.get_stats_sets(m)
+  def self.get_stats_sets(score)
     sw = st = sl = 0
-    m.result['score'].each do |set|
+    score.each do |set|
       if set[0] > set[1]
         sw += 1
       elsif set[0] < set[1]
@@ -143,9 +148,9 @@ class Result
     return [sw, st, sl]
   end
 
-  def self.get_stats_games(m)
+  def self.get_stats_games(score)
     gw = gl = 0
-    m.result['score'].each do |set|
+    score.each do |set|
       gw += set[0]
       gl += set[1]
     end

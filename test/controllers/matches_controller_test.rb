@@ -30,11 +30,8 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     assert_not_nil result.count
   end
 
-  # Works at the moment, because ALL input is permitted in the controller
-  # No way was found to permit the score as 'array of arrays', so the score
-  # was only accepted as a string
   test "should update match with result as object" do
-    result = { 'score' => [[6,2],[7,5]] }
+    result = { 'score_p1' => [6,7], 'score_p2' => [2,5] }
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
@@ -47,11 +44,17 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
                   'Matchresult sent as object is not saved!')
   end
 
+  # FIXME
+  # Does NOT work if the score numbers are sent as string, e.g. ["6","7"]
+  # as it is done from Postman!
+  # A correction of the validation would also need a conversion
+  # of the values to work.
   test "should update match with result as JSON(!)-string" do
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',
-                            result: '{ "score": [[6,2],[7,5]] }',
+                            result: '{"score_p1": [6,7],
+                                      "score_p2": [2,5]}',
                             winner_id: @match.participant_1_id} },
           as: :json
     assert_response 200

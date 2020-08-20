@@ -12,7 +12,8 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "match stats are computed on save" do
-    @match.result['score'] = [[2,6],[7,5],[6,3]]
+    @match.result['score_p1'] = [2,7,6]
+    @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal "2:6 / 7:5 / 6:3", Result.to_s(@match.result)
@@ -24,7 +25,8 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "match stats are deleted on update with no result" do
-    @match.result['score'] = [[2,6],[7,5],[6,3]]
+    @match.result['score_p1'] = [2,7,6]
+    @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal 4, @match.stats.size
@@ -35,7 +37,8 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "participant stats are computed on match save" do
-    @match.result['score'] = [[2,6],[7,5],[6,3]]
+    @match.result['score_p1'] = [2,7,6]
+    @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal 4, @match.stats.size
@@ -58,7 +61,8 @@ class ProcessManagerTest < ActiveSupport::TestCase
     contest.result_params['tie_allowed'] = true
     contest.save!
 
-    @match.result['score'] = [[2,6],[7,5],[6,3]]
+    @match.result['score_p1'] = [2,7,6]
+    @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
     @match.save!
     assert_equal 4, @match.stats.size
@@ -69,7 +73,8 @@ class ProcessManagerTest < ActiveSupport::TestCase
       participant_2: participants(:DM3),
       result: {}
     )
-    @match2.result['score'] = [[6,0],[7,5]]
+    @match2.result['score_p1'] = [6,7]
+    @match2.result['score_p2'] = [0,5]
     @match2.winner_id = @match2.participant_1_id
     @match2.save!
     assert_not_nil @match2.id
@@ -83,7 +88,8 @@ class ProcessManagerTest < ActiveSupport::TestCase
       participant_2: participants(:DM2),
       result: {}
     )
-    @match3.result['score'] = [[6,3],[1,6],[5,5]]
+    @match3.result['score_p1'] = [6,1,5]
+    @match3.result['score_p2'] = [3,6,5]
     @match3.winner_id = 0
     @match3.save!
     assert_not_nil @match3.id

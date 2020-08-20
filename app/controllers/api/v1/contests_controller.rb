@@ -59,8 +59,11 @@
         params.require(:contest).permit(:name, :shortname, :description,
                                         :ctype, :public, :last_action_at,
                                         :userdata,
-                                        { ctype_params: {} },
-                                        { result_params: {} },)
+                                        { result_params: [:winning_sets,
+                                                          :tie_allowed,
+                                                          :points_win,
+                                                          :points_tie,
+                                                          :points_loss] })
       end
     end
   end
