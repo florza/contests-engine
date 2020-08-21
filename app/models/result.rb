@@ -34,7 +34,9 @@ class Result
   # sums of points/matches/sets/games won/tied/lost
   # stored as a hash in Match.stats
   def self.get_stats(match, result_params)
-    return nil if match.result.nil?
+    if match.winner_id.nil?
+      return empty_match_stats
+    end
     score = match.result['score_p1'].zip(match.result['score_p2'])
     stats = {}
     stats['points'] = get_stats_points(match, result_params)
@@ -55,10 +57,25 @@ class Result
 
   # same as above, but only this participants points
   def self.empty_participant_stats
-    { 'points' => 0, 'matches' => [0, 0, 0],
-      'sets' => [0, 0, 0], 'games' => [0, 0] }
+    { 'points' => 0, 'matches' => [0, 0, 0], 'sets' => [0, 0, 0],
+      'games' => [0, 0], 'rankvalue' => 0, 'rank' => 0 }
   end
 
+  def self.get_rankvalue(stats)
+    # generate a number in the form AAABBBCCCDDD
+    # which sorts after the detailed ranking rules:
+    # AAA is the number of points won
+    # BBB is 500 + (MatchesWon - MatchesLost) i.e. +4 => 504, -4 => 496
+    # CCC is 500 + (SetWon - SetLost)
+    # DDD is 500 + (GamesWon - GamesLost)
+    if stats.nil?
+      return 500500500
+    end
+    return 1000000000 * stats['points'] +
+      500000000 + 1000000 * (stats['matches'][0] - stats['matches'][2]) +
+      500000 + 1000 * (stats['sets'][0] - stats['sets'][2]) +
+      500 + (stats['games'][0] - stats['games'][1])
+  end
 
   private
 

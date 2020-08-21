@@ -36,6 +36,8 @@ The basic set of API-calls is implemented
 - PUT /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Compute and save participants rank within the group (with possibly equal values) to take the ordering responsibility away from the frontend
+- Added contest 'Demoturnier Gruppen' with 7 (famous) participants to fixtures in order to have a test contest with 2 groups
 - Restructured match.result with 2 arrays (score_p1, score_p2) instead of array of arrays (score)
 - Restructured contest.result_params
 - Login with token not with a param field in the link but in a second signin form. The request is handled similar to a user login, i.e. it gives back a csrf-token as session id.
@@ -52,7 +54,6 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!
     - https://medium.com/@swilgosz/handling-exceptions-in-rails-api-applications-b276efa7e796
-- Compute and save rank within the group (with possibly equal values, at least in the integer part) to take the ordering responsibility away from the frontend
 - User: allow update
 
 ## Still completely missing

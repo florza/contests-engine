@@ -13,6 +13,19 @@ DemoMeisterschaft:
   result_params: { winning_sets: 2, tie_allowed: false,
                     points_win: 3, points_loss: 0, points_tie: 1 }
 
+DemoGruppen:
+  user: userOne
+  name: Demoturnier Gruppen
+  shortname: Demo Gruppen
+  description: Demoturnier Gruppen Beschreibung
+  ctype: Groups
+  public: false
+  token_read: DemoGruppenReader
+  token_write: DemoGruppenWriter
+  ctype_params: { grp_groups: [] }
+  result_params: { winning_sets: 1, tie_allowed: false,
+                    points_win: 2, points_loss: 0, points_tie: 1 }
+
 DemoKO:
   user: userOne
   name: Demoturnier KO

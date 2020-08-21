@@ -8,3 +8,52 @@ DM<%= i %>:
   shortname: DM<%= i %>
   remarks: ''
 <% end %>
+
+Roger:
+  user: userOne
+  contest: DemoGruppen
+  name: Roger Federer
+  shortname: Roger
+  remarks: ''
+
+Stan:
+  user: userOne
+  contest: DemoGruppen
+  name: Stanislaw Wawrinka
+  shortname: Stan
+  remarks: ''
+
+Raffa:
+  user: userOne
+  contest: DemoGruppen
+  name: Rafael Nadal
+  shortname: Raffa
+  remarks: ''
+
+Pete:
+  user: userOne
+  contest: DemoGruppen
+  name: Pete Sampras
+  shortname: Pete
+  remarks: ''
+
+Rod:
+  user: userOne
+  contest: DemoGruppen
+  name: Rod Laver
+  shortname: Rod
+  remarks: ''
+
+Martina:
+  user: userOne
+  contest: DemoGruppen
+  name: Martina Navràtilova
+  shortname: Martina
+  remarks: ''
+
+Steffi:
+  user: userOne
+  contest: DemoGruppen
+  name: Steffi Graf
+  shortname: Steffi
+  remarks: ''
