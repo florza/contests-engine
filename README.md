@@ -23,17 +23,18 @@ The basic set of API-calls is implemented
 - GET /api/v1/contests
 - GET /api/v1/contests/<id>
 - POST /api/v1/contests
-- PUT /api/v1/contests/<id>
+- PATCH /api/v1/contests/<id>
 - DELETE /api/v1/contests/<id>
 - POST /api/v1/contest<id>/draw
+- PATCH /api/v1/contest<id>/touch
 - GET /api/v1/contests/<id>/participants
 - GET /api/v1/contests/<id>/participants/<id>
 - POST /api/v1/contests/<id>/participants
-- PUT /api/v1/contests/<id>/participants/<id>
+- PATCH /api/v1/contests/<id>/participants/<id>
 - DELETE /api/v1/contests/<id>/participants/<id>
 - GET /api/v1/contests/<id>/matches/
 - GET /api/v1/contests/<id>/matches/<id>
-- PUT /api/v1/contests/<id>/matches/<id>
+- PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
 - Compute and save participants rank within the group (with possibly equal values) to take the ordering responsibility away from the frontend
@@ -50,6 +51,17 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 - Field userdata in all tables
 
 ## Next Steps
+- Delete draw
+- Create draw (Post? Patch?) with first defining the structure of the tableau
+  - with seed list: complete draw, overwrites previous:
+    1. Seed #1 to the top
+    2. Seed #2 to the bottom
+    3. Seeds #3 and #4 randomly to middle positions
+    4. And so on for #5 - #8, #9 - 16, ... (to maximal number of seeds or number of groups - never more than 1 seed per group)
+    5. Place eventually remaining participants randomly
+  - without seed list: eventually with partial draw as input, randomly drawing the remaining participants
+
+
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!

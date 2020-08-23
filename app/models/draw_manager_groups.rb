@@ -3,45 +3,21 @@ class DrawManagerGroups < DrawManager
   validate :validate_groups
 
   def initialize(contest, params)
-    @contest = contest
-    @participants = @contest.participants.to_a
+    super
     @grp_groups = params[:grp_groups]
     @grp_groups = JSON.parse(@grp_groups) if @grp_groups.class == String
   end
 
-  def draw
-    update_contest if valid?
-    update_participants if valid?
-    create_matches if valid?
-  end
-
   def update_contest
-    newParams = @contest.ctype_params || {}
-    newParams['grp_groups'] = @grp_groups
-    if !@contest.update(
-      { ctype_params: newParams,
-        draw_at: DateTime.now,
-        last_action_at: DateTime.now }
-    )
-      errors.add(:grp_groups, 'contest update failed')
-    end
+    update_contest_draw_info( 'grp_groups' => @grp_groups )
   end
 
   def update_participants
-    Participant.transaction do
-      @grp_groups.each_with_index do |members, group0|
-        members.each_with_index do |participant_id, pos0|
-          participant = @participants.find { |p| p.id == participant_id }
-          #ctype_params = { 'grp_nr' => group0 + 1, 'grp_pos' => pos0 + 1 }
-          participant.ctype_params =
-            { 'grp_nr' => group0 + 1, 'grp_pos' => pos0 + 1 }
-          if !participant.save
-            errors.add(:groups, 'participants update failed')
-            return
-          end
-        end
-      end
-    end
+    update_participants_draw_info(@grp_groups)
+  end
+
+  def get_participant_params(group, pos)
+    return { 'grp_nr' => group, 'grp_pos' => pos }
   end
 
   def create_matches
@@ -72,7 +48,7 @@ class DrawManagerGroups < DrawManager
       errors.add(:groups, 'participant ids in sequence are not unique')
     end
     participant_ids.each do |participant_id|
-      if !@participants.find { |p| p.id == participant_id }
+      if !@participants.find(participant_id)
         errors.add(:groups, "invalid id #{participant_id} in sequence")
       end
     end
@@ -82,4 +58,5 @@ class DrawManagerGroups < DrawManager
       end
     end
   end
+
 end

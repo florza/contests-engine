@@ -7,6 +7,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM1),
       participant_2: participants(:DM2),
+      ctype_params: {"grp_nr"=>1, "grp_round"=>1},
       result: {}
     )
   end
@@ -33,7 +34,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
 
     @match.update!({ result: nil, winner_id: nil})
 
-    assert_nil @match.stats
+    assert_equal Result::empty_match_stats, @match.stats
   end
 
   test "participant stats are computed on match save" do
@@ -71,6 +72,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM1),
       participant_2: participants(:DM3),
+      ctype_params: {"grp_nr"=>1, "grp_round"=>1},
       result: {}
     )
     @match2.result['score_p1'] = [6,7]
@@ -86,6 +88,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM3),
       participant_2: participants(:DM2),
+      ctype_params: {"grp_nr"=>1, "grp_round"=>1},
       result: {}
     )
     @match3.result['score_p1'] = [6,1,5]
