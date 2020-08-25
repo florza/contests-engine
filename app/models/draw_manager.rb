@@ -9,8 +9,8 @@ class DrawManager
 
   def draw
     update_contest if valid?
-    update_participants if valid?
-    create_matches if valid?
+    update_participants if valid? && complete?
+    create_matches if valid? && complete?
   end
 
   def update_contest_draw_info(params)
@@ -24,21 +24,20 @@ class DrawManager
     end
   end
 
-  def update_participants_draw_info(groups)
-    Participant.transaction do
+  def update_participants_draw_info(groups, &get_params)
+    #Participant.transaction do
       groups.each_with_index do |members, group0|
         members.each_with_index do |participant_id, pos0|
-          next if participant_id == 0
+          next if participant_id.to_i <= 0
           participant = @participants.find { |p| p.id == participant_id }
-          participant.ctype_params =
-              get_participant_params(group0 + 1, pos0 + 1)
+          participant.ctype_params = get_params.call(group0 + 1, pos0 + 1)
           if !participant.save
-            errors.add(type, 'participants update failed')
+            errors.add(:draw, 'participants update failed')
             return
           end
         end
       end
-    end
+    #end
   end
 
   # required manual definitions for validations in not ActiveRecord classes

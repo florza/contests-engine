@@ -37,6 +37,10 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- First steps to KO draw:
+  - Random draw of all empty positions, i.e. of all positions, if the user has not drawn any positions manually. Such a draw also returns the correct BYE positions.
+  - Adapted KO validation to incomplete draws.
+  - Delete KO draw, i.e. params in contest and participants and all matches. No test yet if some matches have already been played.
 - Compute and save participants rank within the group (with possibly equal values) to take the ordering responsibility away from the frontend
 - Added contest 'Demoturnier Gruppen' with 7 (famous) participants to fixtures in order to have a test contest with 2 groups
 - Restructured match.result with 2 arrays (score_p1, score_p2) instead of array of arrays (score)

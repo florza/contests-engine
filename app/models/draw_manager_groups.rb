@@ -13,11 +13,13 @@ class DrawManagerGroups < DrawManager
   end
 
   def update_participants
-    update_participants_draw_info(@grp_groups)
+    update_participants_draw_info(@grp_groups) do |group, pos|
+      { 'grp_nr' => group, 'grp_pos' => pos }
+    end
   end
 
-  def get_participant_params(group, pos)
-    return { 'grp_nr' => group, 'grp_pos' => pos }
+  def complete?
+    true
   end
 
   def create_matches

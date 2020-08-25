@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       resources :contests do
         resources :participants
         resources :matches, except: [:create, :destroy]
-        resource  :draw, only: [:create]
+        resource  :draw, only: [:create, :destroy]
       end
     end
   end

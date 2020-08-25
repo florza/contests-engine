@@ -6,6 +6,17 @@ class DrawManagerKO < DrawManager
     super
     @ko_startpos = params[:ko_startpos]
     @ko_startpos = JSON.parse(@ko_startpos) if @ko_startpos.class == String
+    @ko_seeds = params[:ko_seeds]
+    @ko_startpos = JSON.parse(@ko_seeds) if @ko_seeds.class == String
+  end
+
+  def draw
+    if @ko_seeds && @ko_seeds.count > 0
+      generate_seeded_draw
+    elsif !complete? && valid?
+      complete_draw
+    end
+    super
   end
 
   def update_contest
@@ -13,12 +24,29 @@ class DrawManagerKO < DrawManager
   end
 
   def update_participants
-    update_participants_draw_info([@ko_startpos])
+    if complete?
+      update_participants_draw_info([@ko_startpos]) do |group, pos|
+        { 'ko_pos' => pos }
+      end
+    end
   end
 
-  def get_participant_params(group, pos)
-    return { 'ko_pos' => pos }
+  def delete_draw(contest)
+    if contest.ctype_params
+      contest.ctype_params.delete('ko_startpos')
+      contest.ctype_params.delete('ko_seeds')
+      contest.save!
+    end
+    contest.participants.each do |p|
+      if p.ctype_params && p.ctype_params['ko_pos']
+        p.ctype_params.delete('ko_pos')
+        p.save!
+      end
+    end
+    contest.matches.destroy_all
   end
+
+  private
 
   def create_matches
     @contest.matches.destroy_all
@@ -47,25 +75,63 @@ class DrawManagerKO < DrawManager
   end
 
   def validate_ko
-    return # TODO delete and correct following code!
-    if @ko_startpos != @participants.count
-      errors.add(:groups, 'wrong number of participants in positions')
+    validate_ko_size
+    validate_ko_byes
+    validate_ko_uniqueness
+    validate_ko_ids
+  end
+
+  def validate_ko_size
+    tableau_size = get_tableau_size(@participants.count)
+    if @ko_startpos.count != tableau_size
+      errors.add(:ko_startpos, "must contain #{tableau_size} positions")
     end
-    if @ko_startpos.uniq.count != @participants.count
-      errors.add(:groups, 'participant ids in positions are not unique')
-    end
-    @ko_startpos.each do |participant_id|
-      if participant_id != 0
-        if !@participants.find { |p| p.id == participant_id }
-          errors.add(:groups, "invalid id #{participant_id} in positions")
-        end
+  end
+
+  def validate_ko_byes
+    get_tableau_structure(@participants.count).each_with_index do |pos, i|
+      if (pos.nil? && @ko_startpos[i] != 'BYE') ||
+          (pos && @ko_startpos[i] == 'BYE')
+        errors.add(:ko_startpos, "contains wrong BYE positions")
+        break
       end
     end
   end
 
+  def validate_ko_uniqueness
+    pp @ko_startpos
+    drawn_ppants = @ko_startpos.select {|p| p.to_i > 0}
+    if drawn_ppants.uniq.count != drawn_ppants.count
+      errors.add(:ko_startpos, 'must contain unique participant ids')
+    end
+  end
+
+  def validate_ko_ids
+    @ko_startpos.select {|p| p.to_i > 0}.each do |ppant_id|
+      if !@participants.find {|p| p.id == ppant_id}
+        errors.add(:ko_startpos, "invalid participant id #{ppant_id}")
+      end
+    end
+  end
+
+  def complete?
+    @ko_startpos.count {|p| p.to_i > 0} == @participants.count
+  end
+
+  def complete_draw
+    ppants_to_draw = @participants.select {|p| !@ko_startpos.include?(p.id) }
+    pos_to_draw = @ko_startpos.each_with_index.select {|p, i| p == 0}
+    pos_to_draw.each do |p, i|
+      draw = rand(ppants_to_draw.count)
+      @ko_startpos[i] = ppants_to_draw[draw].id
+      ppants_to_draw.delete_at(draw)
+    end
+    # raise RuntimeError if ppants_to_draw.count != 0
+  end
+
   def get_ko_schedule
     matches = {}
-    round = firstRound = getTableauSize(@ko_startpos.size) / 2
+    round = firstRound = get_tableau_size(@ko_startpos.size) / 2
     while round > 0
       1.upto(round) do |pos|
         pos2 = 2 * pos
@@ -91,11 +157,30 @@ class DrawManagerKO < DrawManager
     return matches
   end
 
-  def getTableauSize(n)
-    return 0 if n < 2
-    s = 2
-    s *= 2 while s < n
+  # Get order of seed positions and byes for n participants.
+  #
+  #   2  # => [1, 2]
+  #   4  # => [1, 4, 3, 2]
+  #   7  # => [1, nil, 5, 4, 3, 6, 7, 2]
+  #   13 # => [1, nil, 9, 8, 5, 12, 13, 4, 3, nil, 11, 6, 7, 10, nil, 2]
+  def get_tableau_structure(n)
+    return [] if n < 2
+    s = [1, 2]
+    while s.size < n
+      newSize = 2 * s.size
+      s1 = s.each_with_index.map do |p, i|
+        pNew = newSize + 1 - p
+        pNew = nil if pNew > n
+        i.even? ? [p, pNew] : [pNew, p]
+      end
+      s = s1.flatten
+    end
     return s
+  end
+
+  # x | x >= n and x is a power of 2
+  def get_tableau_size(n)
+    2 ** Math.log(n, 2).ceil
   end
 
 end
