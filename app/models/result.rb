@@ -5,7 +5,7 @@ class Result
     if (result.nil? || result.empty? ||
         result['score_p1'].nil? || result['score_p1'] === [] ||
         result['score_p2'].nil? || result['score_p2'] === [])
-      return 'empty result cannot have a winner or tie' if !match.winner_id.nil?
+      return 'empty result cannot have a winner or tie' unless match.winner_id.nil?
       return false
     end
     return validate_format(result, result_params) ||
@@ -16,7 +16,7 @@ class Result
   # result as seen from Participant_1, this is used in most cases
   def self.to_s(result)
     return nil if result.nil?
-    # result = JSON.parse(result) if result.instance_of?(String)
+    # result = JSON.parse(result) if result.is_a?(String)
     score = result['score_p1'].zip(result['score_p2']).map { |set|
               set[0].to_s + ':' + set[1].to_s }.join(' / ')
     result['walk_over'] ? score + ' (w.o.)' : score
@@ -25,7 +25,7 @@ class Result
   # Result as seen from Participant_2
   def self.to_s_reversed(result)
     return nil if result.nil?
-    # result = JSON.parse(result) if result.instance_of?(String)
+    # result = JSON.parse(result) if result.is_a?(String)
     score = result['score_p1'].zip(result['score_p2']).map { |set|
               set[1].to_s + ':' + set[0].to_s }.join(' / ')
     result['walk_over'] ? score + ' (w.o.)' : score
@@ -81,8 +81,8 @@ class Result
 
   def self.validate_format(result, result_params)
     max_sets = result_params['winning_sets'] * 2 - 1 || 1
-    if !(result['score_p1'].instance_of?(Array) &&
-        result['score_p2'].instance_of?(Array) &&
+    unless (result['score_p1'].is_a?(Array) &&
+        result['score_p2'].is_a?(Array) &&
         result['score_p1'].size === result['score_p2'].size &&
         result['score_p1'].size >= 1 &&
         result['score_p1'].size <= max_sets)
@@ -94,9 +94,9 @@ class Result
   def self.validate_sets(result)
     score = result['score_p1'].zip(result['score_p2'])
     score.each_with_index do |set, i|
-      if !set.instance_of?(Array) || set.size != 2 ||
-          !set[0].instance_of?(Integer) || set[0] < 0 ||
-          !set[1].instance_of?(Integer) || set[1] < 0
+      if !set.is_a?(Array) || set.size != 2 ||
+          !set[0].is_a?(Integer) || set[0] < 0 ||
+          !set[1].is_a?(Integer) || set[1] < 0
         return "of set #{i+1} is not an array of two non negative numbers"
       end
     end

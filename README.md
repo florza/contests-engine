@@ -26,7 +26,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>
 - DELETE /api/v1/contests/<id>
 - POST /api/v1/contest<id>/draw
-- PATCH /api/v1/contest<id>/touch
+- DELETE /api/v1/contest<id>/draw
 - GET /api/v1/contests/<id>/participants
 - GET /api/v1/contests/<id>/participants/<id>
 - POST /api/v1/contests/<id>/participants
@@ -37,6 +37,11 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Refactored DrawManager classes:
+  - Same instance variable names in all subclasses, and post params, to make it easier to define generally usable methods
+  - Move code to parent class and reused it
+  - Moved get_ko_schedule to schedule class, used same output structure for KO and groups
+- Some general adaptions to style guide (is_a?, unless, size)
 - First steps to KO draw:
   - Random draw of all empty positions, i.e. of all positions, if the user has not drawn any positions manually. Such a draw also returns the correct BYE positions.
   - Adapted KO validation to incomplete draws.
@@ -55,7 +60,6 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 - Field userdata in all tables
 
 ## Next Steps
-- Delete draw
 - Create draw (Post? Patch?) with first defining the structure of the tableau
   - with seed list: complete draw, overwrites previous:
     1. Seed #1 to the top
@@ -64,13 +68,41 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
     4. And so on for #5 - #8, #9 - 16, ... (to maximal number of seeds or number of groups - never more than 1 seed per group)
     5. Place eventually remaining participants randomly
   - without seed list: eventually with partial draw as input, randomly drawing the remaining participants
-
-
+  - without draw: only calculate tableau (BYE position, group sizes)
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!
     - https://medium.com/@swilgosz/handling-exceptions-in-rails-api-applications-b276efa7e796
 - User: allow update
+
+## Adaptions to Ruby style guide
+- [ ] participant_1_id: participant1_id
+- [ ] one line lambda: ->(...) { ... } or -> { ... }
+- [ ] evtl.case instead of elsif?
+- [x] is_instance_of?: is_a?
+- [ ] multiline 'if b/  a = c/else/  a = d/end':
+  multiline indented
+  a = if b
+        c
+      else
+        a
+      end
+- [ ] if (a = b(...)) is ok only with parenthesis
+- [ ] never 'and' / 'or'!
+- [ ] chaining with '.' on first line (next line would also be ok, but be consistent!)
+- [ ] split long string literals with \ at end of line
+- [x] if !x: unless x, especially as modifier
+- [ ] method lenght: usually <= 5, max 10 lines
+- [ ] no '::' in class method calls, use '.' ('..' for constants is ok)
+- [ ] optional param (b = 5): use keyword param (b: 5)
+- [ ] param default (b=5): (b = 5)
+- [ ] Prefer modules to classes with only class methods (Result?!)
+- [ ] avoid get_/set_ for attribute accessors and mutators
+- [ ] array[0]/[-1]: array.first/.last
+- [ ] use (and provide) fetch() and similars instead of []
+- [x] count: size !!!
+- [ ] map(...).flatten: flat_map(...)
+- [ ] x.reverse.each: x.reverse_each
 
 ## Still completely missing
 - Additional ctypes: KO, groups or KO after groups, pyramids, double-KO...

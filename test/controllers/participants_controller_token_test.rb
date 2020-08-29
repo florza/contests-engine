@@ -11,7 +11,7 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
     get api_v1_contest_participants_url(@contest), as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 4, result.count
+    assert_equal 4, result.size
   end
 
   test "should show participant with token" do
@@ -20,7 +20,7 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
           as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result.count
+    assert_not_nil result.size
   end
 
   test "should not create participant with token" do

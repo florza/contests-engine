@@ -10,7 +10,7 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
     get api_v1_contests_url, headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 3, result.count
+    assert_equal 3, result.size
   end
 
   test "should create contest" do

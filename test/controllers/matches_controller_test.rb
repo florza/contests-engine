@@ -12,7 +12,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     get api_v1_contest_matches_url, headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 6, result.count
+    assert_equal 6, result.size
   end
 
   # test "should create match" do
@@ -27,7 +27,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
     get api_v1_contest_match_url(@contest, @match), headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result.count
+    assert_not_nil result.size
   end
 
   test "should update match with result as object" do

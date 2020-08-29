@@ -9,7 +9,7 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
     login_readToken
     get api_v1_contests_url, as: :json
     result = JSON.parse(@response.body)
-    assert_equal 1, result.count
+    assert_equal 1, result.size
   end
 
   test "should show token contest with token" do
@@ -17,7 +17,7 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
     get api_v1_contest_url(@contest), as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result.count
+    assert_not_nil result.size
   end
 
   test "should not create new contest with token" do

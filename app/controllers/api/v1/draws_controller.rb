@@ -4,7 +4,7 @@ module Api
       before_action :authorize_user!
 
       def create
-        draw_mgr = get_draw_manager(draw_params)
+        draw_mgr = get_draw_manager(params[:draw])
         draw_mgr.draw
         if draw_mgr.valid?
           render json: params[:draw], status: :created
@@ -25,11 +25,11 @@ module Api
         dmclass.constantize.new(@contest, myparams)
       end
 
-      def draw_params
-        params.require(:draw).permit( { grp_groups: [] },
-                                      { ko_startpos: [] },
-                                      { ko_seeds: [] } )
-      end
+      # NOT USED: grp_groups cannot be permitted as array of arrays
+      # def draw_params
+      #   params.require(:draw).permit( { draw_tableau: [] },
+      #                                 { draw_seeds: [] } )
+      # end
 
     end
   end

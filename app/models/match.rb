@@ -15,7 +15,7 @@ class Match < ApplicationRecord
 
   before_validation do |m|
     begin
-      m.result = JSON.parse(m.result) if m.result.instance_of?(String)
+      m.result = JSON.parse(m.result) if m.result.is_a?(String)
     rescue JSON::ParserError
       errors.add(:result, "is not a valid JSON field")
     end

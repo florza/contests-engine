@@ -12,7 +12,7 @@ class ParticipantsControllerUserTest < ActionDispatch::IntegrationTest
           headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 4, result.count
+    assert_equal 4, result.size
   end
 
   test "should create participant" do
@@ -32,7 +32,7 @@ class ParticipantsControllerUserTest < ActionDispatch::IntegrationTest
           headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result.count
+    assert_not_nil result.size
   end
 
   test "should update participant" do

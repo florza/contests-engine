@@ -19,7 +19,7 @@ class ProcessManagerGroups < ProcessManager
 
   def self.sum_match_stats(matches, stats)
     matches.each do |match|
-      if !match.winner_id.nil?
+      unless match.winner_id.nil?
         sum_stats_participant(1, match, stats)
         sum_stats_participant(2, match, stats)
         #pp "- match #{match.id}", participants
@@ -61,10 +61,10 @@ class ProcessManagerGroups < ProcessManager
     # must be done before computing ranks to place those ppants correctly
     participants.each do |p|
       grp_nr = p.ctype_params['grp_nr']
-      if !stats[grp_nr]
+      unless stats[grp_nr]
         stats[grp_nr] = {}
       end
-      if !stats[grp_nr][p.id]
+      unless stats[grp_nr][p.id]
         stats[grp_nr][p.id] = Result::empty_participant_stats
       end
       stats[grp_nr][p.id]['rankvalue'] =

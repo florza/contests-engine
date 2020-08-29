@@ -5,6 +5,6 @@ class ScheduleTest < ActiveSupport::TestCase
     members = [111, 222, 333, 444]
     matches = Schedule::get_group_schedule(members, true)
     #p matches
-    assert_equal 12, matches.count
+    assert_equal 12, matches.size
   end
 end
