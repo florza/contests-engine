@@ -24,4 +24,5 @@
 iturnier2backend.code-workspace
 
 # Ignore generated docs
+/coverage/*
 /doc/*

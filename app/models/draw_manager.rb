@@ -6,8 +6,10 @@ class DrawManager
     @contest = contest
     @participants = @contest.participants.to_a
 
+    if params.class == String
+      params = JSON.parse(params).symbolize_keys
+    end
     @draw_tableau = params[:draw_tableau]
-    @draw_tableau = JSON.parse(@draw_tableau) if @draw_tableau.class == String
     if @draw_tableau.nil? or @draw_tableau == []
       @draw_tableau = [[]]
     end
@@ -15,7 +17,7 @@ class DrawManager
     @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
 
     @draw_seeds = params[:draw_seeds]
-    @draw_seeds = JSON.parse(@draw_seeds) if @draw_seeds.class == String
+    # @draw_seeds = JSON.parse(@draw_seeds) if @draw_seeds.class == String
     @draw_seeds = [] if @draw_seeds.nil?
   end
 
@@ -47,6 +49,18 @@ class DrawManager
       end
     end
     contest.matches.destroy_all
+  end
+
+  ##
+  # Return the draw tableau as is, without doing any random draws or similar.
+  # This is used to answer a 'GET /contest/{id}/draw' request. If the clients
+  # sends a tableau with empty groups with this request, it will get back a
+  # tableau with 0 at the places to be filled with participant ids and
+  # - for KO: the correct size and BYE positions
+  # - for groups: an optimal distribution of group sizes
+
+  def draw_structure
+    return @draw_tableau
   end
 
   def create_matches(group, matches, match_ids: {})
@@ -94,7 +108,7 @@ class DrawManager
 
   def validate_drawn_ids
     @drawn_participants.each do |ppant_id|
-      unless @participants.find(ppant_id)
+      unless @participants.find {|p| p.id == ppant_id}
         errors.add(:draw_tableau, "invalid participant_id #{ppant_id}")
       end
     end

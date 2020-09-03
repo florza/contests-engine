@@ -10,9 +10,12 @@ class DrawManagerGroups < DrawManager
 
   def initialize(contest, params)
     super
-    if @drawn_participants.size < @participants.size
-      groups_structure =
-          get_groups_structure(@participants.size, @draw_tableau.size)
+    if @drawn_participants.size != @participants.size
+        # || @draw_tableau.size != @contest.ctype_params['draw_tableau'].size
+      if (groups_structure = get_groups_structure(
+          @participants.size, @draw_tableau.size)) == [[]]
+        return
+      end
       @draw_tableau.dup.each_with_index do |group, grp_nr0|
         size_difference = groups_structure[grp_nr0].size - group.size
         if size_difference > 0
@@ -31,7 +34,7 @@ class DrawManagerGroups < DrawManager
   private
 
   ##
-  # Create all matches for the contest, all participants are known.
+  # Create all matches for the contest, all participants are drawn.
 
   def create_matches
     @contest.matches.destroy_all
@@ -102,7 +105,7 @@ class DrawManagerGroups < DrawManager
   #   10 participants, 3 groups: [3,    4, 3]
 
   def get_groups_structure(nbr_ppants, nbr_groups)
-    if (nbr_ppants < nbr_groups * 2)
+    if nbr_ppants < nbr_groups * 2
       errors.add(:groups, `too few participants for #{nbr_groups} groups`)
       return [[]]
     end

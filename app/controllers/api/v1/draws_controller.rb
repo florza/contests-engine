@@ -3,6 +3,16 @@ module Api
     class DrawsController < ApplicationController
       before_action :authorize_user!
 
+      def show
+        draw_mgr = get_draw_manager(params[:draw])
+        if draw_mgr.valid?
+          structure = draw_mgr.draw_structure
+          render json: structure, status: :created
+        else
+          render json: draw_mgr.errors, status: :unprocessable_entity
+        end
+      end
+
       def create
         draw_mgr = get_draw_manager(params[:draw])
         draw_mgr.draw

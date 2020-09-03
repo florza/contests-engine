@@ -25,8 +25,8 @@ The basic set of API-calls is implemented
 - POST /api/v1/contests
 - PATCH /api/v1/contests/<id>
 - DELETE /api/v1/contests/<id>
-- POST /api/v1/contest<id>/draw
-- DELETE /api/v1/contest<id>/draw
+- POST /api/v1/contests/<id>/draw
+- DELETE /api/v1/contests/<id>/draw
 - GET /api/v1/contests/<id>/participants
 - GET /api/v1/contests/<id>/participants/<id>
 - POST /api/v1/contests/<id>/participants
@@ -37,6 +37,9 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Added test coverage reports (simplecov)
+- Defined tests for DrawManagerKO and DrawManagerGroups
+- Implemented GET draw, to get a (probably empty) tableau structure (BYE positions in KO, optimal group sizes and distribution for a given number of group)
 - Refactored DrawManager classes:
   - Same instance variable names in all subclasses, and post params, to make it easier to define generally usable methods
   - Move code to parent class and reused it
@@ -69,6 +72,7 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
     5. Place eventually remaining participants randomly
   - without seed list: eventually with partial draw as input, randomly drawing the remaining participants
   - without draw: only calculate tableau (BYE position, group sizes)
+- GET draw for tableau structure
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!

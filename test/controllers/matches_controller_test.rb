@@ -49,7 +49,7 @@ class MatchesControllerUserTest < ActionDispatch::IntegrationTest
   # as it is done from Postman!
   # A correction of the validation would also need a conversion
   # of the values to work.
-  test "should update match with result as JSON(!)-string" do
+  test "update match with result as JSON(!)-string" do
     patch api_v1_contest_match_url(@contest, @match),
           headers: @headers,
           params: { match: {remarks: 'My remarks',

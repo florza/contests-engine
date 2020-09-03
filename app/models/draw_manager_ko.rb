@@ -4,20 +4,21 @@ class DrawManagerKO < DrawManager
 
   ##
   # KO specific initialization:
-  # If the given tableau does not yet contain any drawn participants,
-  # the tableau structure with the correct number and placing of
-  # eventual BYEs is defined.
-  # @draw_tableau for KO has the same two-level structure as a group
-  # tableau, but contains only 1 group. To make the handling of this
-  # easier and more readable, @ko_tableau is defined as a "shorthand" for
-  # @draw_tableau.first.
+  # If the sent tableau does not yet contain any participants, the tableau
+  # structure with the correct number and placing of eventual BYEs is defined.
+  # @draw_tableau for KO has the same two-level structure as a group tableau,
+  # but so far contains only 1 group. (This could change , e.g in a
+  # double elimination contest with a loosers tableau or a contest where
+  # ALL ranks are played out.)
+  # To make the handling of this structure easier and more readable,
+  # @ko_tableau is defined as a "shorthand" for @draw_tableau.first.
 
   def initialize(contest, params)
     super
-    if @drawn_participants == []
-      @draw_tableau =
-        [get_ko_structure(contest.participants.count).
-          map {|p| p == 'BYE' ? p : 0}]
+    if @draw_tableau.first.size < get_tableau_size(contest.participants.count)
+      @draw_tableau[0] =
+        get_ko_structure(contest.participants.count).
+          map {|p| p == 'BYE' ? p : 0}
     end
     @ko_tableau = @draw_tableau.first
   end
@@ -56,10 +57,17 @@ class DrawManagerKO < DrawManager
   # Validation methods
 
   def validate_ko
+    validate_ko_1group
     validate_ko_size
     validate_or_set_ko_byes
     validate_drawn_uniqueness
     validate_drawn_ids
+  end
+
+  def validate_ko_1group
+    if @draw_tableau.size != 1
+      errors.add(:draw_tableau, "must be an array with exactly 1 array of positions")
+    end
   end
 
   def validate_ko_size
