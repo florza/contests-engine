@@ -10,7 +10,7 @@ class DrawManager
       params = JSON.parse(params).symbolize_keys
     end
     @draw_tableau = params[:draw_tableau]
-    if @draw_tableau.nil? or @draw_tableau == []
+    if @draw_tableau.blank?
       @draw_tableau = [[]]
     end
 
@@ -18,7 +18,7 @@ class DrawManager
 
     @draw_seeds = params[:draw_seeds]
     # @draw_seeds = JSON.parse(@draw_seeds) if @draw_seeds.class == String
-    @draw_seeds = [] if @draw_seeds.nil?
+    @draw_seeds = [] if @draw_seeds.blank?
   end
 
   def draw
@@ -51,18 +51,6 @@ class DrawManager
     contest.matches.destroy_all
   end
 
-  ##
-  # Return the draw tableau as is, without doing any random draws or similar.
-  # This is used to answer a 'GET /contest/{id}/draw' request. If the clients
-  # sends a tableau with empty groups with this request, it will get back a
-  # tableau with 0 at the places to be filled with participant ids and
-  # - for KO: the correct size and BYE positions
-  # - for groups: an optimal distribution of group sizes
-
-  def draw_structure
-    return @draw_tableau
-  end
-
   def create_matches(group, matches, match_ids: {})
     matches.each do |key, match|
       params = { 'draw_group' => group,
@@ -79,7 +67,7 @@ class DrawManager
       )
       create_matches_before_save(m, match_ids)
       if m.save
-        match_ids[[m['draw_round'], m['draw_pos']]] = m.id
+        match_ids[[match[:round], match[:pos]]] = m.id
       else
         errors.add(:ko, 'match creation failed') and return
       end

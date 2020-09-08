@@ -87,7 +87,8 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
     draw_params = @full_params
     mgr = DrawManagerGroups.new(@contest, draw_params)
     mgr.draw
-    assert_equal @full_params[:draw_tableau], mgr.draw_structure
+    assert_equal @full_params[:draw_tableau],
+      @contest.ctype_params['draw_tableau']
   end
 
   test "empty draw is filled up randomly" do
@@ -96,7 +97,7 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
     [0..2].each do |draw|
       mgr = DrawManagerGroups.new(@contest, draw_params)
       mgr.draw
-      new_draw = mgr.draw_structure
+      new_draw = @contest.ctype_params['draw_tableau']
       assert_equal 7, new_draw.flatten.uniq.size
       assert_not_equal last_draw, new_draw
       last_draw = new_draw.dup
@@ -108,7 +109,7 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
     draw_params[:draw_tableau][0][1] = draw_params[:draw_tableau][1][2] = 0
     mgr = DrawManagerGroups.new(@contest, draw_params)
     mgr.draw
-    new_draw = mgr.draw_structure
+    new_draw = @contest.ctype_params['draw_tableau']
     [ [0, 0], [0, 2], [1, 0], [1, 1], [1, 3] ].each do |g, p|
       assert_equal @full_params[:draw_tableau][g][p], new_draw[g][p]
     end

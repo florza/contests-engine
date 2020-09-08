@@ -2,6 +2,10 @@ class ApplicationController < ActionController::API
   include JWTSessions::RailsAuthorization
   rescue_from JWTSessions::Errors::Unauthorized, with: :not_authorized
 
+  # current user or token (only one is filled)
+  attr_accessor :current_user_id
+  attr_accessor :current_token
+
   def authorize_user!
     get_current_authorization!
     payload['user_id'].nil? ? not_authorized : set_user_contest
@@ -50,6 +54,8 @@ class ApplicationController < ActionController::API
     else
       @contest = @user.contests.public_columns.order(last_action: :desc).limit(1)
     end
+    self.current_user_id = @user.id
+    self.current_token = nil
   end
 
   def set_token_contest
@@ -62,6 +68,8 @@ class ApplicationController < ActionController::API
     end
     @contest = Contest.public_columns.find(contest_id)
     not_authorized if @contest.nil?
+    self.current_user_id = nil
+    self.current_token = payload['tokenid']
   end
 
 end

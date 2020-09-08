@@ -1,17 +1,20 @@
 # Backend for iTurnier II
 
 First draft for a new generation of iTurnier.org
-- backend tier written in Ruby on Rails
-- frontend with any tool, first draft will probably be with Vue.js
-- main goal is to make it much easier for a contest manager to define und manage a contests
-- no more user registration and login necessary for the player or teams: the contest manager just sends them a link with an access token to view a contest and to enter the results of their own matches
+- This backend tier is written in Ruby on Rails
+- Frontend could be made with any tool, a first draft as a proof of concept is made with Vue.js
 
-The first version will only provide minimal functionality for
+The main goal is to make it much easier for a contest manager to define und manage a contest, e.g.
+- No user registration and login necessary for the player or teams: the contest manager just sends them a link with an access token to view a contest and to enter the results of their own matches
+- Minimal data needed for participants, only name and shortname
+
+The first version of the backen will only provide minimal functionality for
 - registration and login
 - creating and editing contests and participants
 - doing the draw and generate all matches
 - edit the match results and actualize the contests state
-- contests with 1 ore more groups, each participant playing 1 match against each other of the same group, without sudden death or final groups for the group winners
+- contests with 1 ore more groups (round robin), no return matches, without sudden death or final groups for the group winners
+- knockout (sudden death, elimination game), no match for third place
 - tokens generated for read or write access to the entire contest, not only a players own matches
 
 ## Status
@@ -24,7 +27,8 @@ The basic set of API-calls is implemented
 - GET /api/v1/contests/<id>
 - POST /api/v1/contests
 - PATCH /api/v1/contests/<id>
-- DELETE /api/v1/contests/<id>
+- DELETE /api/v1/contests/<id>-
+- GET /api/v1/contests/<id>/draw
 - POST /api/v1/contests/<id>/draw
 - DELETE /api/v1/contests/<id>/draw
 - GET /api/v1/contests/<id>/participants
@@ -37,9 +41,12 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Refactored update_participant_stats to DrawManager to handle both, Groups and KO
+- Set winner of KO-match as participant_1/2 of next match
+- Allowed non-standard BYE positions in KO
 - Added test coverage reports (simplecov)
 - Defined tests for DrawManagerKO and DrawManagerGroups
-- Implemented GET draw, to get a (probably empty) tableau structure (BYE positions in KO, optimal group sizes and distribution for a given number of group)
+- Implemented GET draw, to get an empty tableau structure (BYE positions in KO, optimal group sizes and distribution for a given number of group)
 - Refactored DrawManager classes:
   - Same instance variable names in all subclasses, and post params, to make it easier to define generally usable methods
   - Move code to parent class and reused it
@@ -63,16 +70,13 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 - Field userdata in all tables
 
 ## Next Steps
-- Create draw (Post? Patch?) with first defining the structure of the tableau
-  - with seed list: complete draw, overwrites previous:
+- Compute correct rank in KO
+- Create draw with seed list (complete draw, overwrites previous):
     1. Seed #1 to the top
     2. Seed #2 to the bottom
     3. Seeds #3 and #4 randomly to middle positions
     4. And so on for #5 - #8, #9 - 16, ... (to maximal number of seeds or number of groups - never more than 1 seed per group)
     5. Place eventually remaining participants randomly
-  - without seed list: eventually with partial draw as input, randomly drawing the remaining participants
-  - without draw: only calculate tableau (BYE position, group sizes)
-- GET draw for tableau structure
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!

@@ -2,9 +2,7 @@ class Result
 
   # returns an error message or nil
   def self.validate(result, match, result_params)
-    if (result.nil? || result.empty? ||
-        result['score_p1'].nil? || result['score_p1'] === [] ||
-        result['score_p2'].nil? || result['score_p2'] === [])
+    if result.blank? || result['score_p1'].blank? || result['score_p2'].blank?
       return 'empty result cannot have a winner or tie' unless match.winner_id.nil?
       return false
     end
@@ -15,7 +13,7 @@ class Result
 
   # result as seen from Participant_1, this is used in most cases
   def self.to_s(result)
-    return nil if result.nil?
+    return nil if result.blank?
     # result = JSON.parse(result) if result.is_a?(String)
     score = result['score_p1'].zip(result['score_p2']).map { |set|
               set[0].to_s + ':' + set[1].to_s }.join(' / ')
@@ -24,7 +22,7 @@ class Result
 
   # Result as seen from Participant_2
   def self.to_s_reversed(result)
-    return nil if result.nil?
+    return nil if result.blank?
     # result = JSON.parse(result) if result.is_a?(String)
     score = result['score_p1'].zip(result['score_p2']).map { |set|
               set[1].to_s + ':' + set[0].to_s }.join(' / ')
@@ -68,7 +66,7 @@ class Result
     # BBB is 500 + (MatchesWon - MatchesLost) i.e. +4 => 504, -4 => 496
     # CCC is 500 + (SetWon - SetLost)
     # DDD is 500 + (GamesWon - GamesLost)
-    if stats.nil?
+    if stats.blank?
       return 500500500
     end
     return 1000000000 * stats['points'] +

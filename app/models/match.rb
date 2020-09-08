@@ -27,7 +27,7 @@ class Match < ApplicationRecord
     m.stats = Result.get_stats(m, @contest.result_params)
   end
 
-  after_save do |m|
+  after_update do |m|
     #if m.result_1_vs_2 != result_1_vs_2_was
       process_result
     #end
