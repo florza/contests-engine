@@ -3,14 +3,14 @@ class RefactorContesttypeFields < ActiveRecord::Migration[5.2]
     # own field for ResultParams, separated from ctype_params
     add_column :contests, :result_params, :json
 
-    Contest.all.each do |c|
-      c.result_params = { 'winning_sets' => c.nbr_sets }
-      if c.contesttype_params && c.contesttype_params['points']
-        c.result_params['points'] = c.contesttype_params['points']
-        c.contesttype_params.delete('points')
-        c.save
-      end
-    end
+    # Contest.all.each do |c|
+    #   c.result_params = { 'winning_sets' => c.nbr_sets }
+    #   if c.contesttype_params && c.contesttype_params['points']
+    #     c.result_params['points'] = c.contesttype_params['points']
+    #     c.contesttype_params.delete('points')
+    #     c.save
+    #   end
+    # end
 
     # nbr_sets becomes an attribute in result_params
     remove_column :contests, :nbr_sets, :integer
