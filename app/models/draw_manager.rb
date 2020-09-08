@@ -51,7 +51,7 @@ class DrawManager
     contest.matches.destroy_all
   end
 
-  def create_matches(group, matches, match_ids: {})
+  def create_matches(group, matches, match_ids = {})
     matches.each do |key, match|
       params = { 'draw_group' => group,
                  'draw_round' => match[:round] }

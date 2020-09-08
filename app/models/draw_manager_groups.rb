@@ -64,11 +64,12 @@ class DrawManagerGroups < DrawManager
   end
 
   def validate_groups_sizes
-    return unless complete?
+    if @draw_tableau.size * 2 > @participants.size
+      errors.add(:groups, "too many groups for number of participants")
+    end
     @draw_tableau.each do |group|
       if group.size < 2
-        errors.add(:draw_tableau, 'group size
-           must not be smaller than 2') and break
+        errors.add(:draw_tableau, 'group size must not be 1 or less') and return
       end
     end
   end
@@ -116,10 +117,7 @@ class DrawManagerGroups < DrawManager
   #   10 participants, 3 groups: [3,    4, 3]
 
   def get_groups_structure(nbr_ppants, nbr_groups)
-    if nbr_ppants < nbr_groups * 2
-      errors.add(:groups, `too few participants for #{nbr_groups} groups`)
-      return [[]]
-    end
+    return [[]] if nbr_ppants < nbr_groups * 2
     min_group_size = (nbr_ppants.to_f / nbr_groups).floor
     max_group_size = (nbr_ppants.to_f / nbr_groups).ceil
     groups = [[0] * max_group_size] * nbr_groups

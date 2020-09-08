@@ -45,7 +45,7 @@ class DrawManagerKO < DrawManager
     match_ids = {}
     matches = Schedule.get_ko_schedule(@ko_tableau).sort
     @contest.matches.destroy_all
-    super(1, matches, match_ids = match_ids)
+    super(1, matches, match_ids)
   end
 
   ##

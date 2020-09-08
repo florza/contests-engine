@@ -53,20 +53,19 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
     assert mgr.valid?
   end
 
-  # TODO Is valid now because the invalid tableau gets replaced by a valid one.
-  #      Is this ok or would it be better to return an error?
-  test "tableau with more than n/2 groups is? valid" do
+  test "tableau with more than half of n groups is invalid" do
     draw_params = { draw_tableau: [ [], [], [], [] ] }
     mgr = DrawManagerGroups.new(@contest, draw_params)
-    assert mgr.valid?
+    assert_not mgr.valid?
   end
 
-  # TODO Is valid now because the invalid tableau gets replaced by a valid one.
-  #      Is this ok or would it be better to return an error?
-  test "tableau with group of 1 is? valid" do
-    draw_params = { draw_tableau: [ [0, 0, 0], [0], [0, 0, 0] ] }
+  test "tableau with group of 1 is invalid" do
+    draw_params =
+      { draw_tableau: [ @full_params[:draw_tableau][0],          # group of 3
+                        @full_params[:draw_tableau][1][0, 1],    # group of 1
+                        @full_params[:draw_tableau][1][1, 3] ] } # group of 3
     mgr = DrawManagerGroups.new(@contest, draw_params)
-    assert mgr.valid?
+    assert_not mgr.valid?
   end
 
   test "invalid participant is invalid" do
