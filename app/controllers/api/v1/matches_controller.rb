@@ -29,6 +29,8 @@ module Api
 
       # PATCH/PUT /matches/1
       def update
+        match_params.merge!(updated_by_user_id: current_user_id,
+                            updated_by_token: current_token)
         if @match.update(match_params)
           render json: @match
         else

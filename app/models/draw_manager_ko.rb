@@ -15,12 +15,21 @@ class DrawManagerKO < DrawManager
 
   def initialize(contest, params)
     super
-    if @draw_tableau.first.size < get_tableau_size(contest.participants.count)
+    if @draw_tableau.first.size != get_tableau_size(contest.participants.count)
       @draw_tableau[0] =
-        get_ko_structure(contest.participants.count).
-          map {|p| p == 'BYE' ? p : 0}
+        get_ko_structure(@participants.size).map {|p| p == 'BYE' ? p : 0}
     end
     @ko_tableau = @draw_tableau.first
+  end
+
+  ##
+  # Return an empty draw tableau for the acual number of participants.
+  # This is used to answer a 'GET /contest/{id}/draw' request. It will get back
+  # a tableau with the correct size (a power of 2), if needed with BYEs at the
+  # standard positions and 0 at the places to be filled with participant ids.
+
+  def draw_structure
+    return [get_ko_structure(@participants.size).map {|p| p == 'BYE' ? p : 0}]
   end
 
   private
@@ -47,9 +56,10 @@ class DrawManagerKO < DrawManager
   def create_matches_before_save(match, match_ids)
     params = match.ctype_params
     if params['draw_round'] > 1
-        match.winner_next_match_id =
-          match_ids[[params['draw_round'], params['draw_pos']]]
-        match.winner_next_place_1 = params['draw_round'].odd?
+      next_round = params['draw_round'] / 2
+      next_pos = (params['draw_pos'] / 2.0).ceil
+      match.winner_next_match_id = match_ids[[next_round, next_pos]]
+      match.winner_next_place_1 = params['draw_pos'].odd?
     end
   end
 
@@ -59,7 +69,7 @@ class DrawManagerKO < DrawManager
   def validate_ko
     validate_ko_1group
     validate_ko_size
-    validate_or_set_ko_byes
+    validate_ko_byes
     validate_drawn_uniqueness
     validate_drawn_ids
   end
@@ -77,15 +87,18 @@ class DrawManagerKO < DrawManager
     end
   end
 
-  def validate_or_set_ko_byes
-    get_ko_structure(@participants.size).each_with_index do |pos, i|
-      if pos == 'BYE' && @ko_tableau[i] == 0
-        @ko_tableau[i] = 'BYE'
-      elsif (pos == 'BYE' && @ko_tableau[i] != 'BYE') ||
-          (pos != 'BYE' && @ko_tableau[i] == 'BYE')
-        errors.add(:draw_tableau, "contains wrong BYE positions")
-        break
+  def validate_ko_byes
+    nbrByes = 0
+    @ko_tableau.each_with_index do |pos, index|
+      if pos == 'BYE'
+        nbrByes += 1
+        if index.odd? && @ko_tableau[index - 1] == 'BYE'
+          errors.add(:draw_tableau, "two BYEs cannot play against each other")
+        end
       end
+    end
+    if nbrByes + @participants.size != @ko_tableau.size
+      errors.add(:draw_tableau, "incorrect number of BYEs")
     end
   end
 

@@ -61,10 +61,44 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     assert_not mgr.valid?
   end
 
-  test "tableau must not contain participants at by positions" do
+  test "too many of BYE positions is invalid" do
+    draw_params = @full_params
+    draw_params[:draw_tableau][0][3] = 'BYE'
+    mgr = DrawManagerKO.new(@contest, draw_params)
+    assert_not mgr.valid?
+  end
+
+  test "too few BYE positions is invalid" do
+    draw_params = @full_params
+    draw_params[:draw_tableau][0][1] = 0
+    mgr = DrawManagerKO.new(@contest, draw_params)
+    assert_not mgr.valid?
+  end
+
+  test "BYE at non-standard position is valid" do
     draw_params = @full_params
     draw_params[:draw_tableau][0][1] = draw_params[:draw_tableau][0][2]
-    draw_params[:draw_tableau][0][2] = 0
+    draw_params[:draw_tableau][0][2] = 'BYE'
+    mgr = DrawManagerKO.new(@contest, draw_params)
+    assert mgr.valid?
+  end
+
+  test "two BYEs at succeding odd and even index is valid" do
+    draw_params = @full_params
+    draw_params[:draw_tableau][0][1] = draw_params[:draw_tableau][0][3]
+    draw_params[:draw_tableau][0][3] = 'BYE'
+    draw_params[:draw_tableau][0][6] = draw_params[:draw_tableau][0][4]
+    draw_params[:draw_tableau][0][4] = 'BYE'
+    mgr = DrawManagerKO.new(@contest, draw_params)
+    assert mgr.valid?
+  end
+
+  test "two BYEs at succeding even and odd index is invalid" do
+    draw_params = @full_params
+    draw_params[:draw_tableau][0][1] = draw_params[:draw_tableau][0][2]
+    draw_params[:draw_tableau][0][2] = 'BYE'
+    draw_params[:draw_tableau][0][6] = draw_params[:draw_tableau][0][3]
+    draw_params[:draw_tableau][0][3] = 'BYE'
     mgr = DrawManagerKO.new(@contest, draw_params)
     assert_not mgr.valid?
   end
@@ -80,7 +114,8 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     draw_params = @full_params
     mgr = DrawManagerKO.new(@contest, draw_params)
     mgr.draw
-    assert_equal @full_params[:draw_tableau], mgr.draw_structure
+    new_draw = @contest.ctype_params['draw_tableau']
+    assert_equal @full_params[:draw_tableau], new_draw
   end
 
   test "empty draw is filled up randomly" do
@@ -89,10 +124,10 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     [0..2].each do |draw|
       mgr = DrawManagerKO.new(@contest, draw_params)
       mgr.draw
-      new_draw = mgr.draw_structure[0]
-      assert_equal 'BYE', new_draw[1]
-      assert_equal 'BYE', new_draw[6]
-      assert_equal 7, new_draw.uniq.size
+      new_draw = @contest.ctype_params['draw_tableau']
+      assert_equal 'BYE', new_draw[0][1]
+      assert_equal 'BYE', new_draw[0][6]
+      assert_equal 7, new_draw[0].uniq.size
       assert_not_equal last_draw, new_draw
       last_draw = new_draw.dup
     end
@@ -104,10 +139,10 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     [0..2].each do |draw|
       mgr = DrawManagerKO.new(@contest, draw_params)
       mgr.draw
-      new_draw = mgr.draw_structure[0]
-      assert_equal 'BYE', new_draw[1]
-      assert_equal 'BYE', new_draw[6]
-      assert_equal 7, new_draw.uniq.size
+      new_draw = @contest.ctype_params['draw_tableau']
+      assert_equal 'BYE', new_draw[0][1]
+      assert_equal 'BYE', new_draw[0][6]
+      assert_equal 7, new_draw[0].uniq.size
       assert_not_equal last_draw, new_draw
       last_draw = new_draw.dup
     end
@@ -118,12 +153,12 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     draw_params[:draw_tableau][0][4] = draw_params[:draw_tableau][0][7] = 0
     mgr = DrawManagerKO.new(@contest, draw_params)
     mgr.draw
-    new_draw = mgr.draw_structure[0]
+    new_draw = @contest.ctype_params['draw_tableau']
     [0, 1, 2, 3, 5, 6].each do |pos|
-      assert_equal @full_params[:draw_tableau][0][pos], new_draw[pos]
+      assert_equal @full_params[:draw_tableau][0][pos], new_draw[0][pos]
     end
-    assert_includes [new_draw[4],new_draw[7]], @full_params[:draw_tableau][0][4]
-    assert_includes [new_draw[4],new_draw[7]], @full_params[:draw_tableau][0][7]
+    assert_includes [new_draw[0][4],new_draw[0][7]], @full_params[:draw_tableau][0][4]
+    assert_includes [new_draw[0][4],new_draw[0][7]], @full_params[:draw_tableau][0][7]
   end
 
 end

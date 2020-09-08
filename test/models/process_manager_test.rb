@@ -7,12 +7,14 @@ class ProcessManagerTest < ActiveSupport::TestCase
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM1),
       participant_2: participants(:DM2),
-      ctype_params: {"grp_nr"=>1, "grp_round"=>1},
-      result: {}
+      ctype_params: {"draw_group"=>1, "draw_round"=>1}
     )
+    # save new match, process_results runs only on update
+    @match.save!
   end
 
   test "match stats are computed on save" do
+    @match.result = {}
     @match.result['score_p1'] = [2,7,6]
     @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
@@ -26,6 +28,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "match stats are deleted on update with no result" do
+    @match.result = {}
     @match.result['score_p1'] = [2,7,6]
     @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
@@ -38,6 +41,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
   end
 
   test "participant stats are computed on match save" do
+    @match.result = {}
     @match.result['score_p1'] = [2,7,6]
     @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
@@ -62,6 +66,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
     contest.result_params['tie_allowed'] = true
     contest.save!
 
+    @match.result = {}
     @match.result['score_p1'] = [2,7,6]
     @match.result['score_p2'] = [6,5,3]
     @match.winner_id = @match.participant_1_id
@@ -72,9 +77,11 @@ class ProcessManagerTest < ActiveSupport::TestCase
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM1),
       participant_2: participants(:DM3),
-      ctype_params: {"grp_nr"=>1, "grp_round"=>1},
-      result: {}
+      ctype_params: {"draw_group"=>1, "draw_round"=>1}
     )
+    @match2.save!
+
+    @match2.result = {}
     @match2.result['score_p1'] = [6,7]
     @match2.result['score_p2'] = [0,5]
     @match2.winner_id = @match2.participant_1_id
@@ -88,9 +95,11 @@ class ProcessManagerTest < ActiveSupport::TestCase
       contest: contests(:DemoMeisterschaft),
       participant_1: participants(:DM3),
       participant_2: participants(:DM2),
-      ctype_params: {"grp_nr"=>1, "grp_round"=>1},
-      result: {}
+      ctype_params: {"draw_group"=>1, "draw_round"=>1},
     )
+    @match3.save!
+
+    @match3.result = {}
     @match3.result['score_p1'] = [6,1,5]
     @match3.result['score_p2'] = [3,6,5]
     @match3.winner_id = 0

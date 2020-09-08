@@ -31,6 +31,16 @@ class DrawManagerGroups < DrawManager
     end
   end
 
+  ##
+  # Return an empty draw tableau for the acual number of participants and
+  # the number of groups given by the number of subarrays of the draw tableau.
+  # This is used to answer a 'GET /contest/{id}/draw' request. It will get back
+  # a tableau with an optimal distribution of group sizes and 0 at the places to be filled with participant ids
+
+  def draw_structure
+    return get_groups_structure(@participants.size, @draw_tableau.size)
+  end
+
   private
 
   ##
@@ -57,7 +67,8 @@ class DrawManagerGroups < DrawManager
     return unless complete?
     @draw_tableau.each do |group|
       if group.size < 2
-        errors.add(:draw_tableau, 'groups should not be smaller than 2') and break
+        errors.add(:draw_tableau, 'group size
+           must not be smaller than 2') and break
       end
     end
   end
