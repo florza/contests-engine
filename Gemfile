@@ -10,14 +10,14 @@ end
 # 12.9.20, switch to 6.0.3.3 to close vulnerability GHSA-cfjv-5498-mph5
 gem 'rails', '~> 6.0.3.3'
 # Use Puma as the app server
-gem 'puma', '~> 3.7'  # 4.3.6?
+gem 'puma', '~> 4.3.6'  # alt 3.7
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4.1' # 4.2.2?
-gem 'jwt_sessions', '~> 2.3' # 2.5.2?
+gem 'redis', '~> 4.2.2' # alt 4.1
+gem 'jwt_sessions', '~> 2.5.2' # alt 2.3
 # Use ActiveModel has_secure_password
-gem 'bcrypt', '~> 3.1.7'  # 3.1.16
+gem 'bcrypt', '~> 3.1.16'  # alt 3.1.7
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

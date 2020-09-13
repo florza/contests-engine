@@ -29,8 +29,11 @@ class Result
     result['walk_over'] ? score + ' (w.o.)' : score
   end
 
-  # sums of points/matches/sets/games won/tied/lost
-  # stored as a hash in Match.stats
+  ##
+  # Get stats of the actual match, i.e.
+  # sums of points/matches/sets/games that are won/tied/lost
+  # Stored as a hash in Match.stats as base for further statistics
+
   def self.get_stats(match, result_params)
     if match.winner_id.nil?
       return empty_match_stats
@@ -43,6 +46,19 @@ class Result
     stats['games'] = get_stats_games(score)
     return stats
   end
+
+  ##
+  # ctype-dependent params of match
+  # (solved with case, to avoid overkill with subclassing Result)
+  # def self.get_ctype_params(match, ctype)
+  #   case ctype
+  #   when 'Groups'
+  #     return match.ctype_params # no change
+  #   when 'KO'
+  #     params = match.ctype_params || {}
+  #     params['act_round'] =
+  #   end
+  # end
 
   # two hash constants defined as functions to avoid changes without deep copy
   # points: [p1, p2]
@@ -64,7 +80,7 @@ class Result
     # which sorts after the detailed ranking rules:
     # AAA is the number of points won
     # BBB is 500 + (MatchesWon - MatchesLost) i.e. +4 => 504, -4 => 496
-    # CCC is 500 + (SetWon - SetLost)
+    # CCC is 500 + (SetsWon - SetsLost)
     # DDD is 500 + (GamesWon - GamesLost)
     if stats.blank?
       return 500500500

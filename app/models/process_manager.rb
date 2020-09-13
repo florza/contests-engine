@@ -54,8 +54,18 @@ class ProcessManager
     stats[grp_nr][p_id] = stats_p
   end
 
+  ##
+  # Complete the computed stats with entries for participants
+  # who have not yet played any match. This must be done especially in
+  # Groups before computing ranks, to place those participants correctly
+  # after participants having won the majority of their matches,
+  # but before participants who have more lost matches than wins.
+  #
+  # The rankvalue is also computed in KO, to eventually provide a means
+  # to compute a more detailled rank than just "4 participants on rank 5,
+  # 8 participants on rank 9 and so on".
+
   def self.set_stats_with_no_matches(participants, stats)
-    # must be done before computing ranks to place those ppants correctly
     participants.each do |p|
       grp_nr = getGroupNr(p)
       unless stats[grp_nr]
@@ -69,21 +79,9 @@ class ProcessManager
     end
   end
 
-  def self.update_rank(participants, stats)
-    stats.each do |grp_nr, groupstats|
-      stats_array = groupstats.to_a.sort { |a,b|
-          b[1]['rankvalue'] <=> a[1]['rankvalue'] }
-      rank = 0
-      last_rankvalue = -1
-      stats_array.each_with_index do |s, i|
-        if s[1]['rankvalue'] != last_rankvalue
-          rank = i + 1
-          last_rankvalue = s[1]['rankvalue']
-        end
-        stats[grp_nr][s[0]]['rank'] = rank
-      end
-    end
-  end
+  ##
+  # self.update_rank(participants, stats)
+  # must be defined in every subclass
 
   def self.update_participants(participants, stats)
     participants.each do |p|

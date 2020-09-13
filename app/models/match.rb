@@ -25,6 +25,7 @@ class Match < ApplicationRecord
     m.result_1_vs_2 = Result.to_s(m.result)
     m.result_2_vs_1 = Result.to_s_reversed(m.result)
     m.stats = Result.get_stats(m, @contest.result_params)
+    # m.ctype_params = Result.get_ctype_params(m, @contest.ctype)
   end
 
   after_update do |m|

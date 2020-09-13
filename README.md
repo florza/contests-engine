@@ -41,6 +41,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Compute rank in KO
 - Refactored update_participant_stats to DrawManager to handle both, Groups and KO
 - Set winner of KO-match as participant_1/2 of next match
 - Allowed non-standard BYE positions in KO
@@ -70,7 +71,6 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 - Field userdata in all tables
 
 ## Next Steps
-- Compute correct rank in KO
 - Create draw with seed list (complete draw, overwrites previous):
     1. Seed #1 to the top
     2. Seed #2 to the bottom
