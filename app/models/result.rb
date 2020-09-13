@@ -127,26 +127,22 @@ class Result
   end
 
   def self.get_stats_points(match, result_params)
-    if match.winner_id == match.participant_1_id
-      return [result_params['points_win'],
-              result_params['points_loss']]
-    elsif match.winner_id == match.participant_2_id
-      return [result_params['points_loss'],
-              result_params['points_win']]
-    else
-      return [result_params['points_tie'],
-              result_params['points_tie']]
-    end
+    return  case match.winner_id
+            when match.participant_1_id
+              [result_params['points_win'], result_params['points_loss']]
+            when match.participant_2_id
+              [result_params['points_loss'], result_params['points_win']]
+            else
+              [result_params['points_tie'], result_params['points_tie']]
+            end
   end
 
   def self.get_stats_matches(m)
-    if m.winner_id == m.participant_1_id
-      return [1, 0, 0]
-    elsif m.winner_id == m.participant_2_id
-      return [0, 0, 1]
-    else
-      return [0, 1, 0]
-    end
+    return  case m.winner_id
+            when m.participant_1_id then [1, 0, 0]
+            when m.participant_2_id then [0, 0, 1]
+            else [0, 1, 0]
+            end
   end
 
   def self.get_stats_sets(score)

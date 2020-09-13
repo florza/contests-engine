@@ -62,7 +62,7 @@ class ProcessManager
         stats[grp_nr] = {}
       end
       unless stats[grp_nr][p.id]
-        stats[grp_nr][p.id] = Result::empty_participant_stats
+        stats[grp_nr][p.id] = Result.empty_participant_stats
       end
       stats[grp_nr][p.id]['rankvalue'] =
           Result.get_rankvalue(stats[grp_nr][p.id])

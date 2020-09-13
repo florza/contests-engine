@@ -69,7 +69,7 @@ class DrawManager
       if m.save
         match_ids[[match[:round], match[:pos]]] = m.id
       else
-        errors.add(:ko, 'match creation failed') and return
+        errors.add(:ko, 'match creation failed') && return
       end
     end
   end
@@ -164,7 +164,7 @@ class DrawManager
           participant.ctype_params = { 'draw_group' => group0 + 1,
                                        'draw_pos' => pos0 + 1 }
           unless participant.save
-            errors.add(:draw, 'participants update failed') and return
+            errors.add(:draw, 'participants update failed') && return
           end
         end
       end

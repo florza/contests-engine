@@ -37,7 +37,7 @@ class ProcessManagerTest < ActiveSupport::TestCase
 
     @match.update!({ result: nil, winner_id: nil})
 
-    assert_equal Result::empty_match_stats, @match.stats
+    assert_equal Result.empty_match_stats, @match.stats
   end
 
   test "participant stats are computed on match save" do

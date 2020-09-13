@@ -85,8 +85,8 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 
 ## Adaptions to Ruby style guide
 - [ ] participant_1_id: participant1_id
-- [ ] one line lambda: ->(...) { ... } or -> { ... }
-- [ ] evtl.case instead of elsif?
+- [x] one line lambda: ->(...) { ... } or -> { ... }
+- [x] evtl.case instead of elsif?
 - [x] is_instance_of?: is_a?
 - [ ] multiline 'if b/  a = c/else/  a = d/end':
   multiline indented
@@ -96,12 +96,12 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
         a
       end
 - [ ] if (a = b(...)) is ok only with parenthesis
-- [ ] never 'and' / 'or'!
+- [x] never 'and' / 'or', also "... && return", not "x and return"!
 - [ ] chaining with '.' on first line (next line would also be ok, but be consistent!)
 - [ ] split long string literals with \ at end of line
 - [x] if !x: unless x, especially as modifier
 - [ ] method lenght: usually <= 5, max 10 lines
-- [ ] no '::' in class method calls, use '.' ('..' for constants is ok)
+- [x] no '::' in class method calls, use '.' ('..' for constants is ok)
 - [ ] optional param (b = 5): use keyword param (b: 5)
 - [ ] param default (b=5): (b = 5)
 - [ ] Prefer modules to classes with only class methods (Result?!)

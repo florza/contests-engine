@@ -17,6 +17,7 @@
 !/log/.keep
 !/tmp/.keep
 
+.DS_Store
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.

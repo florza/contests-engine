@@ -7,7 +7,8 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3'
+# 12.9.20, switch to 6.0.3.3 to close vulnerability GHSA-cfjv-5498-mph5
+gem 'rails', '~> 6.0.3.3'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'  # 4.3.6?
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
