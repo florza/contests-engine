@@ -10,14 +10,13 @@ class DrawManager
       params = JSON.parse(params).symbolize_keys
     end
     @draw_tableau = params[:draw_tableau]
-    if @draw_tableau.blank?
-      @draw_tableau = [[]]
-    end
+    @draw_tableau = JSON.parse(@draw_tableau) if @draw_tableau.class == String
+    @draw_tableau = [[]] if @draw_tableau.blank?
 
     @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
 
     @draw_seeds = params[:draw_seeds]
-    # @draw_seeds = JSON.parse(@draw_seeds) if @draw_seeds.class == String
+    @draw_seeds = JSON.parse(@draw_seeds) if @draw_seeds.class == String
     @draw_seeds = [] if @draw_seeds.blank?
   end
 

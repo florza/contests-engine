@@ -3,21 +3,23 @@ class SigninController < ApplicationController
 
   def create
     if params[:username] && params[:username] > ''
-      user = User.public_columns.where("lower(username) = ?",
+      user = User.where("lower(username) = ?",
               params[:username].downcase).first
       return not_found_user if user.nil?
+      return not_authorized unless user.authenticate(params[:password])
+      user = User.public_columns.find(user.id)  # no password_digest!
       payload = { user_id: user.id }
     elsif params[:contestkey] && params[:contestkey] > ''
       contestkey = params[:contestkey]
-      if contest = Contest.find_by_token_read(contestkey)
+      if (contest = Contest.find_by_token_read(contestkey))
         payload = { tokentype: 'Contest',
                     tokenrole: 'read',
                     tokenid: contest.id }
-      elsif contest = Contest.find_by_token_write(contestkey)
+      elsif (contest = Contest.find_by_token_write(contestkey))
         payload = { tokentype: 'Contest',
                     tokenrole: 'write',
                     tokenid: contest.id }
-      elsif participant = Participant.find_by_token_write(contestkey)
+      elsif (participant = Participant.find_by_token_write(contestkey))
         payload = { tokentype: 'Participant',
                     tokenrole: 'write',
                     tokenid: participant.id }
@@ -50,11 +52,11 @@ class SigninController < ApplicationController
 
   def not_found_user
     render json: { error: "Cannot find username/password combination" },
-            status: :not_found
+            status: :unauthorized
   end
 
   def not_found_token
     render json: { error: "Cannot find contest key" },
-            status: :not_found
+            status: :unauthorized
   end
 end

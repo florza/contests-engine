@@ -80,6 +80,10 @@ class DrawManagerKO < DrawManager
     end
   end
 
+  ##
+  # KO-tableau size is tested here, but it should always be correct
+  # since it gets corrected automatically in initialize.
+
   def validate_ko_size
     tableau_size = get_tableau_size(@participants.size)
     if @ko_tableau.size != tableau_size

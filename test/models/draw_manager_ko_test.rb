@@ -39,6 +39,7 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     mgr = DrawManagerKO.new(@contest, draw_params)
     assert mgr.valid?
     assert mgr.draw_structure[0].is_a?(Array)
+    assert mgr.draw_structure[0].size == 8
   end
 
   test "one-level tableau gets corrected to valid" do
@@ -46,6 +47,15 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     mgr = DrawManagerKO.new(@contest, draw_params)
     assert mgr.valid?
     assert mgr.draw_structure[0].is_a?(Array)
+    assert mgr.draw_structure[0].size == 8
+  end
+
+  test "tableau with some get corrected to valid" do
+    draw_params = { draw_tableau: [ [0, 0, 0, 0, 0] ] }
+    mgr = DrawManagerKO.new(@contest, draw_params)
+    assert mgr.valid?
+    assert mgr.draw_structure[0].is_a?(Array)
+    assert mgr.draw_structure[0].size == 8
   end
 
   test "tableau with more than 1 group is invalid" do

@@ -6,6 +6,7 @@ DM<%= i %>:
   contest: DemoMeisterschaft
   name: Participant DM<%= i %>
   shortname: DM<%= i %>
+  token_write: writeTokenDM<%= i %>
   ctype_params: { draw_group: 1, draw_pos: <%= i %> }
   remarks: ''
 <% end %>

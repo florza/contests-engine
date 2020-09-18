@@ -27,6 +27,18 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
     assert_response 201
   end
 
+  test "should not create invalid contest" do
+    post api_v1_contests_url,
+          headers: @headers,
+          params: { contest: {name: 'New test contest',
+                              shortname: '',
+                              description: 'Description',
+                              ctype: 'Groups',
+                              public: false} },
+          as: :json
+    assert_response :unprocessable_entity
+  end
+
   test "should show contest" do
     get api_v1_contest_url(@contest.id), headers: @headers, as: :json
     assert_response :success
@@ -46,11 +58,22 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
     assert_response 200
   end
 
+  test "should not update contest with invalid values" do
+    put api_v1_contest_url(@contest),
+        headers: @headers,
+        params: { contest: {name: @contest.name,
+                            shortname: '',
+                            description: @contest.description,
+                            ctype: @contest.ctype,
+                            public: @contest.public} },
+        as: :json
+    assert_response :unprocessable_entity
+  end
+
   test "should destroy contest" do
     assert_difference('Contest.count', -1) do
       delete api_v1_contest_url(@contest), headers: @headers, as: :json
     end
-
     assert_response 204
   end
 end

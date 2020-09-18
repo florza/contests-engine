@@ -41,6 +41,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Improve test coverage
 - Compute rank in KO
 - Refactored update_participant_stats to DrawManager to handle both, Groups and KO
 - Set winner of KO-match as participant_1/2 of next match
@@ -77,6 +78,10 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
     3. Seeds #3 and #4 randomly to middle positions
     4. And so on for #5 - #8, #9 - 16, ... (to maximal number of seeds or number of groups - never more than 1 seed per group)
     5. Place eventually remaining participants randomly
+- Prevent some updates:
+    - Participant add/delete or ctype update only after delete draw
+    - No match update (or no winner update?) after following match has been played
+    - No draw with played matches
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!

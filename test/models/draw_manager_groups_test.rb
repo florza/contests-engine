@@ -4,13 +4,13 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
 
   def setup
     @contest = contests(:DemoGruppen)
-    @full_params = { draw_tableau: [ [participants(:Roger).id,
-                                      participants(:Martina).id,
-                                      participants(:Pete).id],
-                                     [participants(:Rod).id,
-                                      participants(:Raffa).id,
-                                      participants(:Stan).id,
-                                      participants(:Steffi).id] ] }
+    @full_params = { draw_tableau: [ [ participants(:Roger).id,
+                                       participants(:Martina).id,
+                                       participants(:Pete).id ],
+                                     [ participants(:Rod).id,
+                                       participants(:Raffa).id,
+                                       participants(:Stan).id,
+                                       participants(:Steffi).id ] ] }
   end
 
   test "empty tableau is valid" do
@@ -116,6 +116,26 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
         @full_params[:draw_tableau][0][1]
     assert_includes [new_draw[0][1],new_draw[1][2]],
         @full_params[:draw_tableau][1][2]
+  end
+
+  test "changed group sizes in new tableau are accepted" do
+    draw_params = @full_params
+    draw_params[:draw_tableau][0].push(0)
+    draw_params[:draw_tableau][0].push(0)
+    draw_params[:draw_tableau][1].pop
+    draw_params[:draw_tableau][1].pop
+    mgr = DrawManagerGroups.new(@contest, draw_params)
+    mgr.draw
+    new_draw = @contest.ctype_params['draw_tableau']
+    [ [0, 0], [0, 1], [1, 0], [1, 1] ].each do |g, p|
+      assert_equal @full_params[:draw_tableau][g][p], new_draw[g][p]
+    end
+    redrawn_pps = [ @full_params[:draw_tableau][0][2],
+                    @full_params[:draw_tableau][1][2],
+                    @full_params[:draw_tableau][1][3] ]
+    assert_includes redrawn_pps, new_draw[0][2]
+    assert_includes redrawn_pps, new_draw[1][2]
+    assert_includes redrawn_pps, new_draw[1][3]
   end
 
 end

@@ -10,13 +10,23 @@ class DrawsControllerTest < ActionDispatch::IntegrationTest
     login_userOne
   end
 
-  # TODO Sends no parameters here! Usually they should exist,
-  #      but with GET, Rails recognises them only in the query string
+  # With GET, Rails recognises params only in the query string
   test "should show draw" do
-    get api_v1_contest_draw_url(@contest), headers: @headers, as: :json
+    url_with_params = api_v1_contest_draw_url(@contest) +
+      '?draw[draw_tableau]=[[],[]]'
+    get url_with_params, headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
+    assert_equal 2, result.size
     assert_not_nil result
+  end
+
+  # With GET, Rails recognises params only in the query string
+  test "should not show draw with invalid params" do
+    url_with_params = api_v1_contest_draw_url(@contest) +
+      '?draw[draw_tableau]=[[],[],[]]'
+    get url_with_params, headers: @headers, as: :json
+    assert_response :unprocessable_entity
   end
 
   test "should create draw" do
@@ -24,6 +34,12 @@ class DrawsControllerTest < ActionDispatch::IntegrationTest
           params: @params
     assert_response 201
     assert_equal 6, @contest.matches.size
+  end
+
+  test "should not create draw with invalid params" do
+    post api_v1_contest_draw_url(@contest), headers: @headers, as: :json,
+          params: { draw: { draw_tableau: [ [], [], [] ] } }
+    assert_response :unprocessable_entity
   end
 
   test "should destroy draw" do

@@ -1,7 +1,9 @@
 
 ENV['RAILS_ENV'] ||= 'test'
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  enable_coverage :branch
+end
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
@@ -46,6 +48,10 @@ class ActionDispatch::IntegrationTest
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 
+  def logout
+    delete signin_path, headers: @headers
+  end
+
   def login_readToken
     @headers = { 'CONTENT_TYPE' => 'application/json' }
     post signin_path, headers: @headers,
@@ -57,6 +63,13 @@ class ActionDispatch::IntegrationTest
     @headers = { 'CONTENT_TYPE' => 'application/json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "writeToken1" }'
+    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+  end
+
+  def login_participantToken
+    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    post signin_path, headers: @headers,
+          params: '{ "contestkey": "writeTokenDM1" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 

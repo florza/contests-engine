@@ -157,6 +157,13 @@ class ResultTest < ActiveSupport::TestCase
     assert @match.valid?
   end
 
+  test "winner must not be empty in a walk over" do
+    @match.result['score_p1'] = [2]
+    @match.result['score_p2'] = [3]
+    @match.result['walk_over'] = true
+    assert_not @match.valid?
+  end
+
   test "score must not be empty in a walk over" do
     @match.result['score_p1'] = []
     @match.result['score_p2'] = []
@@ -171,6 +178,17 @@ class ResultTest < ActiveSupport::TestCase
     @match.result['walk_over'] = true
     @match.winner_id = @match.participant_2_id
     assert @match.valid?
+  end
+
+  test "result as string contains w.o." do
+    @match.result['score_p1'] = [2]
+    @match.result['score_p2'] = [3]
+    @match.winner_id = @match.participant_2_id
+    @match.result['walk_over'] = true
+    assert @match.valid?
+    @match.save!
+    assert @match.result_1_vs_2 == '2:3 (w.o.)'
+    assert @match.result_2_vs_1 == '3:2 (w.o.)'
   end
 
   def setTieAllowed

@@ -65,11 +65,13 @@ class DrawManagerGroups < DrawManager
 
   def validate_groups_sizes
     if @draw_tableau.size * 2 > @participants.size
-      errors.add(:groups, "too many groups for number of participants")
+      errors.add(:draw_tableau, "too many groups for number of participants")
+      return
     end
     @draw_tableau.each do |group|
       if group.size < 2
-        errors.add(:draw_tableau, 'group size must not be 1 or less') and return
+        errors.add(:draw_tableau, 'group size must not be 1 or less')
+        return
       end
     end
   end

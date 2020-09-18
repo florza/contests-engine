@@ -7,7 +7,7 @@ module Api
         draw_mgr = get_draw_manager(params[:draw])
         if draw_mgr.valid?
           structure = draw_mgr.draw_structure
-          render json: structure, status: :created
+          render json: structure
         else
           render json: draw_mgr.errors, status: :unprocessable_entity
         end
@@ -35,10 +35,10 @@ module Api
         dmclass.constantize.new(@contest, myparams)
       end
 
-      # NOT USED: grp_groups cannot be permitted as array of arrays
+      # NOT USED: draw_tableau cannot be permitted as array of arrays
       # def draw_params
-      #   params.require(:draw).permit( { draw_tableau: [] },
-      #                                 { draw_seeds: [] } )
+      #   params.require(:draw).permit( { draw_seeds: [] },
+      #                                 { draw_tableau: [] } )
       # end
 
     end
