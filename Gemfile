@@ -59,13 +59,12 @@ end
 # GEMs for Graphity
 # from https://www.graphiti.dev/guides/getting-started/installation
 
-# The only strictly-required gem
 gem 'graphiti'
+gem 'graphiti-rails'
+gem 'responders'
 
 # For automatic ActiveRecord pagination
 gem 'kaminari'
-
-gem 'responders'
 
 # Test-specific gems
 # group :development, :test do
