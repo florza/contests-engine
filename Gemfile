@@ -55,3 +55,26 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# GEMs for Graphity
+# from https://www.graphiti.dev/guides/getting-started/installation
+
+# The only strictly-required gem
+gem 'graphiti'
+
+# For automatic ActiveRecord pagination
+gem 'kaminari'
+
+gem 'responders'
+
+# Test-specific gems
+# group :development, :test do
+#   gem 'rspec-rails'
+#   gem 'factory_bot_rails'
+#   gem 'faker'
+#   gem 'graphiti_spec_helpers'
+# end
+
+# group :test do
+#   gem 'database_cleaner'
+# end

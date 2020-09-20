@@ -1,6 +1,15 @@
 class ApplicationController < ActionController::API
   include JWTSessions::RailsAuthorization
   rescue_from JWTSessions::Errors::Unauthorized, with: :not_authorized
+  include Graphiti::Rails
+  include Graphiti::Responders
+
+  # Graphiti: when #show action does not find record, return 404
+  register_exception Graphiti::Errors::RecordNotFound,
+    status: 404
+  rescue_from Exception do |e|
+    handle_exception(e)
+  end
 
   ##
   # Current user or token (only one is filled), to be used in updates
