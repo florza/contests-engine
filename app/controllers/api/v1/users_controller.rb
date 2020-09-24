@@ -3,7 +3,7 @@ module Api
     class UsersController < ApplicationController
       def index
         users = UserResource.all(params)
-        render(jsonapi: users)
+        render jsonapi: users
         # respond_with(users)
       end
 
@@ -41,6 +41,7 @@ module Api
           render jsonapi_errors: user
         end
       end
+
     end
   end
 end

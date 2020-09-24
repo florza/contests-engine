@@ -3,60 +3,70 @@ module Api
     class ParticipantsController < ApplicationController
       before_action :authorize_user!, except: [:index, :show]
       before_action :authorize_user_or_readtoken!, only: [:index, :show]
-      before_action :set_participant, only: [:show, :update, :destroy]
+      #before_action :set_participant, only: [:show, :update, :destroy]
       #before_action :authorize_user_or_writetoken!, only: []
 
       # GET /contests/<contest_id>/participants
       def index
-        @participants = @contest.participants.public_columns
-        render json: @participants
+        # @participants = @contest.participants.public_columns
+        params.merge! stats: { total: 'count' }
+        participants = ParticipantResource.all(params,
+          Participant.where(contest_id: current_contest.id))
+        respond_with(participants)
       end
 
       # GET /contests/<contest_id>//participants/<id>
       def show
-        render json: @participant
+        participant = ParticipantResource.find(params)
+        respond_with(participant)
       end
 
       # POST /contests/<contest_id>/participants
       def create
-        @participant = @contest.participants.new(participant_params)
-        @participant.user_id = @contest.user_id
-        if @participant.save
-          render json: @participant, status: :created
+        participant = ParticipantResource.build(params)
+        if participant.save
+          render jsonapi: participant, status: :created
         else
-          render json: @participant.errors, status: :unprocessable_entity
+          render jsonapi_errors: participant
         end
       end
 
       # PATCH/PUT /contests/<contest_id>/participants/1
       def update
-        if @participant.update(participant_params)
-          render json: @participant
+        participant = ParticipantResource.find(params)
+        if participant.update_attributes
+          render jsonapi: participant
         else
-          render json: @participant.errors, status: :unprocessable_entity
+          render jsonapi_errors: participant
         end
       end
 
       # DELETE /contests/<contest_id>/participants/1
       def destroy
-        @participant.destroy
+        participant = ParticipantResource.find(params)
+        if participant.destroy
+          render jsonapi: { meta: {} }, status: :ok
+        else
+          render jsonapi_errors: participant.errors
+        end
       end
 
       private
 
       # Use callbacks to share common setup or constraints between actions.
-      def set_participant
-        @participant ||= Participant.public_columns.find(params[:id])
-        if @participant && @contest.id != @participant.contest_id
-          not_authorized
-        end
-      end
+      # def set_participant
+      #   @participant ||= Participant.public_columns.find(params[:id])
+      #   if @participant && @contest.id != @participant.contest_id
+      #     not_authorized
+      #   end
+      # end
 
       # Only allow a trusted parameter "white list" through.
-      def participant_params
-        params.require(:participant).permit(:name, :shortname, :remarks,
-                                            :userdata)
-      end
+      # def participant_params
+      #   params.require(:participant).permit(:name, :shortname, :remarks,
+      #                                       :userdata)
+      # end
+
     end
   end
 end

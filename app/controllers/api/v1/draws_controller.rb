@@ -4,35 +4,45 @@ module Api
       before_action :authorize_user!
 
       def show
-        draw_mgr = get_draw_manager(params[:draw])
+        #draw_mgr = DrawManagerResource.build(params)
+        draw_mgr = get_draw_manager(params)
         if draw_mgr.valid?
           structure = draw_mgr.draw_structure
-          render json: structure
+          #r = DrawResource.build(draw_mgr)
+          as_jsonapi = { data: {type: 'draw',
+                                id: current_contest.id,
+                                attributes: { draw_tableau: structure } } }
+          render json: as_jsonapi
         else
-          render json: draw_mgr.errors, status: :unprocessable_entity
+          render jsonapi_errors: draw_mgr
         end
       end
 
       def create
-        draw_mgr = get_draw_manager(params[:draw])
+        draw_mgr = get_draw_manager(params)
         draw_mgr.draw
         if draw_mgr.valid?
-          render json: params[:draw], status: :created
+          # render jsonapi: params[:draw], status: :created
+          myparams = params.delete(:data)
+          myparams.merge! include: 'participants'
+          contest = ContestResource.find(params)
+          respond_with(contest)
         else
-          render json: draw_mgr.errors, status: :unprocessable_entity
+          render jsonapi_errors: draw_mgr
         end
       end
 
       def destroy
-        draw_mgr = get_draw_manager
-        draw_mgr.delete_draw(@contest)
+        draw_mgr = get_draw_manager(params)
+        draw_mgr.delete_draw(current_contest)
       end
 
       private
 
       def get_draw_manager(myparams = {})
-        dmclass = "DrawManager#{@contest.ctype}"
-        dmclass.constantize.new(@contest, myparams)
+        myparams ||= { contest_id: current_contest.id }
+        dmclass = "DrawManager#{current_contest.ctype}"
+        dmclass.constantize.new(myparams)
       end
 
       # NOT USED: draw_tableau cannot be permitted as array of arrays

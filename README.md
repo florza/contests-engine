@@ -41,6 +41,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Branch graphity: change input/output to JSONAPI-format (jsonapi.org), using the Graphiti gems (www.graphiti.dev)
 - Improve test coverage
 - Compute rank in KO
 - Refactored update_participant_stats to DrawManager to handle both, Groups and KO

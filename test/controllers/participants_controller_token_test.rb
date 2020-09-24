@@ -11,7 +11,7 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
     get api_v1_contest_participants_url(@contest), as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 4, result.size
+    assert_equal 4, result['data'].size
   end
 
   test "should show participant with token" do
@@ -20,15 +20,18 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
           as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result.size
+    assert_not_nil result['data'].size
   end
 
   test "should not create participant with token" do
     login_writeToken
     post api_v1_contest_participants_url(@contest),
-        params:   { participant: {name: 'New test participant',
-                                  shortname: 'New test',
-                                  remarks: 'Remarks'} },
+        params: {
+          data: { type: 'participants',
+                  attributes: { name: 'New test participant',
+                                shortname: 'New test',
+                                remarks: 'Remarks'} }
+        },
         as: :json
     assert_response 401
   end
@@ -36,9 +39,13 @@ class ParticipantsControllerTokenTest < ActionDispatch::IntegrationTest
   test "should not update participant with token" do
     login_writeToken
     patch api_v1_contest_participant_url(@contest, @participant),
-          params: { participant: {name: @participant.name,
-                                  shortname: @participant.shortname,
-                                  remarks: @participant.remarks} },
+          params: {
+            data: { type: 'participants',
+                    id: @participant.id,
+                    attributes: {name: @participant.name,
+                                shortname: @participant.shortname,
+                                remarks: @participant.remarks} }
+          },
           as: :json
     assert_response 401
   end

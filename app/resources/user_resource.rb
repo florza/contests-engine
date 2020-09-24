@@ -4,5 +4,3 @@ class UserResource < ApplicationResource
   attribute :created_at, :datetime
   attribute :updated_at, :datetime
 end
-
-UserResource.all.data

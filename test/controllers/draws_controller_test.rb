@@ -3,28 +3,35 @@ require 'test_helper'
 class DrawsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @contest = contests(:DemoMeisterschaft)
-    @params = { draw: { draw_tableau: [ [ participants(:DM1).id,
-                                          participants(:DM2).id,
-                                          participants(:DM3).id,
-                                          participants(:DM4).id ] ] } }
+    @params = {
+          data: { type: 'draw',
+                  attributes: { draw_tableau: [
+                                  [ participants(:DM1).id,
+                                    participants(:DM2).id,
+                                    participants(:DM3).id,
+                                    participants(:DM4).id ]
+                                ] } }
+    }
     login_userOne
   end
 
   # With GET, Rails recognises params only in the query string
   test "should show draw" do
     url_with_params = api_v1_contest_draw_url(@contest) +
-      '?draw[draw_tableau]=[[],[]]'
+      '?data[type]=draw&data[id]=' + @contest.id.to_s +
+      '&data[attributes][draw_tableau]=[[],[]]'
     get url_with_params, headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 2, result.size
     assert_not_nil result
+    assert_equal 2, result['data']['attributes']['draw_tableau'].size
   end
 
   # With GET, Rails recognises params only in the query string
   test "should not show draw with invalid params" do
     url_with_params = api_v1_contest_draw_url(@contest) +
-      '?draw[draw_tableau]=[[],[],[]]'
+      '?data[type]=draw&data[id]=' + @contest.id.to_s +
+      '&data[attributes][draw_tableau]=[[],[],[]]'
     get url_with_params, headers: @headers, as: :json
     assert_response :unprocessable_entity
   end
@@ -38,7 +45,10 @@ class DrawsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create draw with invalid params" do
     post api_v1_contest_draw_url(@contest), headers: @headers, as: :json,
-          params: { draw: { draw_tableau: [ [], [], [] ] } }
+          params: {
+            data: { type: 'draw',
+                    attributes: { draw_tableau: [ [], [], [] ] } }
+          }
     assert_response :unprocessable_entity
   end
 

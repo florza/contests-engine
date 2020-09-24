@@ -2,69 +2,73 @@
   module V1
     class ContestsController < ApplicationController
 
-      # Authorization and setting of the context variables
-      # are handled in their own functions in ApplicationController
-      # @user: only set if authorized with login,
-      #        only such a user may create/edit/delete contests
-      # @contest: the active contest, which may be
-      #           - the last used contest of this @user
-      #           - the contest defined by the contest read or write token
-      #           - the contest of the participants defined by a write token
-      # @participant: active participant if authorized by a
-      #               particpants (not contests!) write token
-
       before_action :authorize_user!, except: [:index, :show]
       before_action :authorize_user_or_readtoken!, only: [:index, :show]
-      #before_action :authorize_user_or_writetoken!, only: []
 
       # GET /contests
+      # All contests of the current user or the 1 contest identified by token
       def index
-        @contests = @user ? @user.contests.public_columns : [@contest]
-        render json: @contests
+        params.merge! stats: { total: 'count' }
+        contest_selection =
+          if current_user
+            {user_id: current_user.id}
+          else
+            {id: current_contest.id}
+          end
+        contests = ContestResource.all(params, Contest.where(contest_selection))
+        respond_with(contests)
       end
 
       # GET /contests/1
       def show
-        render json: @contest
+        params.merge! include: 'participants'
+        contest = ContestResource.find(params)
+        respond_with(contest)
       end
 
       # POST /contests
       def create
-        @contest = @user.contests.new(contest_params)
-        if @contest.save
-          render json: @contest, status: :created
+        contest = ContestResource.build(params)
+        if contest.save
+          render jsonapi: contest, status: :created
         else
-          render json: @contest.errors, status: :unprocessable_entity
+          render jsonapi_errors: contest
         end
       end
 
       # PATCH/PUT /contests/1
       def update
-        if @contest.update(contest_params)
-          render json: @contest
+        contest = ContestResource.find(params)
+        if contest.update_attributes
+          render jsonapi: contest
         else
-          render json: @contest.errors, status: :unprocessable_entity
+          render jsonapi_errors: contest
         end
       end
 
       # DELETE /contests/1
       def destroy
-        @contest.destroy
+        contest = ContestResource.find(params)
+        if contest.destroy
+          render jsonapi: { meta: {} }, status: :ok
+        else
+          render jsonapi_errors: contest
+        end
       end
 
       private
 
       # Only allow a trusted parameter "white list" through.
-      def contest_params
-        params.require(:contest).permit(:name, :shortname, :description,
-                                        :ctype, :public, :last_action_at,
-                                        :userdata,
-                                        { result_params: [:winning_sets,
-                                                          :tie_allowed,
-                                                          :points_win,
-                                                          :points_tie,
-                                                          :points_loss] })
-      end
+      # def contest_params
+      #   params.require(:contest).permit(:name, :shortname, :description,
+      #                                   :ctype, :public, :last_action_at,
+      #                                   :userdata,
+      #                                   { result_params: [:winning_sets,
+      #                                                     :tie_allowed,
+      #                                                     :points_win,
+      #                                                     :points_tie,
+      #                                                     :points_loss] })
+      # end
     end
   end
 end

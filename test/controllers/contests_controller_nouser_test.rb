@@ -15,12 +15,14 @@ class ContestsControllerNoUserTest < ActionDispatch::IntegrationTest
 
   test "should not create contest without user" do
     post api_v1_contests_url,
-        params: { contest: {name: 'New test context',
-                            shortname: 'New test',
-                            description: 'Description',
-                            ctype: 'Groups',
-                            public: false} },
-        as: :json
+        params: {
+            data: { type: 'contests',
+                    attributes: { name: 'New test contest',
+                                  shortname: 'New test',
+                                  description: 'Description',
+                                  ctype: 'Groups' } }
+          },
+          as: :json
     assert_response 401
   end
 
@@ -31,11 +33,14 @@ class ContestsControllerNoUserTest < ActionDispatch::IntegrationTest
 
   test "should not update contest without user" do
     put api_v1_contest_url(@contest),
-        params: { contest: {name: @contest.name,
-                            shortname: @contest.shortname,
-                            description: @contest.description,
-                            ctype: @contest.ctype,
-                            public: @contest.public} },
+        params: {
+          data: { type: 'contests',
+                  id: @contest.id,
+                  attributes: { name: @contest.name,
+                                shortname: @contest.shortname,
+                                description: @contest.description,
+                                ctype: @contest.ctype } }
+        },
         as: :json
     assert_response 401
   end

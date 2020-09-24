@@ -8,7 +8,7 @@ class DrawManagerGroups < DrawManager
   # the  groups structure with the target size of each group is determined
   # and the groups are filled up to their target size with 0.
 
-  def initialize(contest, params)
+  def initialize(params)
     super
     if @drawn_participants.size != @participants.size
         # || @draw_tableau.size != @contest.ctype_params['draw_tableau'].size

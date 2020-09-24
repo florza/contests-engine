@@ -10,18 +10,20 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
     get api_v1_contests_url, headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_equal 3, result.size
+    assert_equal 3, result['data'].size
   end
 
   test "should create contest" do
-    assert_difference('Contest.count') do
+    assert_difference('User.find(users(:userOne).id).contests.count') do
       post api_v1_contests_url,
           headers: @headers,
-          params: { contest: {name: 'New test contest',
-                              shortname: 'New test',
-                              description: 'Description',
-                              ctype: 'Groups',
-                              public: false} },
+          params: {
+            data: { type: 'contests',
+                    attributes: { name: 'New test contest',
+                                  shortname: 'New test',
+                                  description: 'Description',
+                                  ctype: 'Groups' } }
+          },
           as: :json
     end
     assert_response 201
@@ -30,11 +32,14 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
   test "should not create invalid contest" do
     post api_v1_contests_url,
           headers: @headers,
-          params: { contest: {name: 'New test contest',
-                              shortname: '',
-                              description: 'Description',
-                              ctype: 'Groups',
-                              public: false} },
+          params: {
+            data: { type: 'contests',
+                    id: @contest.id,
+                    attributes: { name: 'New test contest',
+                                  shortname: '',
+                                  description: 'Description',
+                                  ctype: 'Groups' } }
+          },
           as: :json
     assert_response :unprocessable_entity
   end
@@ -43,17 +48,20 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
     get api_v1_contest_url(@contest.id), headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
-    assert_not_nil result
+    assert_not_nil result['data']
   end
 
   test "should update contest" do
     put api_v1_contest_url(@contest),
         headers: @headers,
-        params: { contest: {name: @contest.name,
-                            shortname: @contest.shortname,
-                            description: @contest.description,
-                            ctype: @contest.ctype,
-                            public: @contest.public} },
+        params: {
+          data: { type: 'contests',
+                  id: @contest.id,
+                  attributes: { name: @contest.name,
+                                shortname: @contest.shortname,
+                                description: @contest.description,
+                                ctype: @contest.ctype } }
+        },
         as: :json
     assert_response 200
   end
@@ -61,11 +69,14 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
   test "should not update contest with invalid values" do
     put api_v1_contest_url(@contest),
         headers: @headers,
-        params: { contest: {name: @contest.name,
-                            shortname: '',
-                            description: @contest.description,
-                            ctype: @contest.ctype,
-                            public: @contest.public} },
+        params: {
+          data: { type: 'contests',
+                  id: @contest.id,
+                  attributes: { name: @contest.name,
+                                shortname: '',
+                                description: @contest.description,
+                                ctype: @contest.ctype } }
+        },
         as: :json
     assert_response :unprocessable_entity
   end
@@ -74,6 +85,6 @@ class ContestsControllerUserTest < ActionDispatch::IntegrationTest
     assert_difference('Contest.count', -1) do
       delete api_v1_contest_url(@contest), headers: @headers, as: :json
     end
-    assert_response 204
+    assert_response 200
   end
 end

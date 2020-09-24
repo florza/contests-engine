@@ -3,13 +3,16 @@
 
 Rails.application.routes.draw do
 
-  namespace :api do
-    namespace :v1 do
-      resources :users, only: [:index]
-      resources :contests do
-        resources :participants
-        resources :matches, except: [:create, :destroy]
-        resource  :draw, only: [:show, :create, :destroy]
+  # scope path: ApplicationResource.endpoint_namespace, defaults: { format: :jsonapi } do
+  scope defaults: { format: :jsonapi } do
+    namespace :api do
+      namespace :v1 do
+        resources :users, only: [:index, :show]
+        resources :contests do
+          resources :participants
+          resources :matches, except: [:create, :destroy]
+          resource  :draw, only: [:show, :create, :destroy]
+        end
       end
     end
   end

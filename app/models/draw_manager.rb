@@ -2,22 +2,29 @@ class DrawManager
   extend ActiveModel::Naming
   include ActiveRecord::Validations
 
-  def initialize(contest, params)
-    @contest = contest
+  attr_reader :draw_tableau, :draw_seeds
+
+  def initialize(params)
+    @contest = Contest.find(params[:contest_id] || params[:id])
     @participants = @contest.participants.to_a
 
     if params.class == String
       params = JSON.parse(params).symbolize_keys
     end
-    @draw_tableau = params[:draw_tableau]
+    @draw_tableau = params.dig(:data, :attributes, :draw_tableau)
     @draw_tableau = JSON.parse(@draw_tableau) if @draw_tableau.class == String
     @draw_tableau = [[]] if @draw_tableau.blank?
 
     @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
 
-    @draw_seeds = params[:draw_seeds]
+    @draw_seeds = params.dig(:data, :attributes, :draw_seeds)
     @draw_seeds = JSON.parse(@draw_seeds) if @draw_seeds.class == String
     @draw_seeds = [] if @draw_seeds.blank?
+  end
+
+  # Graphity resources need an id on the model
+  def id
+    @contest.id
   end
 
   def draw

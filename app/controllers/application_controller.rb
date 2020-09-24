@@ -3,18 +3,31 @@ class ApplicationController < ActionController::API
   rescue_from JWTSessions::Errors::Unauthorized, with: :not_authorized
   include Graphiti::Rails::Responders
 
+  ##
+  # Render a more detailled status code than 500 if not authorized
+
   register_exception JWTSessions::Errors::Unauthorized, status: 401
   register_exception JWTSessions::Errors::Expired, status: 401
 
   ##
-  # Current user or token (only one is filled), to be used in updates
-  # for update_by_user_id or updated_by_token fields
+  # Define read access to login details, according to type of authentication:
+  # current_contest: always set, except on user login of a user with 0 contests
+  #                  on SignIn (no contest_id in request), the contest with
+  #                  the highest last_action_at is used
+  # current_user: set if user login
+  # current_token: set if login by contest or participant token
+  # current_participant: set if login by participant token
+  #
+  # These details are also made available to resources in ApplicationResource
 
-  attr_accessor :current_user_id
-  attr_accessor :current_token
+  attr_reader :current_contest
+  attr_reader :current_user
+  attr_reader :current_token
+  attr_reader :current_participant
 
   ##
   # Authorization for users only, no tokens accepted
+  # Needed for all data changes except match updates
 
   def authorize_user!
     get_current_authorization!
@@ -27,6 +40,7 @@ class ApplicationController < ActionController::API
 
   ##
   # Authorization for users or any token (read or write)
+  # Needed for all reads
 
   def authorize_user_or_readtoken!
     get_current_authorization!
@@ -39,6 +53,7 @@ class ApplicationController < ActionController::API
 
   ##
   # Authorization for users or write token
+  # Needed for updates of matches, mostly for result edits
 
   def authorize_user_or_writetoken!
     get_current_authorization!
@@ -70,38 +85,46 @@ class ApplicationController < ActionController::API
   end
 
   ##
-  # Set @contest to the last active contest of the user
+  # Set @current_contest and other fields to
+  # - the contest whose id is part of the request
+  # - or the last active contest of the user
 
   def set_user_contest
-    @user = User.find(payload['user_id'])
-    contest_id = params['contest_id'] || params['id']
+    @current_user = User.find(payload['user_id'])
+    contest_id = params.dig('contest_id') ||
+        params.dig('data', 'attributes', 'contest_id') ||
+        params.dig('id') ||
+        params.dig('data', 'id')
     if contest_id
-      @contest = Contest.public_columns.find(contest_id)
-      if @contest && @contest.user_id != @user.id
+      @current_contest = Contest.public_columns.find(contest_id)
+      if @current_contest&.user_id != @current_user.id
         not_authorized
       end
     else
-      @contest = @user.contests.public_columns.order(last_action: :desc).limit(1)
+      @current_contest =
+        @current_user.contests.public_columns.order(last_action: :desc).first
     end
-    self.current_user_id = @user.id
-    self.current_token = nil
+    @current_token = nil
+    @current_participant = nil
   end
 
   ##
-  # Set @contest to the contest of the token, if it is a contest token
-  # or to the contest of the participant, if it is a participant token
+  # Set @current_contest and other fields to
+  # - the contest of the token, if it is a contest token, or
+  # - to the contest of the participant, if it is a participant token
 
   def set_token_contest
     if payload['tokentype'] == 'Participant'
-      @participant = Participant.public_columns.find(payload['tokenid'])
-      not_authorized if @participant.nil?
-      contest_id = @participant.contest_id
+      @current_participant = Participant.public_columns.find(payload['tokenid'])
+      not_authorized if @current_participant.nil?
+      contest_id = @current_participant.contest_id
     else
+      @current_participant = nil
       contest_id = payload['tokenid']
     end
-    @contest = Contest.public_columns.find(contest_id)
-    self.current_user_id = nil
-    self.current_token = payload['tokenid']
+    @current_contest = Contest.public_columns.find(contest_id)
+    @current_token = payload['tokenid']
+    @current_user = nil
   end
 
 end

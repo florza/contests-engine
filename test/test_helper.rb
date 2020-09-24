@@ -34,7 +34,7 @@ class ActionDispatch::IntegrationTest
   # register a special testuser
   # because password AND password_digest of fixtures are NOT known
   def register_testuser
-    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     body =
     post signup_path, headers: @headers,
           params: '{ "username": "testuser@test.org", "password": "test" }'
@@ -42,7 +42,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def login_userOne
-    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "username": "userOne", "password": "pw" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
@@ -53,21 +53,21 @@ class ActionDispatch::IntegrationTest
   end
 
   def login_readToken
-    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "readToken1" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 
   def login_writeToken
-    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "writeToken1" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
   end
 
   def login_participantToken
-    @headers = { 'CONTENT_TYPE' => 'application/json' }
+    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "writeTokenDM1" }'
     @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
@@ -76,10 +76,15 @@ class ActionDispatch::IntegrationTest
   def draw_demomeisterschaft()
     post api_v1_contest_draw_url(@contest),
       headers: @headers,
-      params: { draw: { draw_tableau: [ [ participants(:DM1).id,
-                                          participants(:DM2).id,
-                                          participants(:DM3).id,
-                                          participants(:DM4).id] ] } },
+      params: {
+        data: { type: 'contests',
+                id: @contest.id,
+                attributes: { draw_tableau: [
+                                [ participants(:DM1).id,
+                                  participants(:DM2).id,
+                                  participants(:DM3).id,
+                                  participants(:DM4).id] ] } }
+      },
       as: :json
   end
 end

@@ -13,9 +13,9 @@ class DrawManagerKO < DrawManager
   # To make the handling of this structure easier and more readable,
   # @ko_tableau is defined as a "shorthand" for @draw_tableau.first.
 
-  def initialize(contest, params)
+  def initialize(params)
     super
-    if @draw_tableau.first.size != get_tableau_size(contest.participants.count)
+    if @draw_tableau.first.size != get_tableau_size(@contest.participants.count)
       @draw_tableau[0] =
         get_ko_structure(@participants.size).map {|p| p == 'BYE' ? p : 0}
     end

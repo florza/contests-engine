@@ -18,18 +18,25 @@ class ParticipantsControllerNoUserTest < ActionDispatch::IntegrationTest
 
   test "should not create participant without user" do
     post api_v1_contest_participants_url(@contest),
-        params:   { participant: {name: 'New test participant',
-                                  shortname: 'New test',
-                                  remarks: 'Remarks'} },
+        params:   {
+          data: { type: 'participants',
+                  attributes: { name: 'New test participant',
+                                shortname: 'New test',
+                                remarks: 'Remarks'} }
+        },
         as: :json
     assert_response 401
   end
 
   test "should not update participant without user" do
     patch api_v1_contest_participant_url(@contest, @participant),
-          params: { participant: {name: @participant.name,
+          params: {
+            data: { type: 'participants',
+                    id: @participant.id,
+                    attributes: { name: @participant.name,
                                   shortname: @participant.shortname,
-                                  remarks: @participant.remarks} },
+                                  remarks: @participant.remarks} }
+          },
           as: :json
     assert_response 401
   end

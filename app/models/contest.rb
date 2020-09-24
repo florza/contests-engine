@@ -3,7 +3,7 @@ class Contest < ApplicationRecord
   DEFAULT_RESULT_PARAMS =
     { 'winning_sets' => 1, 'tie_allowed': false,
       'points_win' => 3, 'points_loss' => 0, 'points_tie' => 1}
-  DEFAULT_CTYPE_PARAMS_GROUPS = { 'grp_groups' => [] }
+  DEFAULT_CTYPE_PARAMS = { 'draw_tableau' => [[]], 'draw_seeds' => [] }
 
   belongs_to :user
   has_many :participants
@@ -40,7 +40,7 @@ class Contest < ApplicationRecord
     self.last_action_at ||= DateTime.now
     self.token_read ||= get_token
     self.token_write ||= get_token
-    self.ctype_params ||= DEFAULT_CTYPE_PARAMS_GROUPS
+    self.ctype_params ||= DEFAULT_CTYPE_PARAMS
     self.result_params ||= DEFAULT_RESULT_PARAMS
   end
 

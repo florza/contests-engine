@@ -29,8 +29,12 @@ class MatchesControllerNoUserTest < ActionDispatch::IntegrationTest
   test "should not update match without user" do
     result = { 'score_p1' => [6,7], 'score_p2' => [2,5] }
     patch api_v1_contest_match_url(@contest, @match),
-          params: { match: {result: result,
-                            winner_id: @match.participant_1_id} },
+          params: {
+            data: { type: 'matches',
+                    id: @match.id,
+                    attributes: { result: result,
+                                  winner_id: @match.participant_1_id} }
+          },
           as: :json
     assert_response :unauthorized
   end
