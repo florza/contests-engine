@@ -30,6 +30,6 @@ module Iturnier2tier
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = true
+    # Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = true
   end
 end
