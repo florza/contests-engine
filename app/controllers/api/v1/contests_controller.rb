@@ -21,7 +21,7 @@
 
       # GET /contests/1
       def show
-        params.merge! include: 'participants'
+        # params.merge! include: 'participants'
         contest = ContestResource.find(params)
         respond_with(contest)
       end

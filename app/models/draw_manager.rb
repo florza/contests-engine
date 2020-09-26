@@ -55,6 +55,7 @@ class DrawManager
       end
     end
     contest.matches.destroy_all
+    true
   end
 
   def create_matches(group, matches, match_ids = {})

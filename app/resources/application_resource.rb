@@ -14,4 +14,5 @@ class ApplicationResource < Graphiti::Resource
   # Found no way to pass endpoint validation with nested routes!
   # Without validation, everything's looking fine...
   self.validate_endpoints = false
+
 end

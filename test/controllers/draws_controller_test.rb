@@ -24,7 +24,7 @@ class DrawsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     result = JSON.parse(@response.body)
     assert_not_nil result
-    assert_equal 2, result['data']['attributes']['draw_tableau'].size
+    assert_equal 2, result['data']['attributes']['draw_structure'].size
   end
 
   # With GET, Rails recognises params only in the query string
@@ -58,7 +58,7 @@ class DrawsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 6, @contest.matches.size
 
     delete api_v1_contest_draw_url(@contest), headers: @headers, as: :json
-    assert_response 204
+    assert_response 200
     assert_equal 0, @contest.matches.size
   end
 end

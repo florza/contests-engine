@@ -41,6 +41,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Branch graphity: implement DrawResource to render JSONAPI for Draw data without a corresponding active record model, install and try Graphiti Vandal (seems not to be very useful, e.g. because no login or header handling)
 - Branch graphity: change input/output to JSONAPI-format (jsonapi.org), using the Graphiti gems (www.graphiti.dev)
 - Improve test coverage
 - Compute rank in KO

@@ -62,17 +62,18 @@ end
 gem 'graphiti'
 gem 'graphiti-rails'
 gem 'responders'
+gem 'vandal_ui'
 
 # For automatic ActiveRecord pagination
 gem 'kaminari'
 
 # Test-specific gems
-# group :development, :test do
-#   gem 'rspec-rails'
-#   gem 'factory_bot_rails'
-#   gem 'faker'
-#   gem 'graphiti_spec_helpers'
-# end
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'graphiti_spec_helpers'
+end
 
 # group :test do
 #   gem 'database_cleaner'
