@@ -74,6 +74,8 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 - Field userdata in all tables
 
 ## Next Steps
+- Use graphiti namespace to centrally define the /api/v1 prefix, delete module / namespace definitions used so far in controllers and in routes.rb
+- Replace public_columns by resource definitions
 - Create draw with seed list (complete draw, overwrites previous):
     1. Seed #1 to the top
     2. Seed #2 to the bottom
@@ -82,7 +84,7 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
     5. Place eventually remaining participants randomly
 - Prevent some updates:
     - Participant add/delete or ctype update only after delete draw
-    - No match update (or no winner update?) after following match has been played
+    - No match update (or no winner update?) after following match has been played (with editable field or as a computed field in resource?)
     - No draw with played matches
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj

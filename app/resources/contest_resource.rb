@@ -14,7 +14,7 @@ class ContestResource < ApplicationResource
   attribute :description,    :string
   attribute :ctype,          :string
   attribute :ctype_params,   :hash,     except: [:writable]
-  attribute :result_params,  :hash,     only: [:readable, :schema]
+  attribute :result_params,  :hash
   attribute :stats,          :hash,     only: [:readable, :schema]
   attribute :userdata,       :hash
   attribute :draw_at,        :datetime, except: [:writable]

@@ -13,9 +13,9 @@ class DrawResource < ApplicationResource
     @object.draw_structure
   end
 
-  # attribute :draw_seeds :array_of_integers, only: [:readable, :writable] do
-  #   draw_mgr.draw_seeds
-  # end
+  attribute :draw_seeds, :array_of_integer_ids, only: [:readable, :writable] do
+    @object.draw_seeds
+  end
 
   def base_scope
     { db: [context.draw_manager] }
