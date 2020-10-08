@@ -102,7 +102,7 @@ class ApplicationController < ActionController::API
       end
     else
       @current_contest =
-        @current_user.contests.public_columns.order(last_action: :desc).first
+        @current_user.contests.public_columns.order(last_action_at: :desc).first
     end
     @current_token = nil
     @current_participant = nil
