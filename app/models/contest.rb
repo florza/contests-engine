@@ -27,6 +27,8 @@ class Contest < ApplicationRecord
 
   before_create:init_attributes
 
+  default_scope -> { order(last_action_at: :desc) }
+
   # usually hide :token_read, :token_write
   scope :public_columns,
             -> { select(:id, :user_id, :name, :shortname, :description,
