@@ -6,6 +6,8 @@ class ContestResource < ApplicationResource
     contest.user_id ||= context.current_user.id
   end
 
+  self.default_sort = [{ last_action_at: :desc }]
+
   attribute :user_id,        :integer,  only: [:filterable]
   # attribute :status,         :string,   except: [:writable]
   # attribute :public,         :boolean
