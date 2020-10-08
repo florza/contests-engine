@@ -17,12 +17,11 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  root to: "home#index"
-
+createdc
   post 'refresh', controller: :refresh, action: :create
   post 'signin', controller: :signin, action: :create
   post 'signup', controller: :signup, action: :create
   delete 'signin', controller: :signin, action: :destroy
 
+  get '*other', to: redirect('/') # show static page in public
 end

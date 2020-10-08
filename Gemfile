@@ -5,6 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # 12.9.20, switch to 6.0.3.3 to close vulnerability GHSA-cfjv-5498-mph5
@@ -25,8 +26,9 @@ gem 'bcrypt', '~> 3.1.16'  # alt 3.1.7
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
-# for deployment to heroku
-gem 'rails_12factor'
+# for deployment to heroku,
+# has been replaced by entries in config/environments/production.rb
+# gem 'rails_12factor'
 
 group :production do
   gem 'pg'
