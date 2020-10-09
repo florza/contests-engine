@@ -10,8 +10,16 @@ default: &default
   timeout: 5000
 
 development:
-  <<: *default
-  database: db/development.sqlite3
+  #<<: *default
+  #database: db/development.sqlite3
+
+  adapter: postgresql
+  database: iturnier2
+  encoding: unicode
+  #url: <%= ENV['DATABASE_URL'] %>
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
