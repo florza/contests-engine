@@ -1,7 +1,7 @@
 module Api
   module V1
     class MatchesController < ApplicationController
-      before_action :authorize_user_or_readtoken!, only: [:show, :index]
+      before_action :authorize_user_or_token!, only: [:show, :index]
       before_action :authorize_user_or_writetoken!, except: [:index, :show]
       #before_action :set_match, only: [:show, :update]
 

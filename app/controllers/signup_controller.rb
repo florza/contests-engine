@@ -8,11 +8,7 @@ class SignupController < ApplicationController
               payload: payload, refresh_by_access_allowed: true)
       tokens = session.login
 
-      response.set_cookie(JWTSessions.access_cookie,
-                          value: tokens[:access],
-                          httponly: true,
-                          secure: Rails.env.production?)
-      render json: {csrf: tokens[:csrf],
+      render json: {auth: tokens[:access],
                     signin_type: 'user',
                     signin_data: user}
     else

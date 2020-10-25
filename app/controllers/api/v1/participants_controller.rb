@@ -2,7 +2,7 @@ module Api
   module V1
     class ParticipantsController < ApplicationController
       before_action :authorize_user!, except: [:index, :show]
-      before_action :authorize_user_or_readtoken!, only: [:index, :show]
+      before_action :authorize_user_or_token!, only: [:index, :show]
       #before_action :set_participant, only: [:show, :update, :destroy]
       #before_action :authorize_user_or_writetoken!, only: []
 

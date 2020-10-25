@@ -28,8 +28,8 @@ The basic set of API-calls is implemented
 - POST /api/v1/contests
 - PATCH /api/v1/contests/<id>
 - DELETE /api/v1/contests/<id>-
-- GET /api/v1/contests/<id>/draw
-- POST /api/v1/contests/<id>/draw
+- GET /api/v1/contests/<id>/draw (empty tableau structure)
+- POST /api/v1/contests/<id>/draw (save and amend draw)
 - DELETE /api/v1/contests/<id>/draw
 - GET /api/v1/contests/<id>/participants
 - GET /api/v1/contests/<id>/participants/<id>
@@ -41,6 +41,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Replaced cookies and csrf token by the access token that is sent to the client in the login request and resent by the client in the authorization header.
 - Changed some config details to the heroku standards for rails 6, included a static home page with some basic information.
 - Branch graphity: implement DrawResource to render JSONAPI for Draw data without a corresponding active record model, install and try Graphiti Vandal (seems not to be very useful, e.g. because no login or header handling)
 - Branch graphity: change input/output to JSONAPI-format (jsonapi.org), using the Graphiti gems (www.graphiti.dev)

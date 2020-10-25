@@ -42,7 +42,7 @@ class ApplicationController < ActionController::API
   # Authorization for users or any token (read or write)
   # Needed for all reads
 
-  def authorize_user_or_readtoken!
+  def authorize_user_or_token!
     get_current_authorization!
     if payload['user_id']
       set_user_contest

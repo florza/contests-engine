@@ -3,7 +3,7 @@
     class ContestsController < ApplicationController
 
       before_action :authorize_user!, except: [:index, :show]
-      before_action :authorize_user_or_readtoken!, only: [:index, :show]
+      before_action :authorize_user_or_token!, only: [:index, :show]
 
       # GET /contests
       # All contests of the current user or the 1 contest identified by token
