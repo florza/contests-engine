@@ -7,14 +7,14 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
 
   test "should get index of contest with token" do
     login_readToken
-    get api_v1_contests_url, as: :json
+    get api_v1_contests_url, headers: @headers, as: :json
     result = JSON.parse(@response.body)
     assert_equal 1, result['data'].size
   end
 
-  test "should show token contest with token" do
+  test "should show contest with token" do
     login_readToken
-    get api_v1_contest_url(@contest), as: :json
+    get api_v1_contest_url(@contest), headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
     assert_not_nil result['data'].size
@@ -23,6 +23,7 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
   test "should not create new contest with token" do
     login_writeToken
     post api_v1_contests_url,
+        headers: @headers,
         params: {
             data: { type: 'contests',
                     attributes: { name: 'New test contest',
@@ -37,7 +38,8 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
   test "should not update contest with token" do
     login_writeToken
     put api_v1_contest_url(@contest),
-        params: {
+          headers: @headers,
+          params: {
           data: { type: 'contests',
                   id: @contest.id,
                   attributes: { name: @contest.name,
@@ -51,7 +53,7 @@ class ContestsControllerTokenTest < ActionDispatch::IntegrationTest
 
   test "should not destroy contest with token" do
     login_writeToken
-    delete api_v1_contest_url(@contest), as: :json
+    delete api_v1_contest_url(@contest), headers: @headers, as: :json
     assert_response 401
   end
 end

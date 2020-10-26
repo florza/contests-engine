@@ -38,14 +38,14 @@ class ActionDispatch::IntegrationTest
     body =
     post signup_path, headers: @headers,
           params: '{ "username": "testuser@test.org", "password": "test" }'
-    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+    @headers['Authorization'] = JSON.parse(@response.body)['auth']
   end
 
   def login_userOne
     @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "username": "userOne", "password": "pw" }'
-    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+    @headers['Authorization'] = JSON.parse(@response.body)['auth']
   end
 
   def logout
@@ -53,24 +53,24 @@ class ActionDispatch::IntegrationTest
   end
 
   def login_readToken
-    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
+    @headers = { 'CONTENT_TYPE' => 'application//vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "readToken1" }'
-    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+    @headers['Authorization'] = JSON.parse(@response.body)['auth']
   end
 
   def login_writeToken
     @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "writeToken1" }'
-    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+    @headers['Authorization'] = JSON.parse(@response.body)['auth']
   end
 
   def login_participantToken
     @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "writeTokenDM1" }'
-    @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+    @headers['Authorization'] = JSON.parse(@response.body)['auth']
   end
 
   def draw_demomeisterschaft()

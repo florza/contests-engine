@@ -11,7 +11,7 @@ class MatchesControllerTokenTest < ActionDispatch::IntegrationTest
 
   test "should get index of contest matches with token" do
     login_readToken
-    get api_v1_contest_matches_url(@contest), as: :json
+    get api_v1_contest_matches_url(@contest), headers: @headers, as: :json
     assert_response :success
     result = JSON.parse(@response.body)
     assert_equal 6, result['data'].size

@@ -16,7 +16,7 @@ class RefreshControllerTest < ActionDispatch::IntegrationTest
 
       post refresh_path, headers: @headers
       assert_response :success  # Token was refreshed
-      @headers['X-CSRF-TOKEN'] = JSON.parse(@response.body)['csrf']
+      @headers['Authorization'] = JSON.parse(@response.body)['auth']
 
       get api_v1_contests_url, headers: @headers, as: :json
       assert_response :success  # New token works

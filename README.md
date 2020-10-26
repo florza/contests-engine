@@ -41,6 +41,7 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
+- Adapt tests to new authorization
 - Replaced cookies and csrf token by the access token that is sent to the client in the login request and resent by the client in the authorization header.
 - Changed some config details to the heroku standards for rails 6, included a static home page with some basic information.
 - Branch graphity: implement DrawResource to render JSONAPI for Draw data without a corresponding active record model, install and try Graphiti Vandal (seems not to be very useful, e.g. because no login or header handling)
@@ -78,16 +79,17 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 ## Next Steps
 - Use graphiti namespace to centrally define the /api/v1 prefix, delete module / namespace definitions used so far in controllers and in routes.rb
 - Replace public_columns by resource definitions
+- Try ActionCable to push contest changes to connected clients
+- Prevent some updates:
+    - Participant add/delete or ctype update only after delete draw
+    - No match update (or no winner update?) after following match has been played (with editable field or as a computed field in resource?)
+    - No draw with played matches
 - Create draw with seed list (complete draw, overwrites previous):
     1. Seed #1 to the top
     2. Seed #2 to the bottom
     3. Seeds #3 and #4 randomly to middle positions
     4. And so on for #5 - #8, #9 - 16, ... (to maximal number of seeds or number of groups - never more than 1 seed per group)
     5. Place eventually remaining participants randomly
-- Prevent some updates:
-    - Participant add/delete or ctype update only after delete draw
-    - No match update (or no winner update?) after following match has been played (with editable field or as a computed field in resource?)
-    - No draw with played matches
 - Error processing and messages, see also:
     - https://blog.rebased.pl/2016/11/07/api-error-handling.htmlj
     - jsonapi.org !!

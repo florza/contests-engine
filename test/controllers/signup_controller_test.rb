@@ -7,7 +7,7 @@ class SignupControllerTest < ActionDispatch::IntegrationTest
           params: { username: 'registeruser', password: 'test' },
           as: :json
     assert_response :success
-    assert_not_nil JSON.parse(@response.body)['csrf']
+    assert_not_nil JSON.parse(@response.body)['auth']
     assert_not_nil User.find_by(username: "registeruser")
   end
 
@@ -16,7 +16,7 @@ class SignupControllerTest < ActionDispatch::IntegrationTest
           params: { username: '', password: 'test' },
           as: :json
     assert_response :unprocessable_entity
-    assert_nil JSON.parse(@response.body)['csrf']
+    assert_nil JSON.parse(@response.body)['auth']
     assert_nil User.find_by(username: "registeruser")
   end
 
