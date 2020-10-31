@@ -53,7 +53,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def login_readToken
-    @headers = { 'CONTENT_TYPE' => 'application//vnd.api+json' }
+    @headers = { 'CONTENT_TYPE' => 'application/vnd.api+json' }
     post signin_path, headers: @headers,
           params: '{ "contestkey": "readToken1" }'
     @headers['Authorization'] = JSON.parse(@response.body)['auth']

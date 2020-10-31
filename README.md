@@ -41,7 +41,11 @@ The basic set of API-calls is implemented
 - PATCH /api/v1/contests/<id>/matches/<id>
 
 ## Recent Steps
-- Adapt tests to new authorization
+- Replace public_columns by resource definitions, except for the user info in the login response (UserResource did not work properly there without rendering it)
+- First tries with logger
+- Compute result_1_vs_2 and result_2_1 as read-only attributes in an accessor in the model and display it in the resource, without storing it any more in the database
+- Set the read-only attribute match.editable in MatchResource, to free the client from this logic
+- Adapted tests to new authorization
 - Replaced cookies and csrf token by the access token that is sent to the client in the login request and resent by the client in the authorization header.
 - Changed some config details to the heroku standards for rails 6, included a static home page with some basic information.
 - Branch graphity: implement DrawResource to render JSONAPI for Draw data without a corresponding active record model, install and try Graphiti Vandal (seems not to be very useful, e.g. because no login or header handling)
@@ -76,14 +80,14 @@ Also returned is now some additional data, i.e. the type of signin (user/token) 
 - Separated result params in a new field, moved 'points' object from ctype_params to result_params
 - Field userdata in all tables
 
-## Next Steps
-- Use graphiti namespace to centrally define the /api/v1 prefix, delete module / namespace definitions used so far in controllers and in routes.rb
-- Replace public_columns by resource definitions
-- Try ActionCable to push contest changes to connected clients
+## Next Step
 - Prevent some updates:
     - Participant add/delete or ctype update only after delete draw
     - No match update (or no winner update?) after following match has been played (with editable field or as a computed field in resource?)
     - No draw with played matches
+- Try ActionCable to push contest changes to connected clients
+- Use graphiti namespace to centrally define the /api/v1 prefix, delete module / namespace definitions used so far in controllers and in routes.rb. (Or keep it as it is to make it easier to support additional versions in the same app?)
+- Adapt signin/up/out and refresh to versioning and jsonapi standard
 - Create draw with seed list (complete draw, overwrites previous):
     1. Seed #1 to the top
     2. Seed #2 to the bottom

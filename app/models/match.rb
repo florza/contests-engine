@@ -3,8 +3,8 @@ class Match < ApplicationRecord
   belongs_to :contest
   belongs_to :participant_1, class_name: "Participant", foreign_key: "participant_1_id", optional: true
   belongs_to :participant_2, class_name: "Participant", foreign_key: "participant_2_id", optional: true
-  has_one :winner_next_match, class_name: "Match", foreign_key: "winner_next_match_id"
-  has_one :looser_next_match, class_name: "Match", foreign_key: "looser_next_match_id"
+  belongs_to :winner_next_match, class_name: "Match", foreign_key: "winner_next_match_id", optional: true
+  belongs_to :looser_next_match, class_name: "Match", foreign_key: "looser_next_match_id", optional: true
 
   validates :contest_id, presence: true
   validate :validate_result
@@ -22,8 +22,8 @@ class Match < ApplicationRecord
   end
 
   before_save do |m|
-    m.result_1_vs_2 = Result.to_s(m.result)
-    m.result_2_vs_1 = Result.to_s_reversed(m.result)
+    # m.result_1_vs_2 = Result.to_s(m.result)
+    # m.result_2_vs_1 = Result.to_s_reversed(m.result)
     m.stats = Result.get_stats(m, @contest.result_params)
     # m.ctype_params = Result.get_ctype_params(m, @contest.ctype)
   end
@@ -34,11 +34,19 @@ class Match < ApplicationRecord
     #end
   end
 
-  scope :public_columns,
-            -> { select(:id, :contest_id, :participant_1_id,
-                        :participant_2_id, :remarks, :ctype_params, :stats, :planned_at, :result_at,
-                        :result, :result_1_vs_2, :result_2_vs_1, :winner_id,
-                        :looser_id, :userdata, :created_at, :updated_at) }
+  def result_1_vs_2
+    Result.to_s(result)
+  end
+
+  def result_2_vs_1
+    Result.to_s_reversed(result)
+  end
+
+  def editable
+    !participant_1_id.nil? &&
+      !participant_2_id.nil? &&
+      winner_next_match&.winner_id.nil? # no result yet
+  end
 
   def validate_result
     if (message = Result.validate(result, self, @contest.result_params))

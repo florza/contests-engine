@@ -8,6 +8,7 @@ class User < ApplicationRecord
   validates :password_digest, presence: true
   validates :password, confirmation: true
 
+  # Show user data in login info without password
   scope :public_columns,
             -> { select(:id, :username, :userdata, :created_at, :updated_at) }
 end

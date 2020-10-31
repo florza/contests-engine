@@ -33,6 +33,10 @@ class SigninController < ApplicationController
     session = JWTSessions::Session.new(payload: payload,
                                         refresh_by_access_allowed: true)
     tokens = session.login
+    logger.info payload[:user_id] ?
+      "Login of user #{payload[:user_id]} (#{user.username})" :
+      "Login with contestkey #{params[:contestkey]} (#{payload.inspect})"
+    logger.debug "created token: #{log_token(tokens[:access])}"
     render json: {auth: tokens[:access],
                   signin_type: payload[:user_id] ? 'user' : 'token',
                   signin_data: payload[:user_id] ? user : payload}

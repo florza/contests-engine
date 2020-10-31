@@ -51,24 +51,6 @@ module Api
       #   end
       # end
 
-      private
-
-      # def set_match
-      #   @match = Match.public_columns.find(params[:id])
-      #   if @match && current_contest.id != @match.contest_id
-      #     not_authorized
-      #   end
-      # end
-
-      # Only allow a trusted parameter "white list" through.
-      # def match_params
-      #   params.require(:match).permit(:remarks, :winner_id,
-      #                                 :planned_at, :userdata,
-      #                                 { result: [ { score_p1: [] },
-      #                                             { score_p2: [] },
-      #                                             :walk_over,
-      #                                             :lucky_loser ] })
-      # end
     end
   end
 end

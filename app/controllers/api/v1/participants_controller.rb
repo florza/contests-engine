@@ -8,7 +8,7 @@ module Api
 
       # GET /contests/<contest_id>/participants
       def index
-        # @participants = @contest.participants.public_columns
+        # @participants = @contest.participants
         params.merge! stats: { total: 'count' }
         participants = ParticipantResource.all(params,
           Participant.where(contest_id: current_contest.id))
@@ -50,22 +50,6 @@ module Api
           render jsonapi_errors: participant.errors
         end
       end
-
-      private
-
-      # Use callbacks to share common setup or constraints between actions.
-      # def set_participant
-      #   @participant ||= Participant.public_columns.find(params[:id])
-      #   if @participant && @contest.id != @participant.contest_id
-      #     not_authorized
-      #   end
-      # end
-
-      # Only allow a trusted parameter "white list" through.
-      # def participant_params
-      #   params.require(:participant).permit(:name, :shortname, :remarks,
-      #                                       :userdata)
-      # end
 
     end
   end

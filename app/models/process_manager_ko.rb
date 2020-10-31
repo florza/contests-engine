@@ -2,10 +2,8 @@ class ProcessManagerKO < ProcessManager
 
   def self.process_result(match, contest)
     update_participants_stats(contest)
-    if match.winner_id
-      process_winner(match, contest)
-      process_looser(match, contest)
-    end
+    process_winner(match, contest)
+    process_looser(match, contest)
   end
 
   private
@@ -29,7 +27,7 @@ class ProcessManagerKO < ProcessManager
   end
 
   ##
-  # Method called from the parents update_participants_stats
+  # Method called from the parent class's update_participants_stats()
   # Since KO has no groups, 1 is returned
   def self.getGroupNr(match)
     return 1

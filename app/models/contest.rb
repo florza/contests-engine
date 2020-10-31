@@ -29,14 +29,6 @@ class Contest < ApplicationRecord
 
   # default_scope -> { order(last_action_at: :desc) }
 
-  # usually hide :token_read, :token_write
-  scope :public_columns,
-            -> { select(:id, :user_id, :name, :shortname, :description,
-                        :status, :ctype, :ctype_params, :result_params,
-                        :public, :last_action_at, :draw_at,
-                        :userdata, :created_at, :updated_at) }
-
-
   def init_attributes
     self.last_action_at ||= DateTime.now
     self.token_read ||= get_token

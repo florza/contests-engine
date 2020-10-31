@@ -15,8 +15,8 @@ class MatchResource < ApplicationResource
   attribute :userdata,             :hash
   attribute :result_at,            :datetime
   attribute :result,               :hash,       onoly:  [:readable, :schema]
-  attribute :result_1_vs_2,        :string,     except: [:writable]
-  attribute :result_2_vs_1,        :string,     except: [:writable]
+  attribute :result_1_vs_2,        :string,     only:   [:readable, :schema]
+  attribute :result_2_vs_1,        :string,     only:   [:readable, :schema]
   attribute :stats,                :hash,       only:   [:readable, :schema]
   attribute :winner_id,            :integer_id
   attribute :looser_id,            :integer_id, except: [:writable]
@@ -28,4 +28,7 @@ class MatchResource < ApplicationResource
   attribute :updated_by_token,     :string,     except: [:writable]
   attribute :created_at,           :datetime,   except: [:writable]
   attribute :updated_at,           :datetime,   except: [:writable]
+
+  attribute :editable,             :boolean,    only:   [:readable, :schema]
+
 end

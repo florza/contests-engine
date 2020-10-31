@@ -96,13 +96,13 @@ class ApplicationController < ActionController::API
         params.dig('id') ||
         params.dig('data', 'id')
     if contest_id
-      @current_contest = Contest.public_columns.find(contest_id)
+      @current_contest = Contest.find(contest_id)
       if @current_contest&.user_id != @current_user.id
         not_authorized
       end
     else
       @current_contest =
-        @current_user.contests.public_columns.order(last_action_at: :desc).first
+        @current_user.contests.order(last_action_at: :desc).first
     end
     @current_token = nil
     @current_participant = nil
@@ -115,16 +115,19 @@ class ApplicationController < ActionController::API
 
   def set_token_contest
     if payload['tokentype'] == 'Participant'
-      @current_participant = Participant.public_columns.find(payload['tokenid'])
+      @current_participant = Participant.find(payload['tokenid'])
       not_authorized if @current_participant.nil?
       contest_id = @current_participant.contest_id
     else
       @current_participant = nil
       contest_id = payload['tokenid']
     end
-    @current_contest = Contest.public_columns.find(contest_id)
+    @current_contest = Contest.find(contest_id)
     @current_token = payload['tokenid']
     @current_user = nil
   end
 
+  def log_token(token)
+    token.first(10) + '...' + token.last(10)
+  end
 end

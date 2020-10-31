@@ -20,12 +20,6 @@ class Participant < ApplicationRecord
   validates :contest_id,	presence: true
   validates :remarks, exclusion: { in: [nil] }  # allow blank, but not null
 
-  # usually hide :token_write
-  scope :public_columns,
-            -> { select(:id, :user_id, :contest_id, :name, :shortname,
-                        :remarks, :status, :ctype_params, :stats,
-                        :userdata, :created_at, :updated_at) }
-
   def init_attributes
     self.token_write ||= get_token
     self.remarks ||= ''
