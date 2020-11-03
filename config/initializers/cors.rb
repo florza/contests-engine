@@ -8,8 +8,8 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins /https?:\/\/contest.*\.herokuapp.com(:\d+)?\/?/,  # Heroku
-            'http://localhost:5000', 'http://0.0.0.0:5000', # dev localhost
-            /http:\/\/192\.168\.\d{1,3}\.\d{1,3}(:\d+)?\/?/ # dev LAN
+            'http://localhost:5000', 'http://0.0.0.0:5000',   # dev localhost
+            /http:\/\/192\.168\.\d{1,3}\.\d{1,3}(:\d+)?\/?/   # dev LAN
 
     resource '*',
       headers: :any,
