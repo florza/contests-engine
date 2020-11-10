@@ -10,7 +10,7 @@ module Api
       attr_reader :draw_manager
 
       def show
-        params['fields'] = { draws: 'draw_structure' }
+        params['fields'] = { draw: 'draw_structure' }
         @draw_manager = get_draw_manager(params)
         draw = DrawResource.find(params)
         if @draw_manager.valid?
@@ -66,6 +66,10 @@ module Api
       # be necessary.
 
       def sanitize_params
+        data = params.dig(:data)
+        if data.class == String
+          params['data'] = JSON.parse(data)
+        end
         draw_tableau = params.dig(:data, :attributes, :draw_tableau)
         if draw_tableau.class == String
           params[:data][:attributes][:draw_tableau] = JSON.parse(draw_tableau)

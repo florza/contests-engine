@@ -47,9 +47,9 @@ Rails.application.configure do
 
   # Manual definitions set by the developer
 
-  # Rails.logger = Logger.new(STDOUT)
-  # config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
-  # config.logger.datetime_format = "%Y-%m-%d %H:%M:%S"
+  Rails.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
+  config.logger.datetime_format = "%Y-%m-%d %H:%M:%S"
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.

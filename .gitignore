@@ -19,10 +19,10 @@
 
 .DS_Store
 .byebug_history
+*.code-workspace
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-iturnier2backend.code-workspace
 
 # Ignore generated docs
 /coverage/*

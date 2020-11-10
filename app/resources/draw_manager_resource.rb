@@ -5,12 +5,10 @@ class DrawManagerResource < ApplicationResource
   @draw_mgr = nil
 
   attribute :draw_tableau, :array, only: [:readable, :writable] do
-    debugger
     @object.draw_tableau
   end
 
   attribute :draw_structure, :array, only: [:readable] do
-    debugger
     @object.draw_structure
   end
 

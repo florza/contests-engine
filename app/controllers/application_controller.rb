@@ -67,6 +67,13 @@ class ApplicationController < ActionController::API
   end
 
   ##
+  # Authorization of the refresh request
+  # which needs an already timed out access token
+  def authorize_refresh!
+    authorize_refresh_by_access_request!
+  end
+
+  ##
   # Handling of 'not_authorized' execptions raised by JWT or ourselfs.
 
   def not_authorized
@@ -128,6 +135,8 @@ class ApplicationController < ActionController::API
   end
 
   def log_token(token)
+    return 'none' if !token
+    return token if  token.size < 21
     token.first(10) + '...' + token.last(10)
   end
 end

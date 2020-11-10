@@ -1,5 +1,5 @@
 class RefreshController < ApplicationController
-  before_action :authorize_refresh_by_access_request!
+  before_action :authorize_refresh!
 
   def create
     logger.debug "Refresh token: #{log_token(request_headers['Authorization'])}"

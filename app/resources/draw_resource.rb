@@ -2,6 +2,7 @@ class DrawResource < ApplicationResource
 
   self.adapter = Graphiti::Adapters::Null
   self.model = DrawManager
+  self.type = 'draw'
 
   @draw_mgr = nil
 

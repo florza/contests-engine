@@ -1,16 +1,27 @@
-<h2>iTurnier-Backend</h2>
+<h2>Contests-Engine</h2>
 <p>
-  This URL provides access to the backend of the iTurnier II application.
+  This URL provides access to the public API of the <i>Contests-Engine</i>, a tournament management back-end system that handles contests, participants, draws, matches and the like for almost any contest (football championships, tennis trophies, billard tournaments and so on).
 </p>
 <p>
-  With the exception of this single page, it does not directly serve any web pages, but is accessed from frontend applications (other web pages or apps) over an API, with REST services to:
+  The goal of the <i>Contests-Engine</i> is to let developers of tournament management front-ends (websites, mobile apps, desktop apps, ...) concentrate on the presentation layer of their systems, e.g.
+</p>
   <ul>
-    <li>create a contest and participants</li>
-    <li>create a draw</li>
-    <li>create the contest tableau with all the matches</li>
-    <li>edit match results and update the tableau</li>
+    <li>Fast and simple data entry forms</li>
+    <li>Easy definition of a draw by dragging around participants on the empty tableau</li>
+    <li>Elegant renderings of large groups- or knock-out-tableaus with scrolling and zooming</li>
+  </ul>
+  and so on. The <i>Contest-Engine</i> in the background then handles tasks as
+  <ul>
+    <li>Store, update and retrieve all data of the contests</li>
+    <li>Randomly fill an incomplete draw or create an entire draw with due regard to special rules like seed lists</li>
+    <li>Create the matches for each round according to the type of the contest (round robin, groups, elimination or double-elimination game, ...) </li>
+    <li>Keep everything actualized whenever a new result is received, e.g. propagate the winner of a elimination game to the next round or group winners to the final group or elimination round</li>
+    <li>Distribute points for wins, losses and eventually ties, calculate rankings</li>
   </ul>
 </p>
 <p>
-  The application is still under development. For details, send a mail to <a href="mailto:rolf.zanga@icloud.com">rolf.zanga@icloud.com</a>.
+  Further Details can be found at <a href="https://github.com/florza/contests-engine">the Contests-Engine Github page</a>.
+</p>
+<p>
+  The application is still under development. For questions, send a mail to <a href="mailto:rolf.zanga@icloud.com">rolf.zanga@icloud.com</a>.
 </p>
