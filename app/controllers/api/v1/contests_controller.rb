@@ -16,21 +16,21 @@
             {id: current_contest.id}
           end
         contests = ContestResource.all(params, Contest.where(contest_selection))
-        respond_with(contests)
+        respond_with(contests, meta: meta)
       end
 
       # GET /contests/1
       def show
         # params.merge! include: 'participants'
         contest = ContestResource.find(params)
-        respond_with(contest)
+        respond_with(contest, meta: meta)
       end
 
       # POST /contests
       def create
         contest = ContestResource.build(params)
         if contest.save
-          render jsonapi: contest, status: :created
+          render jsonapi: contest, meta: meta, status: :created
         else
           render jsonapi_errors: contest
         end
@@ -40,7 +40,7 @@
       def update
         contest = ContestResource.find(params)
         if contest.update_attributes
-          render jsonapi: contest
+          render jsonapi: contest, meta: meta
         else
           render jsonapi_errors: contest
         end
@@ -50,25 +50,12 @@
       def destroy
         contest = ContestResource.find(params)
         if contest.destroy
-          render jsonapi: { meta: {} }, status: :ok
+          render jsonapi: { meta: meta }, status: :ok
         else
           render jsonapi_errors: contest
         end
       end
 
-      private
-
-      # Only allow a trusted parameter "white list" through.
-      # def contest_params
-      #   params.require(:contest).permit(:name, :shortname, :description,
-      #                                   :ctype, :public, :last_action_at,
-      #                                   :userdata,
-      #                                   { result_params: [:winning_sets,
-      #                                                     :tie_allowed,
-      #                                                     :points_win,
-      #                                                     :points_tie,
-      #                                                     :points_loss] })
-      # end
     end
   end
 end

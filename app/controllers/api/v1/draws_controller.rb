@@ -14,7 +14,7 @@ module Api
         @draw_manager = get_draw_manager(params)
         draw = DrawResource.find(params)
         if @draw_manager.valid?
-          respond_with(draw)
+          respond_with(draw, meta: meta)
         else
           render jsonapi_errors: draw
         end
@@ -29,13 +29,13 @@ module Api
         @draw_manager.draw
         draw = DrawResource.find(params)
         if @draw_manager.valid?
-          respond_with(draw)
+          respond_with(draw, meta: meta)
 
           # Variant: return the entire contest with all changes
           # params.delete!(:data)
           # params[:include] = 'participants,matches'
           # contest = ContestResource.find(params)
-          # respond_with(contest)
+          # respond_with(contest, meta: meta)
         else
           render jsonapi_errors: draw
         end
@@ -52,7 +52,7 @@ module Api
         else
           @draw_manager.delete_draw(current_contest)
           if @draw_manager.valid?
-            render jsonapi: { meta: {} }, status: :ok
+            render jsonapi: { meta: meta }, status: :ok
           else
             render jsonapi_errors: @draw_manager
           end

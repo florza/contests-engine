@@ -3,20 +3,20 @@ module Api
     class UsersController < ApplicationController
       def index
         users = UserResource.all(params)
-        render jsonapi: users
-        # respond_with(users)
+        render jsonapi: users, meta: meta
+        # respond_with(users, meta: meta)
       end
 
       def show
         user = UserResource.find(params)
-        respond_with(user)
+        respond_with(user, meta: meta)
       end
 
       def create
         user = UserResource.build(params)
 
         if user.save
-          render jsonapi: user, status: 201
+          render jsonapi: user, meta: meta, status: 201
         else
           render jsonapi_errors: user
         end
@@ -26,7 +26,7 @@ module Api
         user = UserResource.find(params)
 
         if user.update_attributes
-          render jsonapi: user
+          render jsonapi: user, meta: meta
         else
           render jsonapi_errors: user
         end
@@ -36,7 +36,7 @@ module Api
         user = UserResource.find(params)
 
         if user.destroy
-          render jsonapi: { meta: {} }, status: 200
+          render jsonapi: { meta: meta }, status: 200
         else
           render jsonapi_errors: user
         end

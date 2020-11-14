@@ -10,20 +10,20 @@ module Api
         params.merge! stats: { total: 'count' }
         matches = MatchResource.all(params,
           Match.where(contest_id: current_contest.id))
-        respond_with(matches)
+        respond_with(matches, meta: meta)
       end
 
       # GET /contests/:contest_id/matches/1
       def show
         match = MatchResource.find(params)
-        respond_with(match)
+        respond_with(match, meta: meta)
       end
 
       # POST /matches
       # def create
       #   match = MatchResource.find(params)
       #   if match.save
-      #     render jsonapi: match, status: :created
+      #     render jsonapi: match, meta: meta, status: :created
       #   else
       #     render jsonapi_errors: match
       #   end
@@ -35,7 +35,7 @@ module Api
         params.merge!(updated_by_user_id: current_user&.id,
                       updated_by_token: current_token)
         if match.update_attributes
-          render jsonapi: match
+          render jsonapi: match, meta: meta
         else
           render jsonapi_errors: match
         end
@@ -45,7 +45,7 @@ module Api
       # def destroy
       #   match = MatchResource.find(params)
       #   if match.destroy
-      #     render jsonapi: { meta: {} }, status: :ok
+      #     render jsonapi: { meta: meta }, status: :ok
       #   else
       #     render jsonapi_errors: match
       #   end

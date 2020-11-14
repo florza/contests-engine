@@ -140,6 +140,17 @@ class ApplicationController < ActionController::API
     token.first(10) + '...' + token.last(10)
   end
 
+  ##
+  # Rendering helpers
+  def meta
+    return {
+        "copyright": "Copyright 2020 Contests-Engine",
+        "authors": [ "Rolf Zanga" ],
+        "email": "rolf.zanga@icloud.com",
+        "link": "https://github.com/florza/contests-engine"
+      }
+  end
+
   def error_response(attribute, message)
         {
           errors: [{
