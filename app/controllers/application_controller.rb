@@ -139,4 +139,21 @@ class ApplicationController < ActionController::API
     return token if  token.size < 21
     token.first(10) + '...' + token.last(10)
   end
+
+  def error_response(attribute, message)
+        {
+          errors: [{
+            code:  'unprocessable_entity',
+            status: '422',
+            title: "Validation Error",
+            detail: attribute.to_s.camelcase + ' ' + message,
+            source: {},
+            meta: {
+              attribute: attribute,
+              message: message,
+              code: :blank
+            }
+          }]
+        }
+      end
 end

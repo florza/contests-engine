@@ -40,6 +40,7 @@ class DrawManager
   end
 
   def delete_draw(contest)
+    return if !valid?
     if contest.ctype_params || contest.draw_at
       contest.ctype_params.delete('draw_tableau')
       contest.ctype_params.delete('draw_seeds')
@@ -94,6 +95,12 @@ class DrawManager
 
   ##
   # General methods to support validation for all ctypes
+
+  def validate_draw_allowed
+    if @contest.has_started
+      errors.add(:draw, 'must not be changed if matches were already played')
+    end
+  end
 
   def validate_drawn_uniqueness
     if @drawn_participants.uniq.size != @drawn_participants.size

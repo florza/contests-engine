@@ -162,4 +162,28 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
     assert_includes redrawn_pps, new_draw[1][3]
   end
 
+  test "draw must not be created if a match has been played" do
+    create_draw_and_result
+
+    # Try to create a new draw
+    draw_params = @full_params
+    draw_mgr = DrawManagerGroups.new(draw_params)
+    draw_mgr.draw
+    assert_not draw_mgr.valid?
+    assert_includes draw_mgr.errors.messages[:draw],
+      'must not be changed if matches were already played'
+  end
+
+  test "draw must not be deleted if a match has been played" do
+    create_draw_and_result
+
+    # Try to delete the draw
+    draw_params = @full_params
+    draw_mgr = DrawManagerGroups.new(draw_params)
+    draw_mgr.delete_draw(@contest)
+    assert_not draw_mgr.valid?
+    assert_includes draw_mgr.errors.messages[:draw],
+      'must not be changed if matches were already played'
+  end
+
 end

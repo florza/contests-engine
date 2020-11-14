@@ -55,4 +55,28 @@ class ParticipantTest < ActiveSupport::TestCase
     @participant.save
     assert duplicate_participant.valid?
   end
+
+  test "participant must not be added if a draw exists" do
+    new_participant = Participant.new(
+      contest: contests(:DemoKO),
+      user: users(:userOne),
+      name: 'new name',
+      shortname: 'new short name',
+      remarks: ''
+    )
+    assert new_participant.valid?
+
+    # Create draw and try to create again
+    draw_mgr = draw_ko
+    assert_not new_participant.valid?
+    assert_includes new_participant.errors.messages[:participant],
+      'must not be added if a draw exists'
+  end
+
+  ##
+  # test "participant must not be deleted if a draw exists"
+  # is not implemented here, but in participants_controller_user_test.rb,
+  # because the feature could not be realized as planned as a validation,
+  # but had to be implemented in participants_controller.rb
+
 end

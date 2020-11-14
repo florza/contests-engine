@@ -24,6 +24,55 @@ class ActiveSupport::TestCase
     !session[:user_id].nil?
   end
 
+  ##
+  # Set @contest and @full_params to values for DemoKO
+
+  def prepare_draw_ko
+    @contest = contests(:DemoKO)
+    @full_params = {
+      contest_id: @contest.id,  # simulates the id coming from the url
+      data: { type: 'contests',
+              id: @contest.id,
+              attributes: { draw_tableau: [ [ participants(:DKO1).id,
+                                              'BYE',
+                                              participants(:DKO2).id,
+                                              participants(:DKO3).id,
+                                              participants(:DKO4).id,
+                                              participants(:DKO5).id,
+                                              'BYE',
+                                              participants(:DKO6).id ] ] } }
+    }
+  end
+
+  ##
+  # Execute manual draw with the above parameters
+
+  def draw_ko
+    prepare_draw_ko
+    draw_params = @full_params
+    mgr = DrawManagerKO.new(draw_params)
+    assert mgr.valid?
+    mgr.draw
+    @contest.reload
+    return mgr
+  end
+
+  ##
+  # Create a first draw and a match result for :DemoGruppen
+
+  def create_draw_and_result
+    # Create first draw
+    draw_params = @full_params
+    draw_mgr = DrawManagerGroups.new(draw_params)
+    draw_mgr.draw
+    assert draw_mgr.valid?
+
+    # Add a match result
+    match = @contest.matches.last
+    match.result = { 'score_p1' => [3], 'score_p2' => [6] }
+    match.winner_id = match.participant_2_id
+    assert match.save
+  end
 end
 
 class ActionDispatch::IntegrationTest
@@ -87,4 +136,5 @@ class ActionDispatch::IntegrationTest
       },
       as: :json
   end
+
 end

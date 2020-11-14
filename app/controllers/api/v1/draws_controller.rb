@@ -21,7 +21,8 @@ module Api
       end
 
       ##
-      # Returns not only the draw_tableau, but the whole contest
+      # Returns the draw_tableau, but perhaps the whole contest would be better?
+
       def create
         params[:fields] = { draws: 'draw_tableau' }
         @draw_manager = get_draw_manager(params)
@@ -42,8 +43,20 @@ module Api
 
       def destroy
         @draw_manager = get_draw_manager(params)
-        @draw_manager.delete_draw(current_contest)
-        render jsonapi: { meta: {} }, status: :ok
+        if !@draw_manager.valid?
+          # Simulate the error message by hand, as rails and graphiti do not
+          # handle validation properly (see also participant.rb)
+          render jsonapi:
+            error_response(:draw, @draw_manager.errors.messages[:draw][0]),
+            status: :unprocessable_entity
+        else
+          @draw_manager.delete_draw(current_contest)
+          if @draw_manager.valid?
+            render jsonapi: { meta: {} }, status: :ok
+          else
+            render jsonapi_errors: @draw_manager
+          end
+        end
       end
 
       private

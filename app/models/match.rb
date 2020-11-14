@@ -42,13 +42,17 @@ class Match < ApplicationRecord
     Result.to_s_reversed(result)
   end
 
-  def editable
+  def result_editable
     !participant_1_id.nil? &&
       !participant_2_id.nil? &&
       winner_next_match&.winner_id.nil? # no result yet
   end
 
   def validate_result
+    if !new_record? && !result_editable &&
+        (result_changed? || winner_id_changed?)
+      errors.add(:result, 'must not be changed if a draw exists')
+    end
     if (message = Result.validate(result, self, @contest.result_params))
       errors.add(:result, message)
     end

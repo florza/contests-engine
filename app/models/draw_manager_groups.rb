@@ -58,6 +58,7 @@ class DrawManagerGroups < DrawManager
   # Validation methods
 
   def validate_groups
+    validate_draw_allowed
     validate_drawn_uniqueness
     validate_drawn_ids
     validate_groups_sizes

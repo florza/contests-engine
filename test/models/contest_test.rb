@@ -75,4 +75,18 @@ class ContestTest < ActiveSupport::TestCase
     @contest.ctype = ''
     assert_not @contest.valid?
   end
+
+  test "ctype must not be changed if a draw exists" do
+    @contest = Contest.find_by_shortname('DKO')
+    @contest.ctype = 'Groups'
+    assert @contest.valid?
+
+    # Create draw and try to change again
+    draw_mgr = draw_ko
+    @contest.ctype = 'Groups'
+    assert_not @contest.valid?
+    assert_includes @contest.errors.messages[:ctype],
+      'must not be changed if a draw exists'
+  end
+
 end

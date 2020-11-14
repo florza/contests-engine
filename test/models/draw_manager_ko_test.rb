@@ -3,20 +3,7 @@ require 'test_helper'
 class DrawManagerKOTest < ActiveSupport::TestCase
 
   def setup
-    @contest = contests(:DemoKO)
-    @full_params = {
-      contest_id: @contest.id,  # simulates the id coming from the url
-      data: { type: 'contests',
-              id: @contest.id,
-              attributes: { draw_tableau: [ [ participants(:DKO1).id,
-                                              'BYE',
-                                              participants(:DKO2).id,
-                                              participants(:DKO3).id,
-                                              participants(:DKO4).id,
-                                              participants(:DKO5).id,
-                                              'BYE',
-                                              participants(:DKO6).id ] ] } }
-    }
+    prepare_draw_ko   # sets @contest and @full_params
   end
 
   test "empty tableau is valid" do

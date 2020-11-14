@@ -86,4 +86,18 @@ class ParticipantsControllerUserTest < ActionDispatch::IntegrationTest
     end
     assert_response 200
   end
+
+  ##
+  # Because the feature had to be implemented in the controller and not in the
+  # model validations, the test is also included here.
+  # Correctly, it should be in participant_test.rb, where also the test
+  # "participant must not be added if a draw exists" is.
+  test "should not destroy participant if a draw exists" do
+    draw_demomeisterschaft
+    delete api_v1_contest_participant_url(@contest, @participant),
+            headers: @headers, as: :json
+    assert_response :unprocessable_entity
+    assert_includes JSON.parse(response.body)['errors'][0]['detail'],
+      'Participant must not be deleted if a draw exists'
+  end
 end

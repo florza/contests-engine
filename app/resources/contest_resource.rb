@@ -25,4 +25,7 @@ class ContestResource < ApplicationResource
   attribute :token_write,    :string,   except: [:writable]
   attribute :created_at,     :datetime, except: [:writable]
   attribute :updated_at,     :datetime, except: [:writable]
+
+  attribute :has_draw,       :boolean,  only:   [:readable, :schema]
+  attribute :has_started,    :boolean,  only:   [:readable, :schema]
 end

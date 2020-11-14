@@ -20,6 +20,32 @@ class Participant < ApplicationRecord
   validates :contest_id,	presence: true
   validates :remarks, exclusion: { in: [nil] }  # allow blank, but not null
 
+  validate :no_create_after_draw, on: :create
+
+  before_create :init_attributes
+
+  def no_create_after_draw
+    if contest.has_draw
+      errors.add(:participant, 'must not be added if a draw exists')
+    end
+  end
+
+  ##
+  # The following logic similar to the above was copied from ActiveRecord
+  # Guides, but nevertheles produces an error in throw:
+  #   NoMethodError (undefined method `data' for #<ActiveModel::Errors:0x0...>),
+  # probably because destroys usually run no validations and of an unproper
+  # handling of Graphiti in this case.
+  # It was therefore replaced by logic in ParticipantsController#destroy
+
+  # before_destroy :no_destroy_after_draw
+  # def no_destroy_after_draw
+  #   if contest.has_draw
+  #     errors.add(:participant, 'must not be deleted if a draw exits')
+  #     throw(:abort)
+  #   end
+  # end
+
   def init_attributes
     self.token_write ||= get_token
     self.remarks ||= ''

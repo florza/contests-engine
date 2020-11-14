@@ -13,8 +13,8 @@ class MatchResource < ApplicationResource
   attribute :remarks,              :string
   attribute :ctype_params,         :hash,       only:   [:readable, :schema]
   attribute :userdata,             :hash
-  attribute :result_at,            :datetime
-  attribute :result,               :hash,       onoly:  [:readable, :schema]
+  attribute :result_at,            :datetime,   except: [:writable]
+  attribute :result,               :hash
   attribute :result_1_vs_2,        :string,     only:   [:readable, :schema]
   attribute :result_2_vs_1,        :string,     only:   [:readable, :schema]
   attribute :stats,                :hash,       only:   [:readable, :schema]
@@ -29,6 +29,6 @@ class MatchResource < ApplicationResource
   attribute :created_at,           :datetime,   except: [:writable]
   attribute :updated_at,           :datetime,   except: [:writable]
 
-  attribute :editable,             :boolean,    only:   [:readable, :schema]
+  attribute :result_editable,      :boolean,    only:   [:readable, :schema]
 
 end

@@ -44,13 +44,19 @@ module Api
       # DELETE /contests/<contest_id>/participants/1
       def destroy
         participant = ParticipantResource.find(params)
-        if participant.destroy
+        if current_contest.has_draw
+          # Simulate the error message by hand, as rails and graphiti do not
+          # handle validation properly (see also participant.rb)
+          render jsonapi:
+            error_response(:participant, 'must not be deleted if a draw exists'),
+            status: :unprocessable_entity
+        elsif participant.destroy
           render jsonapi: { meta: {} }, status: :ok
         else
           render jsonapi_errors: participant.errors
         end
       end
-
     end
+
   end
 end

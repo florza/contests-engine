@@ -25,9 +25,23 @@ class Contest < ApplicationRecord
   validates :description, presence: true
   validates :ctype,	inclusion: { in: %w(Groups KO GroupsKO GroupsGroup) }
 
+  validate :no_ctype_update_after_draw, on: :update
+
   before_create:init_attributes
 
-  # default_scope -> { order(last_action_at: :desc) }
+  def no_ctype_update_after_draw
+    if ctype_changed? && has_draw
+      errors.add(:ctype, 'must not be changed if a draw exists')
+    end
+  end
+
+  def has_draw
+    matches.count > 0
+  end
+
+  def has_started
+    matches.where('winner_id is not null').count > 0
+  end
 
   def init_attributes
     self.last_action_at ||= DateTime.now
