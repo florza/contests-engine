@@ -156,6 +156,34 @@ class DrawManager
 
   private
 
+  def generate_seeded_draw
+    ko_structure = get_ko_structure(@participants.size)
+    draw_list = draw_list_seeds.concat(draw_list_nonseeds)
+    ko_tableau = ko_structure.map {|pos|
+      pos == "BYE" ? pos : draw_list[pos - 1]
+    }
+    @draw_tableau = [ko_tableau]
+  end
+
+  def draw_list_seeds
+    # Seed 1 and 2 fix to position 1 and 2
+    draw_list = [@draw_seeds[0], @draw_seeds[1]]
+    # Seed 3 and 4 randomly to position 3 - 4, 5 - 8 randomly to 5 - 8, ...
+    pos = 2
+    while pos < @draw_seeds.size
+      draw_list.concat(@draw_seeds[pos..2 * pos - 1].shuffle)
+      pos *= 2
+    end
+    draw_list
+  end
+
+  def draw_list_nonseeds
+    @participants.
+      reject {|p| @draw_seeds.include?(p.id)}.
+      map {|p| p.id}.
+      shuffle
+  end
+
   def update_contest
     draw_params = { 'draw_tableau' => @draw_tableau,
                     'draw_seeds' => @draw_seeds }

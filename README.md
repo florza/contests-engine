@@ -72,15 +72,17 @@ reads the data of an entire contest with all participants and matches in one req
 
 ## Contributions
 Contributions to this application are very welcome. These may be:
-- Comments to the issues and questions
+- Comments and answers to the issues and questions
 - Propositions for additional features or better solutions
-- Pull requests (but please be patient with me at the beginning - I do not have so much experience with this kind of collaboration, but I would be happy to gain it!)
-- Development of a production-ready front-end application of your own, which would certainly result in many ideas to improve the back-end engine!
+- Pull requests (but please let me know what you are planning to do before you invest too much time!)
+- Development of a production-ready front-end application of your own, which would certainly result in many valuable ideas to improve the back-end engine!
 
 ## Some recent developments
-- Set read-only attributes `editable`, `result_1_vs_2`, `result_2_vs_1` in MatchResource, to free the client from this logic
-- Replaced cookies and csrf token by the access token that is sent to the client in the login request and resent by the client in the authorization header.
-- Included a static home page with some basic information ()
+- Draw with seed list for knock-out contests
+- Included some meta information in the standard JSON:API responses
+- Defined read-only attributes `contest.has_draw`, `contests.has_started`, `match.result_editable`, `match.result_1_vs_2`, `rmatch.esult_2_vs_1` in the resource layer, to free the client from this logic
+- Replaced cookies and csrf token by an access token that is sent to the client in the login request and resent by the client in the authorization header.
+- Included a static home page with some basic information
 - Changed input/output to JSON:API-format (https://jsonapi.org) using the `Graphiti` gem (https://graphiti.dev)
 
 ## Next Steps
