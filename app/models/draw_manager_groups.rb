@@ -61,7 +61,9 @@ class DrawManagerGroups < DrawManager
     validate_draw_allowed
     validate_drawn_uniqueness
     validate_drawn_ids
+    validate_seeds_ids
     validate_groups_sizes
+    validate_groups_seeds
   end
 
   def validate_groups_sizes
@@ -76,6 +78,15 @@ class DrawManagerGroups < DrawManager
       end
     end
   end
+
+  def validate_groups_seeds
+    return if @draw_seeds.empty?
+    max_seeds = @draw_tableau.size
+    if @draw_seeds.size < 2 or @draw_seeds.size > max_seeds
+      errors.add(:draw_seeds, "only 2 to #{max_seeds} seeds are allowed")
+    end
+  end
+
 
   ##
   # Complement an empty or partially filled tableau by placing
@@ -99,6 +110,37 @@ class DrawManagerGroups < DrawManager
     end
     raise 'Unknown error during draw' if ppants_to_draw.size != 0
     @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
+  end
+
+  ##
+  # Generate a seeded draw for groups:
+  # - Number of seeds between 2 and the number of groups
+  # - Group heads (position 1) are drawn as in a KO contest
+  # - other positions are drawn randomly from remaining participants
+  #
+  # The position of the groups in the virtual final KO tableau is
+  # computed by the program (as it is in KO contests), but the sizes
+  # of the groups can be given by the user.
+
+  def generate_seeded_draw
+    draw_list = draw_list_seeds + draw_list_nonseeds
+    ko_structure_groups = get_ko_structure(@draw_tableau.size)
+    @draw_tableau = set_seeded_groups(draw_list, ko_structure_groups)
+  end
+
+  def set_seeded_groups(draw_list, ko_structure_groups)
+    nonseeds_index = @draw_tableau.size
+    groups_tableau = []
+    @draw_tableau.each_with_index do |group, group_index|
+      # Group head
+      new_group = [draw_list[ko_structure_groups.find_index(group_index + 1)]]
+      # Remaining participants of group
+      new_group += draw_list[nonseeds_index..nonseeds_index + group.size - 2]
+      nonseeds_index += group.size - 1
+
+      groups_tableau << new_group
+    end
+    groups_tableau
   end
 
   ##
