@@ -78,7 +78,7 @@ Contributions to this application are very welcome. These may be:
 - Development of a production-ready front-end application of your own, which would certainly result in many valuable ideas to improve the back-end engine!
 
 ## Some recent developments
-- Draw with seed list for knock-out contests
+- Draw with seed list for knock-out and groups contests
 - Included some meta information in the standard JSON:API responses
 - Defined read-only attributes `contest.has_draw`, `contests.has_started`, `match.result_editable`, `match.result_1_vs_2`, `rmatch.esult_2_vs_1` in the resource layer, to free the client from this logic
 - Replaced cookies and csrf token by an access token that is sent to the client in the login request and resent by the client in the authorization header.

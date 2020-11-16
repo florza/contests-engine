@@ -70,8 +70,10 @@ class DrawManagerKO < DrawManager
     validate_ko_1group
     validate_ko_size
     validate_ko_byes
+    validate_ko_seeds
     validate_drawn_uniqueness
     validate_drawn_ids
+    validate_seeds_ids
   end
 
   def validate_ko_1group
@@ -106,6 +108,17 @@ class DrawManagerKO < DrawManager
     end
   end
 
+  def validate_ko_seeds
+    return if @draw_seeds.empty?
+    max_seeds = get_tableau_size(@participants.size) / 2
+    if @draw_seeds.size < 2 or @draw_seeds.size > max_seeds
+      errors.add(:draw_seeds, "only 2 to #{max_seeds} seeds are possible")
+    end
+    if @draw_seeds.size != get_tableau_size(@draw_seeds.size)
+      errors.add(:draw_seeds, "number of seeds must be a power of 2")
+    end
+  end
+
   ##
   # Complement an empty or partially filled tableau by placing
   # the not yet drawn participants randomly in the remaining slots.
@@ -120,6 +133,28 @@ class DrawManagerKO < DrawManager
     end
     raise 'Unknown error during draw' if ppants_to_draw.size != 0
     @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
+  end
+
+  ##
+  # Generate a seeded draw for knock-out contests:
+  # 0. Number of seeds must be a power of 2 between 2 and tableau size / 2
+  # 1. Seed 1 to the top (top of the knock-out tableau or head of first group)
+  # 2. Seed 2 to the bottom position or head of last group
+  # 3. Seeds 3 and 4 randomly (!) to the two middle positions (NOT simply 3 in
+  #    lower and 4 in upper half)
+  # 4. And so on for 5 - 8, 9 - 16, ... (to maximal number of seeds
+  #    or number of groups - never more than 1 seed per group)
+  # 5. Place remaining participants randomly
+  #
+  # The position of the participants (or groups) and BYEs in the KO tableau
+  # is computed by the program and cannot be changed by the user.
+
+  def generate_seeded_draw
+    draw_list = draw_list_seeds + draw_list_nonseeds
+    ko_tableau = get_ko_structure(@participants.size).map {|pos|
+      pos == "BYE" ? pos : draw_list[pos - 1]
+    }
+    @draw_tableau = [ko_tableau]
   end
 
   ##

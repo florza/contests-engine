@@ -116,6 +116,14 @@ class DrawManager
     end
   end
 
+  def validate_seeds_ids
+    @draw_seeds.each do |ppant_id|
+      unless @participants.find {|p| p.id == ppant_id}
+        errors.add(:draw_seeds, "invalid participant_id #{ppant_id}")
+      end
+    end
+  end
+
   def complete?
     @drawn_participants.size == @participants.size
   end
@@ -156,14 +164,9 @@ class DrawManager
 
   private
 
-  def generate_seeded_draw
-    ko_structure = get_ko_structure(@participants.size)
-    draw_list = draw_list_seeds.concat(draw_list_nonseeds)
-    ko_tableau = ko_structure.map {|pos|
-      pos == "BYE" ? pos : draw_list[pos - 1]
-    }
-    @draw_tableau = [ko_tableau]
-  end
+  ##
+  # Compute a partly randomly ordered list of seeds according to the rules
+  # described in DrawManagerKO.generate_seeded_draw
 
   def draw_list_seeds
     # Seed 1 and 2 fix to position 1 and 2
@@ -176,6 +179,9 @@ class DrawManager
     end
     draw_list
   end
+
+  ##
+  # Compute a randomly ordered list of the non-seeded participants
 
   def draw_list_nonseeds
     @participants.
