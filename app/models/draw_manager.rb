@@ -211,6 +211,9 @@ class DrawManager
           participant = @participants.find {|p| p.id == participant_id}
           participant.ctype_params = { 'draw_group' => group0 + 1,
                                        'draw_pos' => pos0 + 1 }
+          debugger
+          seed_index = @draw_seeds.find_index(participant.id)
+          participant.seed_position = seed_index ? seed_index + 1 : nil
           unless participant.save
             errors.add(:draw, 'participants update failed') && return
           end

@@ -6,6 +6,9 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     prepare_draw_ko   # sets @contest and @full_params
   end
 
+  ##
+  # Test tableau validity
+
   test "empty tableau is valid" do
     draw_params = @full_params
     draw_params[:data][:attributes] = { draw_tableau: [[]] }
@@ -45,7 +48,7 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     assert mgr.draw_structure[0].size == 8
   end
 
-  test "tableau with some get corrected to valid" do
+  test "tableau with some entries gets corrected to valid" do
     draw_params = @full_params
     draw_params[:data][:attributes] = { draw_tableau: [ [0, 0, 0, 0, 0] ] }
     mgr = DrawManagerKO.new(draw_params)
@@ -61,7 +64,7 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     assert_not mgr.valid?
   end
 
-  test "invalid participant is invalid" do
+  test "invalid participant in tableau is invalid" do
     draw_params = @full_params
     draw_params[:data][:attributes][:draw_tableau][0][3] = 123456
     mgr = DrawManagerKO.new(draw_params)
@@ -122,6 +125,41 @@ class DrawManagerKOTest < ActiveSupport::TestCase
     mgr = DrawManagerKO.new(draw_params)
     assert_not mgr.valid?
   end
+
+  ##
+  # Test seeds validity
+
+  test "empty seeds is valid" do
+    draw_params = @full_params
+    draw_params[:data][:attributes] =
+      { draw_tableau: [[]], draw_seeds: [] }
+    mgr = DrawManagerKO.new(draw_params)
+    assert mgr.valid?
+  end
+
+  test "seed sizes 1 to 5 give expected results" do
+    testcases = [ [:DKO1, false], [:DKO2, true], [:DKO3, false],
+                  [:DKO4, true], [:DKO5, false] ]
+    draw_params = @full_params
+    draw_params[:data][:attributes] = { draw_tableau: [[]], draw_seeds: [] }
+    testcases.each do |ppant, result|
+      draw_params[:data][:attributes][:draw_seeds] << participants(ppant).id
+      mgr = DrawManagerKO.new(draw_params)
+      assert_equal result, mgr.valid?,
+        "testcase #{ppant.to_s} gives unexpected result #{mgr.valid?.to_s}"
+    end
+  end
+
+  test "invalid participant in seeds is invalid" do
+    draw_params = @full_params
+    draw_params[:data][:attributes][:draw_seeds] =
+     [participants(:DKO1).id, 1234] }
+    mgr = DrawManagerKO.new(draw_params)
+    assert_not mgr.valid?
+  end
+
+  ##
+  # Test draw logic
 
   test "draw with same tableau as before is unchanged" do
     draw_params = @full_params

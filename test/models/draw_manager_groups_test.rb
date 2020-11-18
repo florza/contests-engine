@@ -18,6 +18,9 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
     }
   end
 
+  ##
+  # Test tableau validity
+
   test "empty tableau is valid" do
     draw_params = @full_params
     draw_params[:data][:attributes] = { draw_tableau: [[]] }
@@ -106,6 +109,40 @@ class DrawManagerGroupsTest < ActiveSupport::TestCase
       @contest.ctype_params['draw_tableau']
   end
 
+  ##
+  # Test seeds validity
+
+  test "empty seeds is valid" do
+    draw_params = @full_params
+    draw_params[:data][:attributes] =
+      { draw_tableau: [[]], draw_seeds: [] }
+    mgr = DrawManagerGroups.new(draw_params)
+    assert mgr.valid?
+  end
+
+  test "seed sizes 1 to 4 give expected results" do
+    testcases = [[:Roger, false], [:Rod, true], [:Raffa, true], [:Pete, false]]
+    draw_params = @full_params
+    draw_params[:data][:attributes] =
+      { draw_tableau: [[0,0],[0,0,0],[0,0]], draw_seeds: [] }
+    testcases.each do |ppant, result|
+      draw_params[:data][:attributes][:draw_seeds] << participants(ppant).id
+      mgr = DrawManagerGroups.new(draw_params)
+      assert_equal result, mgr.valid?,
+        "testcase #{ppant.to_s} gives unexpected result #{mgr.valid?.to_s}"
+    end
+  end
+
+  test "invalid participant in seeds is invalid" do
+    draw_params = @full_params
+    draw_params[:data][:attributes][:draw_seeds] =
+     [participants(:Roger).id, 1234]
+    mgr = DrawManagerGroups.new(draw_params)
+    assert_not mgr.valid?
+  end
+
+  ##
+  # Test draw logic
   test "empty draw is filled up randomly" do
     draw_params = @full_params
     draw_params[:data][:attributes] =

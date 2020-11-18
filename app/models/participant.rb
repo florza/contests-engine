@@ -51,4 +51,11 @@ class Participant < ApplicationRecord
     self.remarks ||= ''
   end
 
+  def name_seed_position
+    name + (seed_position ? " (#{seed_position})" : '')
+  end
+
+  def shortname_seed_position
+    name + (seed_position ? " (#{seed_position})" : '')
+  end
 end

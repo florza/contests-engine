@@ -126,6 +126,7 @@ class DrawManagerGroups < DrawManager
     draw_list = draw_list_seeds + draw_list_nonseeds
     ko_structure_groups = get_ko_structure(@draw_tableau.size)
     @draw_tableau = set_seeded_groups(draw_list, ko_structure_groups)
+    @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
   end
 
   def set_seeded_groups(draw_list, ko_structure_groups)
@@ -137,7 +138,6 @@ class DrawManagerGroups < DrawManager
       # Remaining participants of group
       new_group += draw_list[nonseeds_index..nonseeds_index + group.size - 2]
       nonseeds_index += group.size - 1
-
       groups_tableau << new_group
     end
     groups_tableau

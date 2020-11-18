@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_09_120721) do
+ActiveRecord::Schema.define(version: 2020_11_17_133204) do
 
   create_table "contests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 2020_10_09_120721) do
     t.string "shortname", limit: 20, null: false
     t.text "remarks", limit: 500, default: "", null: false
     t.string "status", limit: 10, default: "active", null: false
+    t.integer "seed_position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "token_write", limit: 32, default: "", null: false

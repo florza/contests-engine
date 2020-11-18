@@ -155,6 +155,7 @@ class DrawManagerKO < DrawManager
       pos == "BYE" ? pos : draw_list[pos - 1]
     }
     @draw_tableau = [ko_tableau]
+    @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
   end
 
   ##
