@@ -28,8 +28,7 @@ class DrawManager
   end
 
   def draw
-    seeds = @draw_seeds
-    if seeds.size > 0
+    if @draw_seeds.size > 0
       generate_seeded_draw
     elsif !complete? && valid?
       complement_draw
@@ -43,7 +42,7 @@ class DrawManager
     return if !valid?
     if contest.ctype_params || contest.draw_at
       contest.ctype_params.delete('draw_tableau')
-      contest.ctype_params.delete('draw_seeds')
+      # contest.ctype_params.delete('draw_seeds')
       contest.draw_at = nil
       contest.save!
     end
@@ -211,7 +210,6 @@ class DrawManager
           participant = @participants.find {|p| p.id == participant_id}
           participant.ctype_params = { 'draw_group' => group0 + 1,
                                        'draw_pos' => pos0 + 1 }
-          debugger
           seed_index = @draw_seeds.find_index(participant.id)
           participant.seed_position = seed_index ? seed_index + 1 : nil
           unless participant.save

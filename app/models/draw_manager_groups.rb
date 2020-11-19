@@ -68,7 +68,7 @@ class DrawManagerGroups < DrawManager
 
   def validate_groups_sizes
     if @draw_tableau.size * 2 > @participants.size
-      errors.add(:draw_tableau, "too many groups for number of participants")
+      errors.add(:draw_tableau, 'too many groups for number of participants')
       return
     end
     @draw_tableau.each do |group|
@@ -123,21 +123,25 @@ class DrawManagerGroups < DrawManager
   # of the groups can be given by the user.
 
   def generate_seeded_draw
-    draw_list = draw_list_seeds + draw_list_nonseeds
-    ko_structure_groups = get_ko_structure(@draw_tableau.size)
-    @draw_tableau = set_seeded_groups(draw_list, ko_structure_groups)
+    ko_structure_groups =
+      get_ko_structure(@draw_tableau.size).select {|p| p != 'BYE'}
+    @draw_tableau = set_seeded_groups(ko_structure_groups)
     @drawn_participants = @draw_tableau.flatten.select {|p| p.to_i > 0}
   end
 
-  def set_seeded_groups(draw_list, ko_structure_groups)
-    nonseeds_index = @draw_tableau.size
+  def set_seeded_groups(ko_structure_groups)
+    nonseeds = draw_list_nonseeds
     groups_tableau = []
     @draw_tableau.each_with_index do |group, group_index|
       # Group head
-      new_group = [draw_list[ko_structure_groups.find_index(group_index + 1)]]
+      seed_index = ko_structure_groups[group_index] - 1
+      new_group = if seed_index < @draw_seeds.size
+                    [@draw_seeds[seed_index]]
+                  else
+                    [nonseeds.shift]
+                  end
       # Remaining participants of group
-      new_group += draw_list[nonseeds_index..nonseeds_index + group.size - 2]
-      nonseeds_index += group.size - 1
+      new_group += nonseeds.shift(group.size - 1)
       groups_tableau << new_group
     end
     groups_tableau
