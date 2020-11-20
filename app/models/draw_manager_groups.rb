@@ -10,7 +10,7 @@ class DrawManagerGroups < DrawManager
 
   def initialize(params)
     super
-    if @drawn_participants.size != @participants.size
+    if @drawn_participants.size != @participants.size && @draw_seeds.empty?
         # || @draw_tableau.size != @contest.ctype_params['draw_tableau'].size
       if (groups_structure = get_groups_structure(
           @participants.size, @draw_tableau.size)) == [[]]
