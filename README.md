@@ -20,7 +20,7 @@ The first version of *Contests-Engine*, which is almost finished, provide minima
 - Registration and login with username / password for contest managers
 - Login for participants to a specific contest with tokens generated for read or write access to the entire contest or only a players own matches
 - Creating and editing contests and participants with minimal data needed
-- Doing the draw and generate all matches
+- Doing the draw (manually or automatic with or without seed list) and generate all matches
 - Edit the match results and actualize the contests state
 - Contests type 'Groups' (round robin), no return matches and no sudden death or final groups for the group winners
 - Contest type 'Knock-out' (sudden death, elimination game), no match for third place
