@@ -153,7 +153,7 @@ class DrawManagerKOTest < ActiveSupport::TestCase
   test "invalid participant in seeds is invalid" do
     draw_params = @full_params
     draw_params[:data][:attributes][:draw_seeds] =
-     [participants(:DKO1).id, 1234] }
+     [participants(:DKO1).id, 1234]
     mgr = DrawManagerKO.new(draw_params)
     assert_not mgr.valid?
   end

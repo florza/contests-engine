@@ -10,12 +10,14 @@ class DrawManagerGroups < DrawManager
 
   def initialize(params)
     super
-    if @drawn_participants.size != @participants.size && @draw_seeds.empty?
+    # debugger
+    if @drawn_participants.size != @participants.size # && @draw_seeds.empty?
         # || @draw_tableau.size != @contest.ctype_params['draw_tableau'].size
       if (groups_structure = get_groups_structure(
           @participants.size, @draw_tableau.size)) == [[]]
         return
       end
+      return if @draw_tableau.map(&:size).sum == @participants.size
       @draw_tableau.dup.each_with_index do |group, grp_nr0|
         size_difference = groups_structure[grp_nr0].size - group.size
         if size_difference > 0

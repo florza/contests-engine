@@ -20,6 +20,6 @@ class SignupController < ApplicationController
 
   def user_params
     params.permit(:username, :password, :password_confirmation, :userdata)
-
   end
+
 end

@@ -41,7 +41,8 @@ class DrawManager
   def delete_draw(contest)
     return if !valid?
     if contest.ctype_params || contest.draw_at
-      contest.ctype_params.delete('draw_tableau')
+      # contest.ctype_params.delete('draw_tableau')
+      set_drawtableau_to_empty(contest.ctype_params['draw_tableau'])
       # contest.ctype_params.delete('draw_seeds')
       contest.draw_at = nil
       contest.save!
@@ -162,6 +163,16 @@ class DrawManager
   end
 
   private
+
+  ##
+  # Replace all participant ids in drawTableau by zero, to delete the draw,
+  # but keep the tableau structure
+
+  def set_drawtableau_to_empty(draw_tableau)
+    draw_tableau.each do |group|
+      group.map! {|p| p.to_i > 0 ? 0 : p}
+    end
+  end
 
   ##
   # Compute a partly randomly ordered list of seeds according to the rules
