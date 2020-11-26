@@ -87,3 +87,43 @@ Contributions to this application are very welcome. These may be:
 
 ## Next Steps
 See https://github.com/florza/contests-example/issues.
+
+## Local installation
+First, make a basic copy from github and install the necessary Ruby Gems. The gemfile uses Ruby 2.7.1. If you use another version and do not want to change it, adapt the entry in `gemfile` to your version before running `bundle install`.
+
+```console
+$ git clone https://github.com/florza/contests-engine.git myContestsEngine
+$ cd myContestsEngine
+$ bundle install
+```
+
+The application uses the files `master.key` and `credentials.yml.enc` to store the JWT encryption key. The github repository contains no master file and only an encrypted credentials file which is of no use to you, so you have to initialize these files by yourself:
+
+```console
+$ rm config/credentials.yml.enc
+$ EDITOR=vim rails credentials:edit
+```
+
+In the editor (it can be another than vim), insert the follwing two lines and save the file:
+
+    jwt:
+      encryption_key: yourOwnSecretText
+
+You will then have a new file `master.key` and an encrypted version of `credentials.yml.enc`. If you must later edit this file, you can do that with the command you used above.
+
+It is highly recommended to add `master.key` to your `.gitignore` file, so it will never be sent to a public repository. Save the content of `master.key` to your password manager.
+
+Last, you have to initialize the database. Since there are some problems hidden in earlier migrations files, I recommend  to use setup for this, with the additional advantage that you will also have some sample data automatically installed, which is defined in db/seeds.rb and test/fixtures/*.yml:
+
+```console
+$ rails db:environment:set RAILS_ENV=development
+$ rails db:setup
+```
+
+At the end, you can run the tests with
+
+```console
+$ rails t 2>/dev/null
+```
+
+The error output is sent to null because there are lots of deprecation warnings with Rails 6.1 at the moment.
