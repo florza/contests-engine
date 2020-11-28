@@ -18,7 +18,8 @@ class ParticipantResource < ApplicationResource
   attribute :userdata,                :hash
   attribute :ctype_params,            :hash,        only: [:readable, :schema]
   attribute :stats,                   :hash,        only: [:readable, :schema]
-  attribute :token_write,             :string,      except: [:writable]
   attribute :created_at,              :datetime,    except: [:writable]
   attribute :updated_at,              :datetime,    except: [:writable]
+
+  extra_attribute :token_write,       :string,      only:   [:readable, :schema]
 end

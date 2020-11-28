@@ -21,11 +21,13 @@ class ContestResource < ApplicationResource
   attribute :userdata,       :hash
   attribute :draw_at,        :datetime, except: [:writable]
   attribute :last_action_at, :datetime
-  attribute :token_read,     :string,   except: [:writable]
-  attribute :token_write,    :string,   except: [:writable]
   attribute :created_at,     :datetime, except: [:writable]
   attribute :updated_at,     :datetime, except: [:writable]
 
   attribute :has_draw,       :boolean,  only:   [:readable, :schema]
   attribute :has_started,    :boolean,  only:   [:readable, :schema]
+
+  extra_attribute :token_read,  :string,  only:   [:readable, :schema]
+  extra_attribute :token_write, :string,  only:   [:readable, :schema]
+
 end
