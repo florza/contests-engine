@@ -11,7 +11,7 @@ ruby '2.7.1'
 # 12.9.20, switch to 6.0.3.3 to close vulnerability GHSA-cfjv-5498-mph5
 gem 'rails', '~> 6.0.3.3'
 # Use Puma as the app server
-gem 'puma', '~> 4.3.6'  # alt 3.7
+gem 'puma', '~> 4.3.9'  # alt 3.7
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
